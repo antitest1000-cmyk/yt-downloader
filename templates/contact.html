@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Contact & Support – YT Downloader{% endblock %}
+{% block meta_description %}Contact the YT Downloader team for support, bug reports, security vulnerability disclosures, or general feedback about our open-source media archiving tool.{% endblock %}
+
+{% block content %}
+<section class="content-header">
+    <div class="content-badge"><span>📬</span> Contact & Support</div>
+    <h1 class="content-title">Contact &amp; Support</h1>
+    <p class="content-lead">
+        Need help with a download error, discovered a security issue, or want to submit feedback? Use the appropriate channel below.
+    </p>
+</section>
+
+<article class="content-article">
+    <div class="content-prose">
+        <div class="grid-2" style="margin-bottom:2rem;">
+            <div class="step-card" style="border-color:rgba(59,130,246,0.3);">
+                <div class="step-card__number">🐛</div>
+                <h3 class="step-card__title">Bug Reports &amp; Download Errors</h3>
+                <p class="step-card__text">
+                    If a specific video URL is failing, copy the error message shown in the job card and include the URL type (single video, playlist, or bulk) when reporting. Most "sign in to confirm" errors are YouTube bot-detection responses that resolve themselves after a short cooldown.
+                </p>
+            </div>
+            <div class="step-card" style="border-color:rgba(239,68,68,0.3);">
+                <div class="step-card__number">🔐</div>
+                <h3 class="step-card__title">Security Vulnerability Disclosure</h3>
+                <p class="step-card__text">
+                    If you have discovered a security vulnerability—including SSRF bypass, path traversal, injection vectors, or rate-limit bypass techniques—please submit a responsible disclosure report. Do not post exploits publicly before contacting us.
+                </p>
+            </div>
+            <div class="step-card" style="border-color:rgba(34,197,94,0.3);">
+                <div class="step-card__number">💡</div>
+                <h3 class="step-card__title">Feature Requests</h3>
+                <p class="step-card__text">
+                    Ideas for new supported formats, improved queue management UI, or additional metadata fields are welcome. Please check the <a href="{{ url_for('faq') }}" style="color:var(--accent-secondary);">FAQ page</a> first to see if your request has already been addressed.
+                </p>
+            </div>
+            <div class="step-card" style="border-color:rgba(168,133,253,0.3);">
+                <div class="step-card__number">⚖️</div>
+                <h3 class="step-card__title">DMCA &amp; Legal</h3>
+                <p class="step-card__text">
+                    For copyright takedown requests, counter-notices, or legal correspondence, please review our <a href="{{ url_for('dmca') }}" style="color:var(--accent-secondary);">DMCA Policy</a> page first. Legal notices must be submitted through the formal DMCA process detailed there.
+                </p>
+            </div>
+        </div>
+
+        <div class="callout callout--info">
+            <div class="callout__title">Common Issues Resolved in the FAQ</div>
+            <p>
+                Before reaching out, please check the <a href="{{ url_for('faq') }}" style="color:var(--accent-secondary); font-weight:600;">FAQ page</a> for answers to the most frequent questions about FFmpeg errors, MP3 conversion slowness, supported URLs, file retention, and privacy practices.
+            </p>
+        </div>
+
+        <h2>Self-Hosted Instance Support</h2>
+        <p>
+            Running your own self-hosted instance? Our <a href="{{ url_for('self_host') }}" style="color:var(--accent-secondary); font-weight:600;">Self-Host Guide</a> covers common deployment issues including FFmpeg path configuration, Docker volume mounts, and reverse proxy TLS setup. The <a href="{{ url_for('blog_post', slug='yt-dlp-common-errors-and-fixes') }}" style="color:var(--accent-secondary); font-weight:600;">yt-dlp Errors &amp; Fixes blog article</a> covers the most common extraction failure modes.
+        </p>
+
+        <h2>Response Times</h2>
+        <p>
+            We aim to respond to bug reports and security disclosures within 72 hours on business days. Feature requests are reviewed periodically and may be tracked in the project repository. Automated scraping or spam submissions are silently discarded.
+        </p>
+    </div>
+</article>
+{% endblock %}

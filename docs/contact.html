@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact & Support – YT Downloader</title>
+    <meta name="description" content="Contact the YT Downloader team for support, bug reports, security vulnerability disclosures, or general feedback about our open-source media archiving tool.">
+    
+    <link rel="canonical" href="http://localhost/contact">
+    
+    
+    <!-- OpenGraph / Social -->
+    <meta property="og:site_name" content="YT Downloader">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Contact & Support – YT Downloader">
+    <meta property="og:description" content="Contact the YT Downloader team for support, bug reports, security vulnerability disclosures, or general feedback about our open-source media archiving tool.">
+    <meta property="og:url" content="http://localhost/contact">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Contact & Support – YT Downloader">
+    <meta name="twitter:description" content="Contact the YT Downloader team for support, bug reports, security vulnerability disclosures, or general feedback about our open-source media archiving tool.">
+
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Design System Stylesheets -->
+    <link rel="stylesheet" href="./static/css/style.css">
+    <link rel="stylesheet" href="./static/css/glow-cursor.css">
+    <link rel="stylesheet" href="./static/css/content.css">
+
+    <!-- Structured Data (JSON-LD) -->
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "YT Downloader",
+      "url": "http://localhost/",
+      "description": "High-speed local YouTube video and audio downloader powered by yt-dlp and FFmpeg.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+    
+</head>
+<body>
+    <!-- Aurora Mesh Background Canvas -->
+    <canvas id="aurora-canvas" aria-hidden="true"></canvas>
+    <!-- Glow Cursor Fluid Background -->
+    <div id="glow-cursor-container" class="glow-cursor-root"></div>
+
+    <!-- Header & Navigation -->
+    <header class="header" role="banner">
+        <div class="header__inner">
+            <div class="header__brand">
+                <a href="./" style="text-decoration:none; display:flex; align-items:center;">
+                    <h1 class="header__title">
+                        <span class="header__icon" aria-hidden="true">▶</span>
+                        <span class="shiny-text" data-text="YT Downloader">YT Downloader</span>
+                    </h1>
+                </a>
+                <span class="header__subtitle">Local Media Toolkit</span>
+            </div>
+
+            <!-- Global Nav Links -->
+            <nav class="nav-links" aria-label="Main Navigation">
+                <a href="./" class="nav-link ">Downloader</a>
+                <a href="./youtube-to-mp3.html" class="nav-link ">MP3</a>
+                <a href="./youtube-playlist-downloader.html" class="nav-link ">Playlists</a>
+                <a href="./bulk-youtube-downloader.html" class="nav-link ">Bulk</a>
+                <a href="./faq.html" class="nav-link ">FAQ</a>
+                <a href="./blog.html" class="nav-link ">Blog</a>
+                <a href="./self-host.html" class="nav-link nav-link--highlight ">Self-Host</a>
+            </nav>
+
+            <div class="header__status" id="health-status" title="System Status">
+                <span class="status-dot" id="status-dot"></span>
+                <span class="status-text" id="status-text">Checking...</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main" role="main">
+        <div class="container">
+            
+<section class="content-header">
+    <div class="content-badge"><span>📬</span> Contact & Support</div>
+    <h1 class="content-title">Contact &amp; Support</h1>
+    <p class="content-lead">
+        Need help with a download error, discovered a security issue, or want to submit feedback? Use the appropriate channel below.
+    </p>
+</section>
+
+<article class="content-article">
+    <div class="content-prose">
+        <div class="grid-2" style="margin-bottom:2rem;">
+            <div class="step-card" style="border-color:rgba(59,130,246,0.3);">
+                <div class="step-card__number">🐛</div>
+                <h3 class="step-card__title">Bug Reports &amp; Download Errors</h3>
+                <p class="step-card__text">
+                    If a specific video URL is failing, copy the error message shown in the job card and include the URL type (single video, playlist, or bulk) when reporting. Most "sign in to confirm" errors are YouTube bot-detection responses that resolve themselves after a short cooldown.
+                </p>
+            </div>
+            <div class="step-card" style="border-color:rgba(239,68,68,0.3);">
+                <div class="step-card__number">🔐</div>
+                <h3 class="step-card__title">Security Vulnerability Disclosure</h3>
+                <p class="step-card__text">
+                    If you have discovered a security vulnerability—including SSRF bypass, path traversal, injection vectors, or rate-limit bypass techniques—please submit a responsible disclosure report. Do not post exploits publicly before contacting us.
+                </p>
+            </div>
+            <div class="step-card" style="border-color:rgba(34,197,94,0.3);">
+                <div class="step-card__number">💡</div>
+                <h3 class="step-card__title">Feature Requests</h3>
+                <p class="step-card__text">
+                    Ideas for new supported formats, improved queue management UI, or additional metadata fields are welcome. Please check the <a href="./faq.html" style="color:var(--accent-secondary);">FAQ page</a> first to see if your request has already been addressed.
+                </p>
+            </div>
+            <div class="step-card" style="border-color:rgba(168,133,253,0.3);">
+                <div class="step-card__number">⚖️</div>
+                <h3 class="step-card__title">DMCA &amp; Legal</h3>
+                <p class="step-card__text">
+                    For copyright takedown requests, counter-notices, or legal correspondence, please review our <a href="./dmca.html" style="color:var(--accent-secondary);">DMCA Policy</a> page first. Legal notices must be submitted through the formal DMCA process detailed there.
+                </p>
+            </div>
+        </div>
+
+        <div class="callout callout--info">
+            <div class="callout__title">Common Issues Resolved in the FAQ</div>
+            <p>
+                Before reaching out, please check the <a href="./faq.html" style="color:var(--accent-secondary); font-weight:600;">FAQ page</a> for answers to the most frequent questions about FFmpeg errors, MP3 conversion slowness, supported URLs, file retention, and privacy practices.
+            </p>
+        </div>
+
+        <h2>Self-Hosted Instance Support</h2>
+        <p>
+            Running your own self-hosted instance? Our <a href="./self-host.html" style="color:var(--accent-secondary); font-weight:600;">Self-Host Guide</a> covers common deployment issues including FFmpeg path configuration, Docker volume mounts, and reverse proxy TLS setup. The <a href="/blog/yt-dlp-common-errors-and-fixes" style="color:var(--accent-secondary); font-weight:600;">yt-dlp Errors &amp; Fixes blog article</a> covers the most common extraction failure modes.
+        </p>
+
+        <h2>Response Times</h2>
+        <p>
+            We aim to respond to bug reports and security disclosures within 72 hours on business days. Feature requests are reviewed periodically and may be tracked in the project repository. Automated scraping or spam submissions are silently discarded.
+        </p>
+    </div>
+</article>
+
+        </div>
+    </main>
+
+    <!-- Comprehensive Global Footer -->
+    <footer class="site-footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Col 1: Brand & Philosophy -->
+                <div class="footer-brand">
+                    <div class="footer-brand__name">
+                        <span style="color:var(--accent-primary)">▶</span> YT Downloader
+                    </div>
+                    <p class="footer-brand__desc">
+                        A private, local-first web utility for downloading publicly accessible media via yt-dlp and FFmpeg. Fast conversion, no signup, zero third-party ads.
+                    </p>
+                    <div class="footer-brand__badge">
+                        <span>🔒</span> 100% Local &amp; Private Storage
+                    </div>
+                </div>
+
+                <!-- Col 2: Core Tools -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Core Tools</h4>
+                    <ul class="footer-links">
+                        <li><a href="./" class="footer-link">Video &amp; Audio Downloader</a></li>
+                        <li><a href="./youtube-to-mp3.html" class="footer-link">YouTube to MP3 Converter</a></li>
+                        <li><a href="./youtube-playlist-downloader.html" class="footer-link">Playlist Downloader</a></li>
+                        <li><a href="./bulk-youtube-downloader.html" class="footer-link">Bulk Queue Downloader</a></li>
+                        <li><a href="./youtube-video-info.html" class="footer-link">Video Info &amp; Thumbnail Checker</a></li>
+                        <li><a href="./how-it-works.html" class="footer-link">How Downloader Works</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Guides & Articles -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Guides &amp; Articles</h4>
+                    <ul class="footer-links">
+                        <li><a href="/blog/what-is-yt-dlp" class="footer-link">What is yt-dlp?</a></li>
+                        <li><a href="/blog/install-ffmpeg-windows-mac-linux" class="footer-link">Install FFmpeg (Win/Mac/Linux)</a></li>
+                        <li><a href="/blog/best-video-quality-for-downloads" class="footer-link">Quality Guide: 4K vs 1080p vs 720p</a></li>
+                        <li><a href="/blog/mp3-vs-m4a-vs-opus" class="footer-link">Audio Guide: MP3 vs M4A vs Opus</a></li>
+                        <li><a href="/blog/yt-dlp-common-errors-and-fixes" class="footer-link">Common yt-dlp Errors &amp; Fixes</a></li>
+                        <li><a href="/blog/ssrf-protection-in-flask-apps" class="footer-link">SSRF Protection in Web Apps</a></li>
+                        <li><a href="./blog.html" class="footer-link" style="color:var(--accent-secondary); font-weight:600;">Browse All 10 Guides &rarr;</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Trust & Developers -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Trust &amp; Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="./faq.html" class="footer-link">Frequently Asked Questions</a></li>
+                        <li><a href="./about.html" class="footer-link">About the Project</a></li>
+                        <li><a href="./contact.html" class="footer-link">Contact &amp; Support</a></li>
+                        <li><a href="./privacy.html" class="footer-link">Privacy Policy</a></li>
+                        <li><a href="./terms.html" class="footer-link">Terms of Service</a></li>
+                        <li><a href="./dmca.html" class="footer-link">DMCA &amp; Takedown Policy</a></li>
+                        <li><a href="./self-host.html" class="footer-link" style="color:#a285fd; font-weight:600;">💻 Self-Host Guide</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom Note -->
+            <div class="footer-bottom">
+                <div>
+                    &copy; 2026 YT Downloader. Powered by <a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener noreferrer" style="color:var(--accent-secondary)">yt-dlp</a> &amp; <a href="https://ffmpeg.org" target="_blank" rel="noopener noreferrer" style="color:var(--accent-secondary)">FFmpeg</a>. For personal, educational, and archival use.
+                </div>
+                <div>
+                    Retention Policy: Downloaded media purged automatically after 24 hours.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Client Scripts -->
+    <script src="./static/js/glow-cursor.js"></script>
+    <script src="./static/js/ui-effects.js"></script>
+    
+    <script src="./static/js/app.js"></script>
+    
+</body>
+</html>

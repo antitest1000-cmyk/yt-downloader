@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}How Our Downloader Works (yt-dlp + FFmpeg){% endblock %}
+{% block meta_description %}Learn how our local-first YouTube downloader works. Complete breakdown of URL validation, SSRF protection, yt-dlp extraction, FFmpeg muxing, and security.{% endblock %}
+
+{% block content %}
+<div class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="{{ url_for('index') }}">Home</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span class="breadcrumbs__current">How It Works</span>
+</div>
+
+<article class="content-article">
+    <header class="content-article__hero content-article__hero--center">
+        <span class="content-badge">⚙️ Architecture &amp; Engineering</span>
+        <h1 class="content-title">How the Downloader Works</h1>
+        <p class="content-subtitle" style="margin:0 auto;">
+            A complete technical look into our pipeline: URL validation, SSRF defense, worker threading, stream multiplexing with FFmpeg, and automated lifecycle cleanup.
+        </p>
+    </header>
+
+    <div class="prose">
+        <h2>End-to-End Download Pipeline</h2>
+        <p>
+            Unlike ad-ridden scraper websites that rely on third-party redirection networks and malicious popups, our web downloader operates as a clean, local-first Python application. Every download progresses through seven distinct stages:
+        </p>
+
+        <div class="step-cards">
+            <div class="step-card">
+                <div class="step-card__number">1</div>
+                <h3 class="step-card__title">URL &amp; Host Allowlist</h3>
+                <p class="step-card__text">
+                    The incoming link is parsed using Python's <code>urllib.parse</code>. The hostname is checked against our strict allowlist (<code>youtube.com</code>, <code>youtu.be</code>, <code>m.youtube.com</code>).
+                </p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">2</div>
+                <h3 class="step-card__title">SSRF Network Defense</h3>
+                <p class="step-card__text">
+                    The server resolves the target hostname via DNS and checks the resulting IP against reserved and private subnets to prevent Server-Side Request Forgery attacks.
+                </p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">3</div>
+                <h3 class="step-card__title">SQLite State Database</h3>
+                <p class="step-card__text">
+                    A job record is initialized with state <code>QUEUED</code> in a WAL-mode SQLite database with atomic locking to ensure consistency across concurrent workers.
+                </p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">4</div>
+                <h3 class="step-card__title">yt-dlp Extraction</h3>
+                <p class="step-card__text">
+                    A background worker claims the job and executes yt-dlp to stream video and audio tracks directly from YouTube's CDN with throttling bypasses.
+                </p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">5</div>
+                <h3 class="step-card__title">FFmpeg Multiplexing</h3>
+                <p class="step-card__text">
+                    FFmpeg remuxes the independent high-bitrate video and audio streams into a clean, synced MP4 or transcodes audio to 320 kbps MP3.
+                </p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">6</div>
+                <h3 class="step-card__title">UUID File Handling</h3>
+                <p class="step-card__text">
+                    The output file is saved with a randomized UUID handle (e.g., <code>video_a7b8c9d0-1234.mp4</code>) preventing path traversal attacks and collision risks.
+                </p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">7</div>
+                <h3 class="step-card__title">24h Auto-Purge</h3>
+                <p class="step-card__text">
+                    A recurring background cleanup worker inspects file modification timestamps and permanently purges completed downloads after 24 hours.
+                </p>
+            </div>
+        </div>
+
+        <h2>Security Architecture &amp; SSRF Protection (E-E-A-T)</h2>
+        <p>
+            Web applications that fetch external URLs requested by users are vulnerable to <strong>Server-Side Request Forgery (SSRF)</strong> if implemented carelessly. An attacker might provide URLs pointing to internal services like <code>http://127.0.0.1:8080/admin</code>, cloud metadata endpoints like <code>http://169.254.169.254/latest/meta-data/</code>, or private intranet routers.
+        </p>
+        <p>
+            Our backend enforces multi-layered defensive security before any network request leaves the server:
+        </p>
+
+        <h3>1. DNS Resolution &amp; IP Subnet Verification</h3>
+        <p>
+            Before allowing yt-dlp to touch a URL, our <code>validate_url()</code> function resolves the target host's IP address and verifies it using Python's <code>ipaddress</code> module:
+        </p>
+        <pre><code>resolved_ips = socket.getaddrinfo(hostname, None)
+for family, stype, proto, canonname, sockaddr in resolved_ips:
+    ip = ipaddress.ip_address(sockaddr[0])
+    if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved:
+        raise InvalidURLError("URL resolves to a restricted network address.")</code></pre>
+        <p>
+            This ensures that even if an attacker attempts DNS rebinding tricks or inputs a domain pointing to <code>127.0.0.1</code> or <code>192.168.1.1</code>, the request is immediately aborted with HTTP 400.
+        </p>
+
+        <h3>2. Hostname Whitelisting</h3>
+        <p>
+            Only authentic YouTube domains are accepted:
+        </p>
+        <ul>
+            <li><code>www.youtube.com</code></li>
+            <li><code>youtube.com</code></li>
+            <li><code>m.youtube.com</code></li>
+            <li><code>youtu.be</code></li>
+        </ul>
+        <p>
+            Any other domain, IP literal, local file scheme (<code>file:///</code>), or FTP URL is rejected before socket initialization.
+        </p>
+
+        <h3>3. Sanitized Error Handling</h3>
+        <p>
+            Stack traces, local operating system paths, environment variables, and internal Python file locations are strictly filtered from API responses. If an upstream extraction error occurs, the user receives a clean, actionable error message without exposing server internals.
+        </p>
+
+        <h3>4. Rate Limiting &amp; Concurrency Control</h3>
+        <p>
+            To prevent denial-of-service scenarios and protect system resources, requests are throttled per IP address, and background worker queues are capped at 50 concurrent items with 3 active worker threads.
+        </p>
+
+        <h2>Video &amp; Audio Processing Pipeline Flow</h2>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Stage</th>
+                        <th>Component</th>
+                        <th>Function</th>
+                        <th>Latency</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="highlight-col">Validation</td>
+                        <td>Python <code>urllib</code> + <code>socket</code></td>
+                        <td>SSRF check, hostname filter, URL normalization</td>
+                        <td>~10 – 30 ms</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Metadata</td>
+                        <td><code>yt-dlp --skip-download</code></td>
+                        <td>Fetch video title, author, thumbnail, format codes</td>
+                        <td>~500 – 900 ms</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Queueing</td>
+                        <td>SQLite WAL Engine</td>
+                        <td>Thread-safe job state persistence (QUEUED)</td>
+                        <td>&lt; 5 ms</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Streaming</td>
+                        <td><code>yt-dlp</code> HTTP client</td>
+                        <td>Concurrent chunk download from YouTube CDN</td>
+                        <td>Network Dependent</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Multiplexing</td>
+                        <td><code>FFmpeg</code> Subprocess</td>
+                        <td>Mux video + audio streams into unified MP4 / MP3</td>
+                        <td>~1 – 6 seconds</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Serving</td>
+                        <td>Flask <code>send_file</code></td>
+                        <td>Chunked streaming download to client browser</td>
+                        <td>Immediate</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Deep-Dive Engineering Articles</h2>
+        <p>
+            Want to understand the codebase or build a similar architecture yourself? Read our engineering guides:
+        </p>
+        <ul>
+            <li><a href="{{ url_for('blog_post', slug='ssrf-protection-in-flask-apps') }}"><strong>SSRF Protection in Python &amp; Flask Applications:</strong> A complete defense guide with code examples.</a></li>
+            <li><a href="{{ url_for('blog_post', slug='self-host-flask-yt-dlp-tutorial') }}"><strong>Build a Self-Hosted YouTube Downloader with Flask &amp; yt-dlp:</strong> Full architectural tutorial from scratch.</a></li>
+            <li><a href="{{ url_for('self_host') }}"><strong>Self-Host Setup Guide:</strong> Run this downloader on your own VPS or home server.</a></li>
+        </ul>
+    </div>
+</article>
+{% endblock %}

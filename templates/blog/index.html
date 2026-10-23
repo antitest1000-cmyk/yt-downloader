@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Blog – YouTube Downloader Guides & Tutorials{% endblock %}
+{% block meta_description %}In-depth articles on yt-dlp, FFmpeg, video quality, audio formats, self-hosting, security, and legal considerations for YouTube media archiving.{% endblock %}
+
+{% block content %}
+<section class="content-header">
+    <div class="content-badge"><span>📖</span> Articles &amp; Guides</div>
+    <h1 class="content-title">Blog</h1>
+    <p class="content-lead">
+        In-depth guides, tutorials, and technical articles on yt-dlp, FFmpeg, video formats, self-hosting, and everything related to media archiving.
+    </p>
+</section>
+
+<section aria-label="Blog Post Grid">
+    <div class="blog-grid">
+        {% for post in posts %}
+        <article class="blog-card" aria-labelledby="post-title-{{ loop.index }}">
+            <div class="blog-card__meta">
+                <span class="blog-card__category">{{ post.category }}</span>
+                <span class="blog-card__read-time">{{ post.read_time }} read</span>
+            </div>
+            <h2 class="blog-card__title" id="post-title-{{ loop.index }}">
+                <a href="{{ url_for('blog_post', slug=post.slug) }}" class="blog-card__link">
+                    {{ post.title }}
+                </a>
+            </h2>
+            <p class="blog-card__excerpt">{{ post.meta_description }}</p>
+            <div class="blog-card__footer">
+                <span class="blog-card__date">{{ post.date }}</span>
+                <a href="{{ url_for('blog_post', slug=post.slug) }}" class="blog-card__cta" aria-label="Read {{ post.title }}">
+                    Read Article &rarr;
+                </a>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+</section>
+
+<section style="margin-top:4rem; text-align:center; padding:3rem; background:linear-gradient(135deg, rgba(30,27,75,0.4), rgba(15,23,42,0.6)); border-radius:1.5rem; border:1px solid rgba(255,255,255,0.06);">
+    <h2 style="margin:0 0 1rem; font-size:1.75rem;">Ready to Start Downloading?</h2>
+    <p style="color:var(--text-secondary); margin-bottom:2rem; max-width:500px; margin-left:auto; margin-right:auto;">
+        Use our free, private, ad-free media archiving tools to save YouTube content for offline use.
+    </p>
+    <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+        <a href="{{ url_for('index') }}" class="btn btn--primary" style="text-decoration:none;">Download a Video</a>
+        <a href="{{ url_for('youtube_to_mp3') }}" class="btn btn--secondary" style="text-decoration:none;">Convert to MP3</a>
+        <a href="{{ url_for('youtube_playlist_downloader') }}" class="btn btn--secondary" style="text-decoration:none;">Download Playlist</a>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}YouTube Video &amp; Audio Downloader – Free, No Signup{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Download YouTube videos and audio in high quality with a clean, fast web interface powered by yt-dlp and FFmpeg. Free, private, and local-first.{% endblock %}">
+    {% block canonical %}
+    <link rel="canonical" href="{{ request.base_url }}">
+    {% endblock %}
+    
+    <!-- OpenGraph / Social -->
+    <meta property="og:site_name" content="YT Downloader">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:title" content="{% block og_title %}{{ self.title() }}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{{ self.meta_description() }}{% endblock %}">
+    <meta property="og:url" content="{{ request.base_url }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ self.title() }}">
+    <meta name="twitter:description" content="{{ self.meta_description() }}">
+
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Design System Stylesheets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/glow-cursor.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/content.css') }}">
+
+    <!-- Structured Data (JSON-LD) -->
+    {% block json_ld %}
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "YT Downloader",
+      "url": "{{ request.url_root }}",
+      "description": "High-speed local YouTube video and audio downloader powered by yt-dlp and FFmpeg.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+    {% endblock %}
+</head>
+<body>
+    <!-- Aurora Mesh Background Canvas -->
+    <canvas id="aurora-canvas" aria-hidden="true"></canvas>
+    <!-- Glow Cursor Fluid Background -->
+    <div id="glow-cursor-container" class="glow-cursor-root"></div>
+
+    <!-- Header & Navigation -->
+    <header class="header" role="banner">
+        <div class="header__inner">
+            <div class="header__brand">
+                <a href="{{ url_for('index') }}" style="text-decoration:none; display:flex; align-items:center;">
+                    <h1 class="header__title">
+                        <span class="header__icon" aria-hidden="true">▶</span>
+                        <span class="shiny-text" data-text="YT Downloader">YT Downloader</span>
+                    </h1>
+                </a>
+                <span class="header__subtitle">Local Media Toolkit</span>
+            </div>
+
+            <!-- Global Nav Links -->
+            <nav class="nav-links" aria-label="Main Navigation">
+                <a href="{{ url_for('index') }}" class="nav-link {% if request.path == '/' %}active{% endif %}">Downloader</a>
+                <a href="{{ url_for('youtube_to_mp3') }}" class="nav-link {% if request.path == '/youtube-to-mp3' %}active{% endif %}">MP3</a>
+                <a href="{{ url_for('youtube_playlist_downloader') }}" class="nav-link {% if request.path == '/youtube-playlist-downloader' %}active{% endif %}">Playlists</a>
+                <a href="{{ url_for('bulk_youtube_downloader') }}" class="nav-link {% if request.path == '/bulk-youtube-downloader' %}active{% endif %}">Bulk</a>
+                <a href="{{ url_for('faq') }}" class="nav-link {% if request.path == '/faq' %}active{% endif %}">FAQ</a>
+                <a href="{{ url_for('blog_index') }}" class="nav-link {% if request.path.startswith('/blog') %}active{% endif %}">Blog</a>
+                <a href="{{ url_for('self_host') }}" class="nav-link nav-link--highlight {% if request.path == '/self-host' %}active{% endif %}">Self-Host</a>
+            </nav>
+
+            <div class="header__status" id="health-status" title="System Status">
+                <span class="status-dot" id="status-dot"></span>
+                <span class="status-text" id="status-text">Checking...</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main" role="main">
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Comprehensive Global Footer -->
+    <footer class="site-footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Col 1: Brand & Philosophy -->
+                <div class="footer-brand">
+                    <div class="footer-brand__name">
+                        <span style="color:var(--accent-primary)">▶</span> YT Downloader
+                    </div>
+                    <p class="footer-brand__desc">
+                        A private, local-first web utility for downloading publicly accessible media via yt-dlp and FFmpeg. Fast conversion, no signup, zero third-party ads.
+                    </p>
+                    <div class="footer-brand__badge">
+                        <span>🔒</span> 100% Local &amp; Private Storage
+                    </div>
+                </div>
+
+                <!-- Col 2: Core Tools -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Core Tools</h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('index') }}" class="footer-link">Video &amp; Audio Downloader</a></li>
+                        <li><a href="{{ url_for('youtube_to_mp3') }}" class="footer-link">YouTube to MP3 Converter</a></li>
+                        <li><a href="{{ url_for('youtube_playlist_downloader') }}" class="footer-link">Playlist Downloader</a></li>
+                        <li><a href="{{ url_for('bulk_youtube_downloader') }}" class="footer-link">Bulk Queue Downloader</a></li>
+                        <li><a href="{{ url_for('youtube_video_info') }}" class="footer-link">Video Info &amp; Thumbnail Checker</a></li>
+                        <li><a href="{{ url_for('how_it_works') }}" class="footer-link">How Downloader Works</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Guides & Articles -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Guides &amp; Articles</h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('blog_post', slug='what-is-yt-dlp') }}" class="footer-link">What is yt-dlp?</a></li>
+                        <li><a href="{{ url_for('blog_post', slug='install-ffmpeg-windows-mac-linux') }}" class="footer-link">Install FFmpeg (Win/Mac/Linux)</a></li>
+                        <li><a href="{{ url_for('blog_post', slug='best-video-quality-for-downloads') }}" class="footer-link">Quality Guide: 4K vs 1080p vs 720p</a></li>
+                        <li><a href="{{ url_for('blog_post', slug='mp3-vs-m4a-vs-opus') }}" class="footer-link">Audio Guide: MP3 vs M4A vs Opus</a></li>
+                        <li><a href="{{ url_for('blog_post', slug='yt-dlp-common-errors-and-fixes') }}" class="footer-link">Common yt-dlp Errors &amp; Fixes</a></li>
+                        <li><a href="{{ url_for('blog_post', slug='ssrf-protection-in-flask-apps') }}" class="footer-link">SSRF Protection in Web Apps</a></li>
+                        <li><a href="{{ url_for('blog_index') }}" class="footer-link" style="color:var(--accent-secondary); font-weight:600;">Browse All 10 Guides &rarr;</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Trust & Developers -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Trust &amp; Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('faq') }}" class="footer-link">Frequently Asked Questions</a></li>
+                        <li><a href="{{ url_for('about') }}" class="footer-link">About the Project</a></li>
+                        <li><a href="{{ url_for('contact') }}" class="footer-link">Contact &amp; Support</a></li>
+                        <li><a href="{{ url_for('privacy') }}" class="footer-link">Privacy Policy</a></li>
+                        <li><a href="{{ url_for('terms') }}" class="footer-link">Terms of Service</a></li>
+                        <li><a href="{{ url_for('dmca') }}" class="footer-link">DMCA &amp; Takedown Policy</a></li>
+                        <li><a href="{{ url_for('self_host') }}" class="footer-link" style="color:#a285fd; font-weight:600;">💻 Self-Host Guide</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom Note -->
+            <div class="footer-bottom">
+                <div>
+                    &copy; 2026 YT Downloader. Powered by <a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener noreferrer" style="color:var(--accent-secondary)">yt-dlp</a> &amp; <a href="https://ffmpeg.org" target="_blank" rel="noopener noreferrer" style="color:var(--accent-secondary)">FFmpeg</a>. For personal, educational, and archival use.
+                </div>
+                <div>
+                    Retention Policy: Downloaded media purged automatically after 24 hours.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Client Scripts -->
+    <script src="{{ url_for('static', filename='js/glow-cursor.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/ui-effects.js') }}"></script>
+    {% block scripts %}
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    {% endblock %}
+</body>
+</html>

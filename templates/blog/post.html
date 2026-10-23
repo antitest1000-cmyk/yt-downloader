@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }}{% endblock %}
+{% block meta_description %}{{ post.meta_description }}{% endblock %}
+{% block og_type %}article{% endblock %}
+
+{% block canonical %}
+<link rel="canonical" href="{{ request.url_root }}blog/{{ post.slug }}">
+{% endblock %}
+
+{% block json_ld %}
+{{ super() }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": {{ post.title | tojson }},
+  "description": {{ post.meta_description | tojson }},
+  "datePublished": "2026-10-01",
+  "author": {
+    "@type": "Organization",
+    "name": "YT Downloader"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "YT Downloader"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "{{ request.url_root }}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blog",
+      "item": "{{ request.url_root }}blog"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": {{ post.title | tojson }},
+      "item": "{{ request.url_root }}blog/{{ post.slug }}"
+    }
+  ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb Nav -->
+<nav aria-label="Breadcrumb" style="margin-bottom:2rem; font-size:0.875rem; color:var(--text-muted);">
+    <a href="{{ url_for('index') }}" style="color:var(--text-muted); text-decoration:none;">Home</a>
+    <span style="margin:0 0.5rem;">/</span>
+    <a href="{{ url_for('blog_index') }}" style="color:var(--text-muted); text-decoration:none;">Blog</a>
+    <span style="margin:0 0.5rem;">/</span>
+    <span style="color:var(--text-secondary);">{{ post.title }}</span>
+</nav>
+
+<section class="content-header">
+    <div class="content-badge">
+        <span>📖</span> {{ post.category }}
+    </div>
+    <h1 class="content-title">{{ post.title }}</h1>
+    <div style="display:flex; align-items:center; gap:1.5rem; margin-top:1rem; flex-wrap:wrap;">
+        <span style="color:var(--text-muted); font-size:0.875rem;">📅 {{ post.date }}</span>
+        <span style="color:var(--text-muted); font-size:0.875rem;">⏱️ {{ post.read_time }} read</span>
+        <span style="color:var(--text-muted); font-size:0.875rem; padding:0.25rem 0.75rem; background:rgba(124,58,237,0.15); border-radius:1rem; border:1px solid rgba(124,58,237,0.3);">{{ post.category }}</span>
+    </div>
+    <p class="content-lead">
+        {{ post.intro }}
+    </p>
+</section>
+
+<article class="content-article" itemscope itemtype="https://schema.org/Article">
+    <div class="content-prose" itemprop="articleBody">
+        {{ post.body_html | safe }}
+    </div>
+</article>
+
+<!-- Navigation Footer -->
+<div style="margin-top:3rem; padding:2rem; background:rgba(15,23,42,0.6); border-radius:1.5rem; border:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+    <div>
+        <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.5rem;">Browse All Articles</div>
+        <a href="{{ url_for('blog_index') }}" style="color:var(--accent-secondary); font-weight:600; text-decoration:none;">&larr; Back to Blog</a>
+    </div>
+    <div style="text-align:right;">
+        <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.5rem;">Start Downloading</div>
+        <a href="{{ url_for('index') }}" class="btn btn--primary" style="text-decoration:none; font-size:0.875rem;">Use the Downloader &rarr;</a>
+    </div>
+</div>
+
+<!-- Related Posts -->
+{% if related_posts %}
+<section style="margin-top:3rem;" aria-label="Related Articles">
+    <h2 style="font-size:1.5rem; margin-bottom:1.5rem;">Related Articles</h2>
+    <div class="blog-grid" style="grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));">
+        {% for related in related_posts %}
+        <article class="blog-card">
+            <div class="blog-card__meta">
+                <span class="blog-card__category">{{ related.category }}</span>
+                <span class="blog-card__read-time">{{ related.read_time }}</span>
+            </div>
+            <h3 class="blog-card__title" style="font-size:1.1rem;">
+                <a href="{{ url_for('blog_post', slug=related.slug) }}" class="blog-card__link">
+                    {{ related.title }}
+                </a>
+            </h3>
+            <div class="blog-card__footer">
+                <span class="blog-card__date">{{ related.date }}</span>
+                <a href="{{ url_for('blog_post', slug=related.slug) }}" class="blog-card__cta">Read &rarr;</a>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+{% endblock %}

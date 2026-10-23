@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Privacy Policy – YT Downloader{% endblock %}
+{% block meta_description %}Read the YT Downloader privacy policy. We collect no personal data, store no browsing history, and automatically delete downloaded media files from server storage after 24 hours.{% endblock %}
+
+{% block content %}
+<section class="content-header">
+    <div class="content-badge"><span>🔒</span> Privacy Policy</div>
+    <h1 class="content-title">Privacy Policy</h1>
+    <p class="content-lead">
+        YT Downloader is engineered with privacy as a core architectural constraint, not an afterthought. This policy explains exactly what data we collect, what we do not collect, and how your media files are handled.
+    </p>
+    <p style="color:var(--text-muted); font-size:0.875rem; margin-top:0.5rem;">Last updated: October 2026</p>
+</section>
+
+<article class="content-article">
+    <div class="content-prose">
+
+        <div class="callout callout--info">
+            <div class="callout__title">TL;DR Summary</div>
+            <p>
+                We store no cookies, no user accounts, no analytics tracking, and no browsing history. Downloaded media files are automatically deleted from our server within 24 hours. We do not sell, share, or monetize any user data. Our IP-based rate limiting data is kept only in transient memory and never written to persistent storage.
+            </p>
+        </div>
+
+        <h2>1. Data We Collect</h2>
+        <p>
+            YT Downloader is a stateless media processing utility. We intentionally collect the minimum viable data required to serve download requests:
+        </p>
+        <ul style="color:var(--text-secondary); line-height:1.8; margin-left:1.5rem; margin-bottom:1.5rem;">
+            <li><strong>YouTube URL submitted:</strong> The URL you paste into the download form is used solely to perform the requested media extraction. It is stored temporarily in the job database alongside its processing status.</li>
+            <li><strong>Job processing state:</strong> The job ID, current status (queued, downloading, completed, failed), video title, format type, and file path are stored in a local SQLite database to enable progress tracking in your browser session.</li>
+            <li><strong>Server request logs:</strong> Standard web server access logs (IP address, request path, HTTP status code, timestamp) may be retained for up to 7 days for security analysis and rate-limit enforcement.</li>
+        </ul>
+
+        <h2>2. Data We Do NOT Collect</h2>
+        <p>
+            We explicitly do not collect, store, or process any of the following:
+        </p>
+        <ul style="color:var(--text-secondary); line-height:1.8; margin-left:1.5rem; margin-bottom:1.5rem;">
+            <li>Personal identity information (name, email address, phone number)</li>
+            <li>Browser fingerprints, canvas fingerprints, or device identifiers</li>
+            <li>Cross-site tracking pixels or behavioral analytics profiles</li>
+            <li>Payment information (we charge nothing)</li>
+            <li>Social media logins or OAuth tokens</li>
+            <li>Your YouTube account credentials or cookies</li>
+            <li>Any data from third-party advertising networks or data brokers</li>
+        </ul>
+
+        <h2>3. File Storage &amp; Automatic Purge Policy</h2>
+        <p>
+            When a download completes, the resulting media file is temporarily stored on our server filesystem under a unique UUID filename. These files are subject to a strict automated retention policy:
+        </p>
+        <ul style="color:var(--text-secondary); line-height:1.8; margin-left:1.5rem; margin-bottom:1.5rem;">
+            <li>Completed media files are automatically and permanently deleted from disk <strong>24 hours</strong> after completion.</li>
+            <li>Failed or expired jobs are pruned from the database on the same schedule.</li>
+            <li>File names on disk are random UUIDs with no connection to your identity or the video title.</li>
+            <li>No backups of downloaded media are retained after purge.</li>
+        </ul>
+
+        <h2>4. Cookies &amp; Browser Storage</h2>
+        <p>
+            YT Downloader does not set any persistent cookies in your browser. The job list visible in your browser is maintained in <code>sessionStorage</code> (cleared when you close the browser tab) or <code>localStorage</code> (for remembered jobs) using only locally generated UUIDs. No session data is transmitted to analytics providers.
+        </p>
+
+        <h2>5. Third-Party Services</h2>
+        <p>
+            When you submit a YouTube URL, our backend makes outbound HTTPS requests directly to YouTube's API endpoints and CDN servers to retrieve video metadata and stream URLs. This interaction is subject to Google's and YouTube's own privacy policies. We do not route these requests through additional third-party proxy services.
+        </p>
+        <p>
+            We use Google Fonts hosted on <code>fonts.googleapis.com</code> for typography. This means your browser will contact Google's servers when loading our pages. If you prefer to avoid this, the service functions fully without custom fonts.
+        </p>
+
+        <h2>6. Rate Limiting &amp; Security Logging</h2>
+        <p>
+            Your IP address is used transiently in server-side memory to enforce a per-minute rate limit (30 requests per minute by default). This rate-limit state is stored only in process memory and is never written to persistent databases, log files, or external services. It is cleared when the server process restarts.
+        </p>
+
+        <h2>7. Children's Privacy</h2>
+        <p>
+            This service is not directed at or designed for users under 13 years of age. We do not knowingly collect any information from children. If you believe a child has submitted personal information through this service, please <a href="{{ url_for('contact') }}" style="color:var(--accent-secondary);">contact us</a> immediately.
+        </p>
+
+        <h2>8. Changes to This Policy</h2>
+        <p>
+            We may update this privacy policy to reflect changes in the application's data handling practices. Any changes will be reflected on this page with an updated revision date. We encourage users to review this page periodically.
+        </p>
+
+        <h2>9. Contact</h2>
+        <p>
+            Questions or concerns about this privacy policy? Visit our <a href="{{ url_for('contact') }}" style="color:var(--accent-secondary); font-weight:600;">Contact &amp; Support page</a>.
+        </p>
+    </div>
+</article>
+{% endblock %}

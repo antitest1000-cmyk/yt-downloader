@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Downloader FAQ – Frequently Asked Questions</title>
+    <meta name="description" content="Answers to common questions about downloading YouTube videos, audio formats, playlist limits, legal guidelines, and privacy policies.">
+    
+    <link rel="canonical" href="http://localhost/faq">
+    
+    
+    <!-- OpenGraph / Social -->
+    <meta property="og:site_name" content="YT Downloader">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="YouTube Downloader FAQ – Frequently Asked Questions">
+    <meta property="og:description" content="Answers to common questions about downloading YouTube videos, audio formats, playlist limits, legal guidelines, and privacy policies.">
+    <meta property="og:url" content="http://localhost/faq">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="YouTube Downloader FAQ – Frequently Asked Questions">
+    <meta name="twitter:description" content="Answers to common questions about downloading YouTube videos, audio formats, playlist limits, legal guidelines, and privacy policies.">
+
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Design System Stylesheets -->
+    <link rel="stylesheet" href="./static/css/style.css">
+    <link rel="stylesheet" href="./static/css/glow-cursor.css">
+    <link rel="stylesheet" href="./static/css/content.css">
+
+    <!-- Structured Data (JSON-LD) -->
+    
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is it legal to download videos from YouTube?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Downloading public domain content, Creative Commons licensed media, your own uploaded videos, and material with explicit creator permission is generally considered legal for personal, non-commercial use. However, downloading copyrighted commercial content without authorization breaches YouTube's Terms of Service."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does the downloader work on private videos?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Our tool only processes publicly accessible and unlisted videos where the URL token is provided. Private videos require active account authentication cookies, which are strictly blocked in this local-first tool for security and privacy."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How long are downloaded files stored on the server?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "All downloaded files are temporary and are automatically deleted after 24 hours by a background cleanup worker to preserve local storage and protect privacy."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the maximum video length supported?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Our default configuration enforces a 30-minute download timeout. Standard music tracks, lectures, and documentaries up to 2-3 hours typically finish in under a minute on modern connections. Extremely long multi-hour live streams may hit the timeout limit."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you log or store my personal data?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. We require no user signups, collect zero personal telemetry, and employ no third-party tracking scripts. Download history is optional and stays purely inside your browser cache."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why is MP3 conversion slower than video downloading?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Video downloading uses direct stream remuxing, which simply copies streams without re-encoding. MP3 conversion requires FFmpeg to decompress YouTube's native Opus/AAC audio and re-encode it through the LAME encoder, which requires CPU processing."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why do YouTube Mix (RD...) playlists only download one video?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "YouTube Mixes (playlist IDs starting with RD) are dynamic, algorithmic radios that cannot be scraped as static playlists. Our system automatically downloads the individual song you are listening to instead of failing."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What are the playlist and bulk download limits?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Playlists are capped at 50 videos per batch, and the bulk downloader accepts up to 20 URLs at a time. The system processes downloads across 3 concurrent worker threads."
+      }
+    }
+  ]
+}
+</script>
+
+</head>
+<body>
+    <!-- Aurora Mesh Background Canvas -->
+    <canvas id="aurora-canvas" aria-hidden="true"></canvas>
+    <!-- Glow Cursor Fluid Background -->
+    <div id="glow-cursor-container" class="glow-cursor-root"></div>
+
+    <!-- Header & Navigation -->
+    <header class="header" role="banner">
+        <div class="header__inner">
+            <div class="header__brand">
+                <a href="./" style="text-decoration:none; display:flex; align-items:center;">
+                    <h1 class="header__title">
+                        <span class="header__icon" aria-hidden="true">▶</span>
+                        <span class="shiny-text" data-text="YT Downloader">YT Downloader</span>
+                    </h1>
+                </a>
+                <span class="header__subtitle">Local Media Toolkit</span>
+            </div>
+
+            <!-- Global Nav Links -->
+            <nav class="nav-links" aria-label="Main Navigation">
+                <a href="./" class="nav-link ">Downloader</a>
+                <a href="./youtube-to-mp3.html" class="nav-link ">MP3</a>
+                <a href="./youtube-playlist-downloader.html" class="nav-link ">Playlists</a>
+                <a href="./bulk-youtube-downloader.html" class="nav-link ">Bulk</a>
+                <a href="./faq.html" class="nav-link active">FAQ</a>
+                <a href="./blog.html" class="nav-link ">Blog</a>
+                <a href="./self-host.html" class="nav-link nav-link--highlight ">Self-Host</a>
+            </nav>
+
+            <div class="header__status" id="health-status" title="System Status">
+                <span class="status-dot" id="status-dot"></span>
+                <span class="status-text" id="status-text">Checking...</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main" role="main">
+        <div class="container">
+            
+<div class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="./">Home</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span class="breadcrumbs__current">FAQ</span>
+</div>
+
+<article class="content-article">
+    <header class="content-article__hero content-article__hero--center">
+        <span class="content-badge">❓ Help &amp; Reference</span>
+        <h1 class="content-title">Frequently Asked Questions</h1>
+        <p class="content-subtitle" style="margin:0 auto;">
+            Clear, honest answers about formats, download limits, technical specifications, and legal considerations.
+        </p>
+    </header>
+
+    <div class="faq-list">
+        <div class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false">
+                <span>1. Is it legal to download videos and audio from YouTube?</span>
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <p>
+                    Downloading media from YouTube occupies a nuanced legal landscape:
+                </p>
+                <ul>
+                    <li><strong>Permitted &amp; Fair Use:</strong> Downloading public domain materials, content released under Creative Commons licenses, government educational archives, videos for academic critique, and your own personal uploaded videos is generally protected under fair use principles in many jurisdictions.</li>
+                    <li><strong>Terms of Service:</strong> YouTube's Terms of Service state that users may not access, reproduce, download, or distribute any part of the service unless permitted by law or with prior written permission.</li>
+                    <li><strong>No DRM Bypassing:</strong> Our tool strictly forbids and does not support bypassing Digital Rights Management (DRM), paywalls, or encryption technologies.</li>
+                </ul>
+                <p>
+                    Read our complete guide: <a href="/blog/is-it-legal-to-download-youtube-videos">Is it Legal to Download YouTube Videos? An Educational Overview</a>.
+                </p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false">
+                <span>2. Does this downloader work on private or age-restricted videos?</span>
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <p>
+                    <strong>No.</strong> Our application intentionally does not support downloading private videos. Private videos require passing YouTube account credentials or sensitive session cookies (<code>cookies.txt</code>). To maintain a zero-trust, secure architecture, our public tool operates without access to user account credentials. Unlisted videos with a shareable URL token work normally.
+                </p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false">
+                <span>3. Why did my download fail? How do I fix it?</span>
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <p>
+                    Common reasons for download failures include:
+                </p>
+                <ul>
+                    <li><strong>HTTP 403 Forbidden:</strong> YouTube periodically updates its bot-detection algorithms or signatures. If you see this error, ensure your local yt-dlp version is up to date by running <code>pip install --upgrade yt-dlp</code>.</li>
+                    <li><strong>Video Geo-Restricted:</strong> Some videos are licensed only for specific countries and cannot be streamed from your server's region.</li>
+                    <li><strong>Video Deleted or Made Private:</strong> If the video has been taken down by the uploader, yt-dlp will report that the media is unavailable.</li>
+                    <li><strong>FFmpeg Missing:</strong> For MP3 conversions or 1080p stream muxing, FFmpeg must be installed on the system PATH.</li>
+                </ul>
+                <p>
+                    Explore our comprehensive troubleshooting manual: <a href="/blog/yt-dlp-common-errors-and-fixes">Top yt-dlp Errors &amp; Fixes</a>.
+                </p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false">
+                <span>4. How long are downloaded files kept on the server?</span>
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <p>
+                    All files are strictly temporary and are kept for a maximum of <strong>24 hours</strong>. An automated background worker process inspects file timestamps every hour and permanently removes completed downloads. Be sure to click the green <strong>Download File</strong> button and save files to your local drive before the window expires.
+                </p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false">
+                <span>5. What is the maximum video length supported?</span>
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <p>
+                    The default timeout is set to <strong>30 minutes (1,800 seconds)</strong>. Standard songs, music videos, tutorials, and full-length podcasts (under 2 hours) generally finish downloading in 5 to 45 seconds. Extremely long multi-hour ambient noise videos (e.g. 10 hours) may hit the timeout limit. If you self-host, you can adjust <code>DOWNLOAD_TIMEOUT</code> in your <code>.env</code> file.
+                </p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false">
+                <span>6. Do you store or track my downloaded links?</span>
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <p>
+                    <strong>No.</strong> Your privacy is a core design principle:
+                </p>
+                <ul>
+                    <li>We require no accounts, no logins, and no email addresses.</li>
+                    <li>We do not sell data to advertising networks or embed third-party tracking pixels.</li>
+                    <li>The "Save History" feature is strictly opt-in and operates solely within your own browser's local cache (<code>localStorage</code>). You can toggle it off or clear it with one click at any time.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false">
+                <span>7. Why is MP3 conversion slower than video downloading?</span>
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <p>
+                    When downloading video (e.g., 1080p or Best), YouTube provides separate video and audio streams. FFmpeg performs <em>direct stream copying</em> (remuxing), which simply packages the streams into an MP4 container without touching the underlying video frames. This takes only 1-2 seconds.
+                </p>
+                <p>
+                    In contrast, converting to MP3 requires full psychoacoustic transcoding. FFmpeg must decompress YouTube's native Opus audio into uncompressed PCM audio and re-encode every second through the LAME MP3 encoder, which requires CPU processing.
+                </p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false">
+                <span>8. Why does my YouTube Mix (RD...) link download only one video?</span>
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <p>
+                    YouTube Mixes (playlist IDs starting with <code>RD</code>) are not standard static playlists. They are dynamic algorithmic queues generated on-the-fly by YouTube's recommendation engine. yt-dlp cannot extract them as static playlists (reporting "This playlist type is unviewable").
+                </p>
+                <p>
+                    Rather than throwing a server error, our application automatically recognizes YouTube Mix links and downloads the individual song you are playing. To download a full playlist, use standard static playlists (which begin with <code>PL...</code>).
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Articles -->
+    <div class="prose" style="margin-top:var(--space-10);">
+        <h2>Have More Technical Questions?</h2>
+        <p>
+            Check out our guides on <a href="./how-it-works.html">How the Downloader Works</a>, <a href="./self-host.html">How to Self-Host with Docker</a>, or reach out to our team on the <a href="./contact.html">Contact Page</a>.
+        </p>
+    </div>
+</article>
+
+<script>
+// Simple accessible FAQ accordion toggle
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.faq-question').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const item = btn.closest('.faq-item');
+            const isOpen = item.classList.contains('open');
+            document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+            if (!isOpen) {
+                item.classList.add('open');
+                btn.setAttribute('aria-expanded', 'true');
+            } else {
+                btn.setAttribute('aria-expanded', 'false');
+            }
+        });
+    });
+});
+</script>
+
+        </div>
+    </main>
+
+    <!-- Comprehensive Global Footer -->
+    <footer class="site-footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Col 1: Brand & Philosophy -->
+                <div class="footer-brand">
+                    <div class="footer-brand__name">
+                        <span style="color:var(--accent-primary)">▶</span> YT Downloader
+                    </div>
+                    <p class="footer-brand__desc">
+                        A private, local-first web utility for downloading publicly accessible media via yt-dlp and FFmpeg. Fast conversion, no signup, zero third-party ads.
+                    </p>
+                    <div class="footer-brand__badge">
+                        <span>🔒</span> 100% Local &amp; Private Storage
+                    </div>
+                </div>
+
+                <!-- Col 2: Core Tools -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Core Tools</h4>
+                    <ul class="footer-links">
+                        <li><a href="./" class="footer-link">Video &amp; Audio Downloader</a></li>
+                        <li><a href="./youtube-to-mp3.html" class="footer-link">YouTube to MP3 Converter</a></li>
+                        <li><a href="./youtube-playlist-downloader.html" class="footer-link">Playlist Downloader</a></li>
+                        <li><a href="./bulk-youtube-downloader.html" class="footer-link">Bulk Queue Downloader</a></li>
+                        <li><a href="./youtube-video-info.html" class="footer-link">Video Info &amp; Thumbnail Checker</a></li>
+                        <li><a href="./how-it-works.html" class="footer-link">How Downloader Works</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Guides & Articles -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Guides &amp; Articles</h4>
+                    <ul class="footer-links">
+                        <li><a href="/blog/what-is-yt-dlp" class="footer-link">What is yt-dlp?</a></li>
+                        <li><a href="/blog/install-ffmpeg-windows-mac-linux" class="footer-link">Install FFmpeg (Win/Mac/Linux)</a></li>
+                        <li><a href="/blog/best-video-quality-for-downloads" class="footer-link">Quality Guide: 4K vs 1080p vs 720p</a></li>
+                        <li><a href="/blog/mp3-vs-m4a-vs-opus" class="footer-link">Audio Guide: MP3 vs M4A vs Opus</a></li>
+                        <li><a href="/blog/yt-dlp-common-errors-and-fixes" class="footer-link">Common yt-dlp Errors &amp; Fixes</a></li>
+                        <li><a href="/blog/ssrf-protection-in-flask-apps" class="footer-link">SSRF Protection in Web Apps</a></li>
+                        <li><a href="./blog.html" class="footer-link" style="color:var(--accent-secondary); font-weight:600;">Browse All 10 Guides &rarr;</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Trust & Developers -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Trust &amp; Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="./faq.html" class="footer-link">Frequently Asked Questions</a></li>
+                        <li><a href="./about.html" class="footer-link">About the Project</a></li>
+                        <li><a href="./contact.html" class="footer-link">Contact &amp; Support</a></li>
+                        <li><a href="./privacy.html" class="footer-link">Privacy Policy</a></li>
+                        <li><a href="./terms.html" class="footer-link">Terms of Service</a></li>
+                        <li><a href="./dmca.html" class="footer-link">DMCA &amp; Takedown Policy</a></li>
+                        <li><a href="./self-host.html" class="footer-link" style="color:#a285fd; font-weight:600;">💻 Self-Host Guide</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom Note -->
+            <div class="footer-bottom">
+                <div>
+                    &copy; 2026 YT Downloader. Powered by <a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener noreferrer" style="color:var(--accent-secondary)">yt-dlp</a> &amp; <a href="https://ffmpeg.org" target="_blank" rel="noopener noreferrer" style="color:var(--accent-secondary)">FFmpeg</a>. For personal, educational, and archival use.
+                </div>
+                <div>
+                    Retention Policy: Downloaded media purged automatically after 24 hours.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Client Scripts -->
+    <script src="./static/js/glow-cursor.js"></script>
+    <script src="./static/js/ui-effects.js"></script>
+    
+    <script src="./static/js/app.js"></script>
+    
+</body>
+</html>

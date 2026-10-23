@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How Our Downloader Works (yt-dlp + FFmpeg)</title>
+    <meta name="description" content="Learn how our local-first YouTube downloader works. Complete breakdown of URL validation, SSRF protection, yt-dlp extraction, FFmpeg muxing, and security.">
+    
+    <link rel="canonical" href="http://localhost/how-it-works">
+    
+    
+    <!-- OpenGraph / Social -->
+    <meta property="og:site_name" content="YT Downloader">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="How Our Downloader Works (yt-dlp + FFmpeg)">
+    <meta property="og:description" content="Learn how our local-first YouTube downloader works. Complete breakdown of URL validation, SSRF protection, yt-dlp extraction, FFmpeg muxing, and security.">
+    <meta property="og:url" content="http://localhost/how-it-works">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="How Our Downloader Works (yt-dlp + FFmpeg)">
+    <meta name="twitter:description" content="Learn how our local-first YouTube downloader works. Complete breakdown of URL validation, SSRF protection, yt-dlp extraction, FFmpeg muxing, and security.">
+
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Design System Stylesheets -->
+    <link rel="stylesheet" href="./static/css/style.css">
+    <link rel="stylesheet" href="./static/css/glow-cursor.css">
+    <link rel="stylesheet" href="./static/css/content.css">
+
+    <!-- Structured Data (JSON-LD) -->
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "YT Downloader",
+      "url": "http://localhost/",
+      "description": "High-speed local YouTube video and audio downloader powered by yt-dlp and FFmpeg.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+    
+</head>
+<body>
+    <!-- Aurora Mesh Background Canvas -->
+    <canvas id="aurora-canvas" aria-hidden="true"></canvas>
+    <!-- Glow Cursor Fluid Background -->
+    <div id="glow-cursor-container" class="glow-cursor-root"></div>
+
+    <!-- Header & Navigation -->
+    <header class="header" role="banner">
+        <div class="header__inner">
+            <div class="header__brand">
+                <a href="./" style="text-decoration:none; display:flex; align-items:center;">
+                    <h1 class="header__title">
+                        <span class="header__icon" aria-hidden="true">▶</span>
+                        <span class="shiny-text" data-text="YT Downloader">YT Downloader</span>
+                    </h1>
+                </a>
+                <span class="header__subtitle">Local Media Toolkit</span>
+            </div>
+
+            <!-- Global Nav Links -->
+            <nav class="nav-links" aria-label="Main Navigation">
+                <a href="./" class="nav-link ">Downloader</a>
+                <a href="./youtube-to-mp3.html" class="nav-link ">MP3</a>
+                <a href="./youtube-playlist-downloader.html" class="nav-link ">Playlists</a>
+                <a href="./bulk-youtube-downloader.html" class="nav-link ">Bulk</a>
+                <a href="./faq.html" class="nav-link ">FAQ</a>
+                <a href="./blog.html" class="nav-link ">Blog</a>
+                <a href="./self-host.html" class="nav-link nav-link--highlight ">Self-Host</a>
+            </nav>
+
+            <div class="header__status" id="health-status" title="System Status">
+                <span class="status-dot" id="status-dot"></span>
+                <span class="status-text" id="status-text">Checking...</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main" role="main">
+        <div class="container">
+            
+<div class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="./">Home</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span class="breadcrumbs__current">How It Works</span>
+</div>
+
+<article class="content-article">
+    <header class="content-article__hero content-article__hero--center">
+        <span class="content-badge">⚙️ Architecture &amp; Engineering</span>
+        <h1 class="content-title">How the Downloader Works</h1>
+        <p class="content-subtitle" style="margin:0 auto;">
+            A complete technical look into our pipeline: URL validation, SSRF defense, worker threading, stream multiplexing with FFmpeg, and automated lifecycle cleanup.
+        </p>
+    </header>
+
+    <div class="prose">
+        <h2>End-to-End Download Pipeline</h2>
+        <p>
+            Unlike ad-ridden scraper websites that rely on third-party redirection networks and malicious popups, our web downloader operates as a clean, local-first Python application. Every download progresses through seven distinct stages:
+        </p>
+
+        <div class="step-cards">
+            <div class="step-card">
+                <div class="step-card__number">1</div>
+                <h3 class="step-card__title">URL &amp; Host Allowlist</h3>
+                <p class="step-card__text">
+                    The incoming link is parsed using Python's <code>urllib.parse</code>. The hostname is checked against our strict allowlist (<code>youtube.com</code>, <code>youtu.be</code>, <code>m.youtube.com</code>).
+                </p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">2</div>
+                <h3 class="step-card__title">SSRF Network Defense</h3>
+                <p class="step-card__text">
+                    The server resolves the target hostname via DNS and checks the resulting IP against reserved and private subnets to prevent Server-Side Request Forgery attacks.
+                </p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">3</div>
+                <h3 class="step-card__title">SQLite State Database</h3>
+                <p class="step-card__text">
+                    A job record is initialized with state <code>QUEUED</code> in a WAL-mode SQLite database with atomic locking to ensure consistency across concurrent workers.
+                </p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">4</div>
+                <h3 class="step-card__title">yt-dlp Extraction</h3>
+                <p class="step-card__text">
+                    A background worker claims the job and executes yt-dlp to stream video and audio tracks directly from YouTube's CDN with throttling bypasses.
+                </p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">5</div>
+                <h3 class="step-card__title">FFmpeg Multiplexing</h3>
+                <p class="step-card__text">
+                    FFmpeg remuxes the independent high-bitrate video and audio streams into a clean, synced MP4 or transcodes audio to 320 kbps MP3.
+                </p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">6</div>
+                <h3 class="step-card__title">UUID File Handling</h3>
+                <p class="step-card__text">
+                    The output file is saved with a randomized UUID handle (e.g., <code>video_a7b8c9d0-1234.mp4</code>) preventing path traversal attacks and collision risks.
+                </p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">7</div>
+                <h3 class="step-card__title">24h Auto-Purge</h3>
+                <p class="step-card__text">
+                    A recurring background cleanup worker inspects file modification timestamps and permanently purges completed downloads after 24 hours.
+                </p>
+            </div>
+        </div>
+
+        <h2>Security Architecture &amp; SSRF Protection (E-E-A-T)</h2>
+        <p>
+            Web applications that fetch external URLs requested by users are vulnerable to <strong>Server-Side Request Forgery (SSRF)</strong> if implemented carelessly. An attacker might provide URLs pointing to internal services like <code>http://127.0.0.1:8080/admin</code>, cloud metadata endpoints like <code>http://169.254.169.254/latest/meta-data/</code>, or private intranet routers.
+        </p>
+        <p>
+            Our backend enforces multi-layered defensive security before any network request leaves the server:
+        </p>
+
+        <h3>1. DNS Resolution &amp; IP Subnet Verification</h3>
+        <p>
+            Before allowing yt-dlp to touch a URL, our <code>validate_url()</code> function resolves the target host's IP address and verifies it using Python's <code>ipaddress</code> module:
+        </p>
+        <pre><code>resolved_ips = socket.getaddrinfo(hostname, None)
+for family, stype, proto, canonname, sockaddr in resolved_ips:
+    ip = ipaddress.ip_address(sockaddr[0])
+    if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved:
+        raise InvalidURLError("URL resolves to a restricted network address.")</code></pre>
+        <p>
+            This ensures that even if an attacker attempts DNS rebinding tricks or inputs a domain pointing to <code>127.0.0.1</code> or <code>192.168.1.1</code>, the request is immediately aborted with HTTP 400.
+        </p>
+
+        <h3>2. Hostname Whitelisting</h3>
+        <p>
+            Only authentic YouTube domains are accepted:
+        </p>
+        <ul>
+            <li><code>www.youtube.com</code></li>
+            <li><code>youtube.com</code></li>
+            <li><code>m.youtube.com</code></li>
+            <li><code>youtu.be</code></li>
+        </ul>
+        <p>
+            Any other domain, IP literal, local file scheme (<code>file:///</code>), or FTP URL is rejected before socket initialization.
+        </p>
+
+        <h3>3. Sanitized Error Handling</h3>
+        <p>
+            Stack traces, local operating system paths, environment variables, and internal Python file locations are strictly filtered from API responses. If an upstream extraction error occurs, the user receives a clean, actionable error message without exposing server internals.
+        </p>
+
+        <h3>4. Rate Limiting &amp; Concurrency Control</h3>
+        <p>
+            To prevent denial-of-service scenarios and protect system resources, requests are throttled per IP address, and background worker queues are capped at 50 concurrent items with 3 active worker threads.
+        </p>
+
+        <h2>Video &amp; Audio Processing Pipeline Flow</h2>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Stage</th>
+                        <th>Component</th>
+                        <th>Function</th>
+                        <th>Latency</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="highlight-col">Validation</td>
+                        <td>Python <code>urllib</code> + <code>socket</code></td>
+                        <td>SSRF check, hostname filter, URL normalization</td>
+                        <td>~10 – 30 ms</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Metadata</td>
+                        <td><code>yt-dlp --skip-download</code></td>
+                        <td>Fetch video title, author, thumbnail, format codes</td>
+                        <td>~500 – 900 ms</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Queueing</td>
+                        <td>SQLite WAL Engine</td>
+                        <td>Thread-safe job state persistence (QUEUED)</td>
+                        <td>&lt; 5 ms</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Streaming</td>
+                        <td><code>yt-dlp</code> HTTP client</td>
+                        <td>Concurrent chunk download from YouTube CDN</td>
+                        <td>Network Dependent</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Multiplexing</td>
+                        <td><code>FFmpeg</code> Subprocess</td>
+                        <td>Mux video + audio streams into unified MP4 / MP3</td>
+                        <td>~1 – 6 seconds</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Serving</td>
+                        <td>Flask <code>send_file</code></td>
+                        <td>Chunked streaming download to client browser</td>
+                        <td>Immediate</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Deep-Dive Engineering Articles</h2>
+        <p>
+            Want to understand the codebase or build a similar architecture yourself? Read our engineering guides:
+        </p>
+        <ul>
+            <li><a href="/blog/ssrf-protection-in-flask-apps"><strong>SSRF Protection in Python &amp; Flask Applications:</strong> A complete defense guide with code examples.</a></li>
+            <li><a href="/blog/self-host-flask-yt-dlp-tutorial"><strong>Build a Self-Hosted YouTube Downloader with Flask &amp; yt-dlp:</strong> Full architectural tutorial from scratch.</a></li>
+            <li><a href="./self-host.html"><strong>Self-Host Setup Guide:</strong> Run this downloader on your own VPS or home server.</a></li>
+        </ul>
+    </div>
+</article>
+
+        </div>
+    </main>
+
+    <!-- Comprehensive Global Footer -->
+    <footer class="site-footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Col 1: Brand & Philosophy -->
+                <div class="footer-brand">
+                    <div class="footer-brand__name">
+                        <span style="color:var(--accent-primary)">▶</span> YT Downloader
+                    </div>
+                    <p class="footer-brand__desc">
+                        A private, local-first web utility for downloading publicly accessible media via yt-dlp and FFmpeg. Fast conversion, no signup, zero third-party ads.
+                    </p>
+                    <div class="footer-brand__badge">
+                        <span>🔒</span> 100% Local &amp; Private Storage
+                    </div>
+                </div>
+
+                <!-- Col 2: Core Tools -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Core Tools</h4>
+                    <ul class="footer-links">
+                        <li><a href="./" class="footer-link">Video &amp; Audio Downloader</a></li>
+                        <li><a href="./youtube-to-mp3.html" class="footer-link">YouTube to MP3 Converter</a></li>
+                        <li><a href="./youtube-playlist-downloader.html" class="footer-link">Playlist Downloader</a></li>
+                        <li><a href="./bulk-youtube-downloader.html" class="footer-link">Bulk Queue Downloader</a></li>
+                        <li><a href="./youtube-video-info.html" class="footer-link">Video Info &amp; Thumbnail Checker</a></li>
+                        <li><a href="./how-it-works.html" class="footer-link">How Downloader Works</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Guides & Articles -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Guides &amp; Articles</h4>
+                    <ul class="footer-links">
+                        <li><a href="/blog/what-is-yt-dlp" class="footer-link">What is yt-dlp?</a></li>
+                        <li><a href="/blog/install-ffmpeg-windows-mac-linux" class="footer-link">Install FFmpeg (Win/Mac/Linux)</a></li>
+                        <li><a href="/blog/best-video-quality-for-downloads" class="footer-link">Quality Guide: 4K vs 1080p vs 720p</a></li>
+                        <li><a href="/blog/mp3-vs-m4a-vs-opus" class="footer-link">Audio Guide: MP3 vs M4A vs Opus</a></li>
+                        <li><a href="/blog/yt-dlp-common-errors-and-fixes" class="footer-link">Common yt-dlp Errors &amp; Fixes</a></li>
+                        <li><a href="/blog/ssrf-protection-in-flask-apps" class="footer-link">SSRF Protection in Web Apps</a></li>
+                        <li><a href="./blog.html" class="footer-link" style="color:var(--accent-secondary); font-weight:600;">Browse All 10 Guides &rarr;</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Trust & Developers -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Trust &amp; Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="./faq.html" class="footer-link">Frequently Asked Questions</a></li>
+                        <li><a href="./about.html" class="footer-link">About the Project</a></li>
+                        <li><a href="./contact.html" class="footer-link">Contact &amp; Support</a></li>
+                        <li><a href="./privacy.html" class="footer-link">Privacy Policy</a></li>
+                        <li><a href="./terms.html" class="footer-link">Terms of Service</a></li>
+                        <li><a href="./dmca.html" class="footer-link">DMCA &amp; Takedown Policy</a></li>
+                        <li><a href="./self-host.html" class="footer-link" style="color:#a285fd; font-weight:600;">💻 Self-Host Guide</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom Note -->
+            <div class="footer-bottom">
+                <div>
+                    &copy; 2026 YT Downloader. Powered by <a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener noreferrer" style="color:var(--accent-secondary)">yt-dlp</a> &amp; <a href="https://ffmpeg.org" target="_blank" rel="noopener noreferrer" style="color:var(--accent-secondary)">FFmpeg</a>. For personal, educational, and archival use.
+                </div>
+                <div>
+                    Retention Policy: Downloaded media purged automatically after 24 hours.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Client Scripts -->
+    <script src="./static/js/glow-cursor.js"></script>
+    <script src="./static/js/ui-effects.js"></script>
+    
+    <script src="./static/js/app.js"></script>
+    
+</body>
+</html>

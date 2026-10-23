@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block title %}YouTube Playlist Downloader – Bulk, Up to 50 Items{% endblock %}
+{% block meta_description %}Download entire YouTube playlists up to 50 videos in one click. Multi-threaded batch queue with live progress tracking powered by yt-dlp.{% endblock %}
+
+{% block content %}
+<div class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="{{ url_for('index') }}">Home</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span class="breadcrumbs__current">Playlist Downloader</span>
+</div>
+
+<article class="content-article">
+    <header class="content-article__hero content-article__hero--center">
+        <span class="content-badge">📋 Batch Media Tool</span>
+        <h1 class="content-title">Download a Full YouTube Playlist</h1>
+        <p class="content-subtitle" style="margin:0 auto;">
+            Queue complete music albums, tutorial series, and educational courses. Multi-threaded background processing with live progress for every track.
+        </p>
+    </header>
+
+    <!-- Quick Tool Card for Playlist -->
+    <div class="card" style="margin-bottom:var(--space-10);">
+        <h2 style="font-size:1.25rem; font-family:'Outfit',sans-serif; margin-top:0; margin-bottom:var(--space-3); color:var(--text-primary);">
+            📋 Paste Playlist URL
+        </h2>
+        <div class="form-group">
+            <label for="url-input" class="form-label">YouTube Playlist or Video in Playlist Link</label>
+            <div class="input-row">
+                <div class="input-field-wrap">
+                    <span class="input-field-icon" aria-hidden="true">📋</span>
+                    <input type="url" id="url-input" class="form-input form-input--has-actions"
+                           placeholder="https://www.youtube.com/playlist?list=PL..." autocomplete="off">
+                    <button type="button" id="btn-paste-url" class="btn-input-action" title="Paste link from clipboard">
+                        <span>📋</span> Paste
+                    </button>
+                </div>
+                <button type="button" id="btn-fetch-meta" class="btn btn--fetch" title="Inspect playlist info">
+                    <span>✨</span> Inspect
+                </button>
+            </div>
+            <div id="url-feedback" class="form-feedback" role="alert" aria-live="polite"></div>
+        </div>
+
+        <div id="meta-preview" class="meta-preview hidden" aria-live="polite">
+            <div class="meta-preview__thumb" id="meta-thumb"></div>
+            <div class="meta-preview__info">
+                <span class="meta-preview__title" id="meta-title"></span>
+                <span class="meta-preview__detail" id="meta-detail"></span>
+            </div>
+        </div>
+
+        <div id="playlist-options" class="playlist-options" style="margin-bottom:var(--space-4);">
+            <div class="playlist-options__header">
+                <span class="playlist-options__badge">📋 Mode</span>
+                <span id="playlist-options-title" class="playlist-options__title">Download Entire Playlist</span>
+            </div>
+            <div class="pill-group" role="radiogroup">
+                <button type="button" class="pill active" id="mode-playlist" data-mode="playlist">📋 Entire Playlist (Up to 50)</button>
+                <button type="button" class="pill" id="mode-single" data-mode="video">🎬 Current Video Only</button>
+            </div>
+        </div>
+
+        <div class="options-row">
+            <div class="form-group form-group--half">
+                <label for="quality-select" class="form-label">Video Quality</label>
+                <select id="quality-select" class="form-select">
+                    <option value="best" selected>⚡ Best Available (4K / 1080p)</option>
+                    <option value="1080p">🎬 1080p Full HD</option>
+                    <option value="720p">📺 720p HD (Faster Downloads)</option>
+                    <option value="480p">📱 480p SD</option>
+                </select>
+            </div>
+            <div class="form-group form-group--half">
+                <label class="form-label">Format</label>
+                <div class="pill-group" role="radiogroup">
+                    <button type="button" class="pill active" id="fmt-video" data-format="video">🎬 Video (MP4)</button>
+                    <button type="button" class="pill" id="fmt-audio" data-format="audio">🎵 Audio (MP3)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden Audio Options -->
+        <div id="audio-options" class="audio-options hidden">
+            <div class="form-group">
+                <label for="audio-format-select" class="form-label">Audio Format</label>
+                <select id="audio-format-select" class="form-select">
+                    <option value="audio_best" selected>🎵 Best Quality (M4A / WebM)</option>
+                    <option value="audio_mp3">🎧 MP3 (Universal)</option>
+                </select>
+            </div>
+        </div>
+
+        <button type="button" id="btn-download" class="btn btn--primary btn--full">
+            <span class="btn__text">Download Full Playlist</span>
+            <span class="btn__spinner hidden" aria-hidden="true"></span>
+        </button>
+    </div>
+
+    <!-- Job Queue Section -->
+    <section class="section" id="jobs-section" style="margin-bottom:var(--space-10);">
+        <div class="history-header">
+            <h2 class="section__title" id="jobs-heading">
+                <span class="section__icon" aria-hidden="true">⬇</span>
+                Playlist Download Queue
+                <span class="badge" id="active-count">0</span>
+            </h2>
+            <div class="history-controls">
+                <button type="button" id="btn-clear-history" class="btn btn--secondary btn--small">🗑 Clear</button>
+            </div>
+        </div>
+        <div id="jobs-list" class="jobs-list">
+            <div class="empty-state" id="empty-state">
+                <h3 class="empty-state__heading" id="empty-state-text">No active playlist downloads</h3>
+                <p class="empty-state__hint" id="empty-state-hint">Paste a playlist link above to start processing.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comprehensive Technical Guide -->
+    <div class="prose">
+        <h2>How YouTube Playlist Extraction Works</h2>
+        <p>
+            When you submit a playlist URL (e.g., <code>https://www.youtube.com/playlist?list=PLrEnWoR732-...</code>), our system processes it through a dedicated pipeline designed to be fast, memory-safe, and resilient:
+        </p>
+        <ol>
+            <li><strong>Flat Metadata Scraping:</strong> Instead of fetching heavy video players and comments, our backend invokes yt-dlp with the <code>extract_flat: True</code> flag. This extracts video IDs, titles, durations, and thumbnail links in a single HTTP payload without downloading any media.</li>
+            <li><strong>Batch Job Generation:</strong> Each video entry is registered as an individual record in our thread-safe SQLite database with state <code>QUEUED</code> and unique UUID.</li>
+            <li><strong>Worker Dispatch:</strong> Our multi-threaded executor picks up jobs across 3 concurrent worker threads. As each video finishes, the next queued video starts automatically.</li>
+            <li><strong>Real-time UI Synchronization:</strong> The browser polls <code>/api/jobs</code> to render real-time progress bars, download speeds (MB/s), and download buttons for each finished item.</li>
+        </ol>
+
+        <h2>The 50-Item Safety Cap Explained</h2>
+        <p>
+            Our playlist downloader caps extraction at <strong>50 videos per playlist</strong>. This limit exists for three critical reasons:
+        </p>
+        <ul>
+            <li><strong>Rate Limiting &amp; Anti-Bot Protection:</strong> YouTube strictly throttles IP addresses that request hundreds of video streams in rapid succession, resulting in temporary HTTP 429 Too Many Requests errors. A 50-item limit ensures clean, reliable completions.</li>
+            <li><strong>Local Disk &amp; Memory Protection:</strong> A 100-video playlist in 1080p could easily exceed 40 gigabytes of disk space and exhaust server memory during parallel FFmpeg muxing.</li>
+            <li><strong>Session Reliability:</strong> Keeping batches at or below 50 items guarantees that all downloads finish well within typical network availability windows.</li>
+        </ul>
+
+        <div class="callout callout--info">
+            <span class="callout__icon">💡</span>
+            <div class="callout__content">
+                <strong>Need More Than 50 Items?</strong>
+                If you are downloading a 150-video course, you can split your download by using our <a href="{{ url_for('bulk_youtube_downloader') }}">Bulk URL Downloader</a>, or self-host our repository and increase <code>MAX_PLAYLIST_ITEMS</code> in your local <code>.env</code> configuration file.
+            </div>
+        </div>
+
+        <h2>Public, Unlisted, and Private Playlist Behavior</h2>
+        <p>
+            Understanding playlist privacy rules on YouTube:
+        </p>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Playlist Type</th>
+                        <th>Supported?</th>
+                        <th>Behavior</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="highlight-col">Public Playlist</td>
+                        <td>✅ Yes</td>
+                        <td>Extracts all videos up to 50 items with metadata.</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Unlisted Playlist</td>
+                        <td>✅ Yes</td>
+                        <td>Works completely as long as the full shareable URL is provided.</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Private Playlist</td>
+                        <td>❌ No</td>
+                        <td>Fails with error. Requires account login cookies (not supported for security).</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">YouTube Mix / Radio (RD...)</td>
+                        <td>⚠️ Single Only</td>
+                        <td>Mixes are algorithmic dynamic streams. System automatically queues the current video instead.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Automatic Duplicate Filtration</h2>
+        <p>
+            It is common for playlists to contain duplicate videos or for users to accidentally paste a link that is already in the download queue. Our system inspects the normalized video ID of every incoming URL:
+        </p>
+        <ul>
+            <li>If a video is already in the active batch or currently downloading, duplicate instances are skipped.</li>
+            <li>Failed downloads can be retried individually using the <strong>🔄 Retry</strong> button on the job card (supporting up to 3 automatic retries).</li>
+        </ul>
+
+        <h2>Step-by-Step Tutorial</h2>
+        <p>
+            Read our dedicated tutorial: <a href="{{ url_for('blog_post', slug='download-youtube-playlist-step-by-step') }}">How to Download a YouTube Playlist Step-by-Step</a> for screenshots and advanced terminal tips.
+        </p>
+    </div>
+</article>
+{% endblock %}

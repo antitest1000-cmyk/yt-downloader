@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube to MP3 Converter – Best Quality Audio</title>
+    <meta name="description" content="Convert YouTube videos to high-quality MP3 or native M4A audio. Fast extraction powered by yt-dlp and FFmpeg with no quality loss or third-party ads.">
+    
+    <link rel="canonical" href="http://localhost/youtube-to-mp3">
+    
+    
+    <!-- OpenGraph / Social -->
+    <meta property="og:site_name" content="YT Downloader">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="YouTube to MP3 Converter – Best Quality Audio">
+    <meta property="og:description" content="Convert YouTube videos to high-quality MP3 or native M4A audio. Fast extraction powered by yt-dlp and FFmpeg with no quality loss or third-party ads.">
+    <meta property="og:url" content="http://localhost/youtube-to-mp3">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="YouTube to MP3 Converter – Best Quality Audio">
+    <meta name="twitter:description" content="Convert YouTube videos to high-quality MP3 or native M4A audio. Fast extraction powered by yt-dlp and FFmpeg with no quality loss or third-party ads.">
+
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Design System Stylesheets -->
+    <link rel="stylesheet" href="./static/css/style.css">
+    <link rel="stylesheet" href="./static/css/glow-cursor.css">
+    <link rel="stylesheet" href="./static/css/content.css">
+
+    <!-- Structured Data (JSON-LD) -->
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "YT Downloader",
+      "url": "http://localhost/",
+      "description": "High-speed local YouTube video and audio downloader powered by yt-dlp and FFmpeg.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+    
+</head>
+<body>
+    <!-- Aurora Mesh Background Canvas -->
+    <canvas id="aurora-canvas" aria-hidden="true"></canvas>
+    <!-- Glow Cursor Fluid Background -->
+    <div id="glow-cursor-container" class="glow-cursor-root"></div>
+
+    <!-- Header & Navigation -->
+    <header class="header" role="banner">
+        <div class="header__inner">
+            <div class="header__brand">
+                <a href="./" style="text-decoration:none; display:flex; align-items:center;">
+                    <h1 class="header__title">
+                        <span class="header__icon" aria-hidden="true">▶</span>
+                        <span class="shiny-text" data-text="YT Downloader">YT Downloader</span>
+                    </h1>
+                </a>
+                <span class="header__subtitle">Local Media Toolkit</span>
+            </div>
+
+            <!-- Global Nav Links -->
+            <nav class="nav-links" aria-label="Main Navigation">
+                <a href="./" class="nav-link ">Downloader</a>
+                <a href="./youtube-to-mp3.html" class="nav-link active">MP3</a>
+                <a href="./youtube-playlist-downloader.html" class="nav-link ">Playlists</a>
+                <a href="./bulk-youtube-downloader.html" class="nav-link ">Bulk</a>
+                <a href="./faq.html" class="nav-link ">FAQ</a>
+                <a href="./blog.html" class="nav-link ">Blog</a>
+                <a href="./self-host.html" class="nav-link nav-link--highlight ">Self-Host</a>
+            </nav>
+
+            <div class="header__status" id="health-status" title="System Status">
+                <span class="status-dot" id="status-dot"></span>
+                <span class="status-text" id="status-text">Checking...</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main" role="main">
+        <div class="container">
+            
+<div class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="./">Home</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span class="breadcrumbs__current">YouTube to MP3</span>
+</div>
+
+<article class="content-article">
+    <header class="content-article__hero content-article__hero--center">
+        <span class="content-badge">🎵 Audio Extraction Utility</span>
+        <h1 class="content-title">Convert YouTube Videos to MP3</h1>
+        <p class="content-subtitle" style="margin:0 auto;">
+            Extract clean audio tracks from music videos, podcasts, speeches, and interviews. High-bitrate MP3 or native lossless-source M4A via FFmpeg.
+        </p>
+    </header>
+
+    <!-- Quick Tool Card for Audio -->
+    <div class="card" style="margin-bottom:var(--space-10);">
+        <h2 style="font-size:1.25rem; font-family:'Outfit',sans-serif; margin-top:0; margin-bottom:var(--space-3); color:var(--text-primary);">
+            🎧 Quick Audio Downloader
+        </h2>
+        <div class="form-group">
+            <label for="url-input" class="form-label">YouTube Video URL</label>
+            <div class="input-row">
+                <div class="input-field-wrap">
+                    <span class="input-field-icon" aria-hidden="true">🎵</span>
+                    <input type="url" id="url-input" class="form-input form-input--has-actions"
+                           placeholder="https://www.youtube.com/watch?v=..." autocomplete="off">
+                    <button type="button" id="btn-paste-url" class="btn-input-action" title="Paste link from clipboard">
+                        <span>📋</span> Paste
+                    </button>
+                </div>
+                <button type="button" id="btn-fetch-meta" class="btn btn--fetch" title="Inspect audio info">
+                    <span>✨</span> Inspect
+                </button>
+            </div>
+            <div id="url-feedback" class="form-feedback" role="alert" aria-live="polite"></div>
+        </div>
+
+        <div id="meta-preview" class="meta-preview hidden" aria-live="polite">
+            <div class="meta-preview__thumb" id="meta-thumb"></div>
+            <div class="meta-preview__info">
+                <span class="meta-preview__title" id="meta-title"></span>
+                <span class="meta-preview__detail" id="meta-detail"></span>
+            </div>
+        </div>
+
+        <!-- Hidden inputs configured for Audio -->
+        <input type="hidden" id="quality-select" value="audio_mp3">
+        <div class="options-row" style="margin-top:var(--space-4);">
+            <div class="form-group form-group--half">
+                <label for="audio-format-select" class="form-label">Audio Target Format</label>
+                <select id="audio-format-select" class="form-select">
+                    <option value="audio_mp3" selected>🎧 MP3 (Universal · Up to 320 kbps CBR)</option>
+                    <option value="audio_best">🎵 M4A / WebM (Native Source · Zero Transcoding Loss)</option>
+                </select>
+            </div>
+            <div class="form-group form-group--half" style="display:flex; align-items:flex-end;">
+                <button type="button" id="btn-download" class="btn btn--primary btn--full">
+                    <span class="btn__text">Convert to Audio</span>
+                    <span class="btn__spinner hidden" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Job Queue Section -->
+    <section class="section" id="jobs-section" style="margin-bottom:var(--space-10);">
+        <div class="history-header">
+            <h2 class="section__title" id="jobs-heading">
+                <span class="section__icon" aria-hidden="true">⬇</span>
+                Audio Conversion Queue
+                <span class="badge" id="active-count">0</span>
+            </h2>
+            <div class="history-controls">
+                <button type="button" id="btn-clear-history" class="btn btn--secondary btn--small">🗑 Clear</button>
+            </div>
+        </div>
+        <div id="jobs-list" class="jobs-list">
+            <div class="empty-state" id="empty-state">
+                <h3 class="empty-state__heading" id="empty-state-text">No active audio conversions</h3>
+                <p class="empty-state__hint" id="empty-state-hint">Paste a link above and click <strong>Convert to Audio</strong>.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comprehensive Guide & In-Depth Technical Content -->
+    <div class="prose">
+        <h2>Understanding YouTube Audio: MP3 vs. M4A vs. Opus</h2>
+        <p>
+            When downloading sound from YouTube, many users immediately look for "320 kbps MP3 converter". However, understanding how YouTube encodes audio streams helps you make the best decision for sound fidelity, processing speed, and file size.
+        </p>
+        <p>
+            YouTube stores all uploaded audio in two primary lossy formats:
+        </p>
+        <ul>
+            <li><strong>Opus in WebM container</strong> (usually format code 251, encoded at ~160 kbps VBR).</li>
+            <li><strong>AAC in M4A container</strong> (format code 140, encoded at ~128 kbps CBR).</li>
+        </ul>
+        <p>
+            YouTube <em>never</em> stores uncompressed WAV, FLAC, or native 320 kbps MP3 files. Therefore, when any website claims to "extract original 320k MP3", one of two things is happening:
+        </p>
+        <ol>
+            <li><strong>Transcoding:</strong> The server takes YouTube's lossy 160 kbps Opus stream and decompresses it into raw PCM, then re-encodes it into an MP3 file using the LAME encoder at 320 kbps.</li>
+            <li><strong>Generational Loss:</strong> Because both Opus and MP3 are lossy compression formats, converting between them discards subtle acoustic details while creating a file that is almost three times larger than the original stream.</li>
+        </ol>
+
+        <div class="callout callout--tip">
+            <span class="callout__icon">💡</span>
+            <div class="callout__content">
+                <strong>Audio Engineer Recommendation:</strong>
+                If you are listening on a modern smartphone, laptop, iPad, or streaming to Bluetooth headphones, select <strong>Best Quality (M4A)</strong>. This extracts YouTube's native AAC audio track directly without transcoding, preserving 100% of the broadcast sound quality in a lightweight file. Choose <strong>MP3</strong> if you need universal compatibility with older car stereos, USB thumb drives, or vintage MP3 players.
+            </div>
+        </div>
+
+        <h2>Why FFmpeg is Essential for Clean Audio Conversion</h2>
+        <p>
+            yt-dlp is responsible for locating, authenticating, and downloading YouTube's split audio chunks. However, turning those raw chunks into a standard, tagged, standalone audio file requires <strong>FFmpeg</strong>.
+        </p>
+        <p>
+            When you select MP3 in our web application:
+        </p>
+        <ol>
+            <li>yt-dlp streams the best available audio stream from YouTube's CDN directly into your local machine's download directory.</li>
+            <li>FFmpeg is spawned in a subprocess with post-processing arguments: <code>-vn -acodec libmp3lame -q:a 0</code>.</li>
+            <li>FFmpeg discards the video track (<code>-vn</code>), executes high-quality LAME psychoacoustic encoding, and embeds metadata tags (track title, artist, and uploader).</li>
+            <li>The final MP3 is saved with a UUID file handle in the download directory and presented for 1-click download.</li>
+        </ol>
+
+        <h2>Audio Format Comparison Matrix</h2>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Format</th>
+                        <th>Encoder / Codec</th>
+                        <th>Bitrate</th>
+                        <th>Transcode Step?</th>
+                        <th>Compatibility</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="highlight-col">M4A (Native)</td>
+                        <td>AAC-LC</td>
+                        <td>128 kbps</td>
+                        <td>No (Direct Remux)</td>
+                        <td>iOS, Android, macOS, Windows, Modern Cars</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">WebM (Native)</td>
+                        <td>Opus</td>
+                        <td>~160 kbps VBR</td>
+                        <td>No (Direct Stream)</td>
+                        <td>Android, VLC, Chrome, Firefox, Linux</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">MP3 (Transcoded)</td>
+                        <td>libmp3lame</td>
+                        <td>Up to 320 kbps</td>
+                        <td>Yes (via FFmpeg)</td>
+                        <td>100% of all audio devices manufactured since 1998</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Troubleshooting Audio Conversion Issues</h2>
+        <h3>1. "FFmpeg Missing" Warning</h3>
+        <p>
+            If you self-host this application and see a warning that FFmpeg is missing, MP3 conversion cannot complete because the LAME encoder is bundled with FFmpeg. To resolve this:
+        </p>
+        <ul>
+            <li><strong>Windows:</strong> Run <code>winget install Gyan.FFmpeg</code> in PowerShell or download the essentials build from gyan.dev and add <code>bin</code> to your PATH.</li>
+            <li><strong>macOS:</strong> Run <code>brew install ffmpeg</code> in Terminal.</li>
+            <li><strong>Linux (Ubuntu/Debian):</strong> Run <code>sudo apt update &amp;&amp; sudo apt install -y ffmpeg</code>.</li>
+        </ul>
+        <p>
+            Read our step-by-step tutorial: <a href="/blog/install-ffmpeg-windows-mac-linux">How to Install FFmpeg on Windows, Mac, and Linux</a>.
+        </p>
+
+        <h3>2. 30-Minute Download Timeout Limit</h3>
+        <p>
+            To prevent background worker threads from hanging on multi-hour live streams or 10-hour ambient white noise videos, our server enforces an environmental timeout (default: 1,800 seconds / 30 minutes). For standard songs, podcast episodes (under 3 hours), and music videos, conversion completes in 3 to 15 seconds. If you self-host and need to download longer files, increase <code>DOWNLOAD_TIMEOUT</code> in your <code>.env</code> file.
+        </p>
+
+        <h2>Legal and Fair-Use Guidance</h2>
+        <p>
+            This tool is built for extracting audio from royalty-free music, Creative Commons educational lectures, public domain recordings, and your own uploaded content. Converting copyright-protected commercial music videos without permission violates YouTube's Terms of Service. Always support your favorite artists by purchasing music through official channels (Bandcamp, iTunes, vinyl, or streaming subscriptions).
+        </p>
+    </div>
+</article>
+
+        </div>
+    </main>
+
+    <!-- Comprehensive Global Footer -->
+    <footer class="site-footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Col 1: Brand & Philosophy -->
+                <div class="footer-brand">
+                    <div class="footer-brand__name">
+                        <span style="color:var(--accent-primary)">▶</span> YT Downloader
+                    </div>
+                    <p class="footer-brand__desc">
+                        A private, local-first web utility for downloading publicly accessible media via yt-dlp and FFmpeg. Fast conversion, no signup, zero third-party ads.
+                    </p>
+                    <div class="footer-brand__badge">
+                        <span>🔒</span> 100% Local &amp; Private Storage
+                    </div>
+                </div>
+
+                <!-- Col 2: Core Tools -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Core Tools</h4>
+                    <ul class="footer-links">
+                        <li><a href="./" class="footer-link">Video &amp; Audio Downloader</a></li>
+                        <li><a href="./youtube-to-mp3.html" class="footer-link">YouTube to MP3 Converter</a></li>
+                        <li><a href="./youtube-playlist-downloader.html" class="footer-link">Playlist Downloader</a></li>
+                        <li><a href="./bulk-youtube-downloader.html" class="footer-link">Bulk Queue Downloader</a></li>
+                        <li><a href="./youtube-video-info.html" class="footer-link">Video Info &amp; Thumbnail Checker</a></li>
+                        <li><a href="./how-it-works.html" class="footer-link">How Downloader Works</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Guides & Articles -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Guides &amp; Articles</h4>
+                    <ul class="footer-links">
+                        <li><a href="/blog/what-is-yt-dlp" class="footer-link">What is yt-dlp?</a></li>
+                        <li><a href="/blog/install-ffmpeg-windows-mac-linux" class="footer-link">Install FFmpeg (Win/Mac/Linux)</a></li>
+                        <li><a href="/blog/best-video-quality-for-downloads" class="footer-link">Quality Guide: 4K vs 1080p vs 720p</a></li>
+                        <li><a href="/blog/mp3-vs-m4a-vs-opus" class="footer-link">Audio Guide: MP3 vs M4A vs Opus</a></li>
+                        <li><a href="/blog/yt-dlp-common-errors-and-fixes" class="footer-link">Common yt-dlp Errors &amp; Fixes</a></li>
+                        <li><a href="/blog/ssrf-protection-in-flask-apps" class="footer-link">SSRF Protection in Web Apps</a></li>
+                        <li><a href="./blog.html" class="footer-link" style="color:var(--accent-secondary); font-weight:600;">Browse All 10 Guides &rarr;</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Trust & Developers -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Trust &amp; Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="./faq.html" class="footer-link">Frequently Asked Questions</a></li>
+                        <li><a href="./about.html" class="footer-link">About the Project</a></li>
+                        <li><a href="./contact.html" class="footer-link">Contact &amp; Support</a></li>
+                        <li><a href="./privacy.html" class="footer-link">Privacy Policy</a></li>
+                        <li><a href="./terms.html" class="footer-link">Terms of Service</a></li>
+                        <li><a href="./dmca.html" class="footer-link">DMCA &amp; Takedown Policy</a></li>
+                        <li><a href="./self-host.html" class="footer-link" style="color:#a285fd; font-weight:600;">💻 Self-Host Guide</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom Note -->
+            <div class="footer-bottom">
+                <div>
+                    &copy; 2026 YT Downloader. Powered by <a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener noreferrer" style="color:var(--accent-secondary)">yt-dlp</a> &amp; <a href="https://ffmpeg.org" target="_blank" rel="noopener noreferrer" style="color:var(--accent-secondary)">FFmpeg</a>. For personal, educational, and archival use.
+                </div>
+                <div>
+                    Retention Policy: Downloaded media purged automatically after 24 hours.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Client Scripts -->
+    <script src="./static/js/glow-cursor.js"></script>
+    <script src="./static/js/ui-effects.js"></script>
+    
+    <script src="./static/js/app.js"></script>
+    
+</body>
+</html>

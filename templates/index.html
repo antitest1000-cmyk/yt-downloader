@@ -1,0 +1,524 @@
+{% extends "base.html" %}
+
+{% block title %}YouTube Video & Audio Downloader – Free, No Signup{% endblock %}
+{% block meta_description %}Download public YouTube videos and audio in high quality up to 4K, 1080p, or 320kbps MP3. Fast, free, local-first web downloader powered by yt-dlp and FFmpeg.{% endblock %}
+
+{% block content %}
+<!-- Tool Header Hero -->
+<div class="content-article__hero content-article__hero--center" style="margin-bottom:var(--space-6);">
+    <span class="content-badge">⚡ Free Local Media Toolkit</span>
+    <h1 class="content-title" style="margin-bottom:var(--space-2);">Download Public YouTube Videos and Audio</h1>
+    <p class="content-subtitle" style="margin: 0 auto; font-size: 1rem;">
+        Clean web interface powered by <strong style="color:#00d9d0;">yt-dlp</strong> and <strong style="color:#a285fd;">FFmpeg</strong>. No signups, no external ads, 100% private.
+    </p>
+</div>
+
+<!-- Mode Tabs -->
+<nav class="tabs" role="tablist" aria-label="Download mode">
+    <button class="tab active" id="tab-single" role="tab"
+            aria-selected="true" aria-controls="panel-single"
+            data-tab="single">
+        <span class="tab__icon" aria-hidden="true">📥</span>
+        Single &amp; Playlist
+    </button>
+    <button class="tab" id="tab-bulk" role="tab"
+            aria-selected="false" aria-controls="panel-bulk"
+            data-tab="bulk">
+        <span class="tab__icon" aria-hidden="true">📦</span>
+        Bulk URLs
+    </button>
+</nav>
+
+<!-- Single Download Panel -->
+<section class="panel active" id="panel-single" role="tabpanel"
+         aria-labelledby="tab-single">
+    <div class="card">
+        <div class="form-group">
+            <div class="form-label-row">
+                <label for="url-input" class="form-label">
+                    <span class="form-label__icon" aria-hidden="true">🔗</span>
+                    Video or Playlist URL
+                </label>
+                <span class="form-label__hint">Supports YouTube, Shorts &amp; Playlists</span>
+            </div>
+            <div class="input-row">
+                <div class="input-field-wrap">
+                    <span class="input-field-icon" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                        </svg>
+                    </span>
+                    <input type="url" id="url-input" class="form-input form-input--has-actions"
+                           placeholder="Paste YouTube video or playlist link here..."
+                           autocomplete="off" spellcheck="false"
+                           aria-describedby="url-feedback">
+                    <button type="button" id="btn-paste-url" class="btn-input-action" title="Paste link from clipboard" aria-label="Paste from clipboard">
+                        <span class="btn-input-action__icon">📋</span>
+                        <span>Paste</span>
+                    </button>
+                </div>
+                <button type="button" id="btn-fetch-meta" class="btn btn--fetch"
+                        title="Fetch video details" aria-label="Fetch video info">
+                    <span class="fetch-icon" aria-hidden="true">✨</span>
+                    <span class="fetch-text">Inspect</span>
+                </button>
+            </div>
+            <div id="url-feedback" class="form-feedback" role="alert" aria-live="polite"></div>
+        </div>
+
+        <!-- Metadata Preview -->
+        <div id="meta-preview" class="meta-preview hidden" aria-live="polite">
+            <div class="meta-preview__thumb" id="meta-thumb"></div>
+            <div class="meta-preview__info">
+                <span class="meta-preview__title" id="meta-title"></span>
+                <span class="meta-preview__detail" id="meta-detail"></span>
+            </div>
+        </div>
+
+        <!-- Playlist Mode Selector (shown when playlist detected) -->
+        <div id="playlist-options" class="playlist-options hidden">
+            <div class="playlist-options__header">
+                <span class="playlist-options__badge">📋 Playlist Detected</span>
+                <span id="playlist-options-title" class="playlist-options__title"></span>
+            </div>
+            <div class="pill-group" role="radiogroup" aria-label="Playlist download mode">
+                <button type="button" class="pill active" id="mode-playlist"
+                        role="radio" aria-checked="true" data-mode="playlist">
+                    📋 Entire Playlist
+                </button>
+                <button type="button" class="pill" id="mode-single"
+                        role="radio" aria-checked="false" data-mode="video">
+                    🎬 This Video Only
+                </button>
+            </div>
+        </div>
+
+        <!-- Options Row -->
+        <div class="options-row">
+            <div class="form-group form-group--half">
+                <label for="quality-select" class="form-label">Quality</label>
+                <select id="quality-select" class="form-select">
+                    <option value="best" selected>⚡ Best Available (up to 4K UHD)</option>
+                    <option value="1080p">🎬 1080p Full HD</option>
+                    <option value="720p">📺 720p HD</option>
+                    <option value="480p">📱 480p SD</option>
+                </select>
+            </div>
+            <div class="form-group form-group--half">
+                <label class="form-label">Format</label>
+                <div class="pill-group" role="radiogroup" aria-label="Output format">
+                    <button type="button" class="pill active" id="fmt-video"
+                            role="radio" aria-checked="true" data-format="video">
+                        🎬 Video
+                    </button>
+                    <button type="button" class="pill" id="fmt-audio"
+                            role="radio" aria-checked="false" data-format="audio">
+                        🎵 Audio
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Audio Sub-options -->
+        <div id="audio-options" class="audio-options hidden">
+            <div class="form-group">
+                <label for="audio-format-select" class="form-label">Audio Format</label>
+                <select id="audio-format-select" class="form-select">
+                    <option value="audio_best" selected>🎵 Best Quality (M4A / WebM · High Bitrate)</option>
+                    <option value="audio_mp3">🎧 MP3 (Universal Audio)</option>
+                </select>
+            </div>
+        </div>
+
+        <button type="button" id="btn-download" class="btn btn--primary btn--full">
+            <span class="btn__text">Download</span>
+            <span class="btn__spinner hidden" aria-hidden="true"></span>
+        </button>
+    </div>
+</section>
+
+<!-- Bulk Download Panel -->
+<section class="panel" id="panel-bulk" role="tabpanel"
+         aria-labelledby="tab-bulk" hidden>
+    <div class="card">
+        <div class="form-group">
+            <div class="form-label-row">
+                <label for="bulk-input" class="form-label">
+                    <span class="form-label__icon" aria-hidden="true">📦</span>
+                    YouTube URLs (one per line)
+                </label>
+                <span class="form-label__hint" id="bulk-limit-hint">Standard limit: 20 per batch · Large lists structured automatically</span>
+            </div>
+            <textarea id="bulk-input" class="form-textarea" rows="6"
+                      placeholder="https://www.youtube.com/watch?v=abc123&#10;https://www.youtube.com/watch?v=def456&#10;https://youtu.be/ghi789"
+                      spellcheck="false"
+                      aria-describedby="bulk-feedback"></textarea>
+            <div id="bulk-feedback" class="form-feedback" role="alert" aria-live="polite"></div>
+        </div>
+
+        <!-- Bulk Validation Summary -->
+        <div id="bulk-summary" class="bulk-summary hidden" aria-live="polite">
+            <span class="bulk-summary__valid" id="bulk-valid">0 valid</span>
+            <span class="bulk-summary__sep">·</span>
+            <span class="bulk-summary__invalid" id="bulk-invalid">0 invalid</span>
+            <span class="bulk-summary__sep">·</span>
+            <span class="bulk-summary__dupes" id="bulk-dupes">0 duplicates</span>
+        </div>
+
+        <!-- Structured Batch Suggestion / Orchestration Assistant -->
+        <div id="bulk-batch-assistant" class="batch-assistant hidden" aria-live="polite">
+            <div class="batch-assistant__top">
+                <div class="batch-assistant__badge-row">
+                    <span class="batch-assistant__badge">
+                        <span class="badge-icon">🧩</span> Structured Batch Assistant
+                    </span>
+                    <span class="batch-assistant__status-pill" id="batch-orchestrator-status">Suggestion Ready</span>
+                </div>
+                <h3 class="batch-assistant__title">Large URL List Detected</h3>
+                <p class="batch-assistant__desc" id="batch-assistant-desc">
+                    You entered <strong id="batch-total-count">0</strong> URLs. To protect server resources and avoid timeouts, we organized them into <strong id="batch-count-indicator">0</strong> structured batches of <strong id="batch-size-indicator">20</strong>.
+                </p>
+            </div>
+
+            <!-- Batch Overview Metrics -->
+            <div class="batch-metrics">
+                <div class="batch-metric-card">
+                    <span class="batch-metric-label">Total URLs</span>
+                    <span class="batch-metric-val" id="metric-total-urls">0</span>
+                </div>
+                <div class="batch-metric-card">
+                    <span class="batch-metric-label">Batch Size</span>
+                    <div class="batch-size-selector-inline">
+                        <select id="batch-size-select" class="form-select form-select--mini" aria-label="Batch size">
+                            <option value="20" selected>20 URLs (Recommended)</option>
+                            <option value="15">15 URLs</option>
+                            <option value="10">10 URLs</option>
+                            <option value="5">5 URLs</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="batch-metric-card">
+                    <span class="batch-metric-label">Total Batches</span>
+                    <span class="batch-metric-val" id="metric-total-batches">0</span>
+                </div>
+                <div class="batch-metric-card">
+                    <span class="batch-metric-label">Completed</span>
+                    <span class="batch-metric-val" id="metric-batch-progress">0%</span>
+                </div>
+            </div>
+
+            <!-- Live Progress Bar (Active when auto-queueing) -->
+            <div id="batch-live-progress" class="batch-live-progress hidden">
+                <div class="batch-live-progress__header">
+                    <span class="batch-live-progress__title" id="batch-live-progress-title">Processing Batch 1 of 8</span>
+                    <span class="batch-live-progress__stats" id="batch-live-progress-stats">0 / 0 URLs Queued</span>
+                </div>
+                <div class="batch-progress-bar">
+                    <div class="batch-progress-fill" id="batch-live-progress-bar" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Primary Suggested Action Buttons -->
+            <div class="batch-actions">
+                <button type="button" id="btn-batch-auto-all" class="btn btn--primary btn--batch-auto">
+                    <span class="btn__icon">🚀</span>
+                    <span class="btn__text" id="btn-batch-auto-text">Auto-Queue All Batches</span>
+                    <span class="btn__spinner hidden" aria-hidden="true"></span>
+                </button>
+                <div class="batch-actions__sub">
+                    <button type="button" id="btn-batch-download-first" class="btn btn--secondary btn--small" title="Queue the first batch of 20 URLs right now">
+                        ⚡ Queue Batch 1 (First 20) &amp; Keep Remaining
+                    </button>
+                    <button type="button" id="btn-batch-toggle-list" class="btn btn--secondary btn--small" title="View breakdown of individual batches">
+                        📋 View All Batches (<span id="batch-list-count">0</span>)
+                    </button>
+                    <button type="button" id="btn-batch-pause" class="btn btn--secondary btn--small hidden">
+                        ⏸ Pause Auto-Queue
+                    </button>
+                    <button type="button" id="btn-batch-cancel" class="btn btn--danger-subtle btn--small hidden">
+                        ⏹ Stop Auto-Queue
+                    </button>
+                </div>
+            </div>
+
+            <!-- Interactive Batch List / Stepper -->
+            <div id="batch-items-container" class="batch-items-container hidden">
+                <div class="batch-items-header">
+                    <span class="batch-items-header__title">Structured Batch Sequence</span>
+                    <span class="batch-items-header__hint">Inspect URLs or queue specific batches individually</span>
+                </div>
+                <div id="batch-items-list" class="batch-items-list"></div>
+            </div>
+        </div>
+
+        <!-- Bulk Options -->
+        <div class="options-row">
+            <div class="form-group form-group--half">
+                <label for="bulk-quality-select" class="form-label">Quality</label>
+                <select id="bulk-quality-select" class="form-select">
+                    <option value="best" selected>⚡ Best Available (up to 4K)</option>
+                    <option value="1080p">🎬 1080p Full HD</option>
+                    <option value="720p">📺 720p HD</option>
+                    <option value="480p">📱 480p SD</option>
+                </select>
+            </div>
+            <div class="form-group form-group--half">
+                <label class="form-label">Format</label>
+                <div class="pill-group" role="radiogroup" aria-label="Bulk output format">
+                    <button type="button" class="pill active" id="bulk-fmt-video"
+                            role="radio" aria-checked="true" data-format="video">
+                        🎬 Video
+                    </button>
+                    <button type="button" class="pill" id="bulk-fmt-audio"
+                            role="radio" aria-checked="false" data-format="audio">
+                        🎵 Audio
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" id="btn-bulk-download" class="btn btn--primary btn--full">
+            <span class="btn__text" id="btn-bulk-download-text">Download All</span>
+            <span class="btn__spinner hidden" aria-hidden="true"></span>
+        </button>
+    </div>
+</section>
+
+<!-- Job Queue & History Section -->
+<section class="section" id="jobs-section" aria-labelledby="jobs-heading" style="margin-top:var(--space-8);">
+    <div class="history-header">
+        <h2 class="section__title" id="jobs-heading">
+            <span class="section__icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+            </span>
+            Downloads &amp; Queue
+            <span class="badge" id="active-count" title="Active downloads">0</span>
+        </h2>
+        <div class="history-controls">
+            <div class="storage-toggle-wrap" title="Toggle saving downloaded video links in your browser storage">
+                <label class="toggle-switch" for="toggle-history-storage">
+                    <input type="checkbox" id="toggle-history-storage" aria-describedby="storage-info-text">
+                    <span class="toggle-switch__slider"></span>
+                </label>
+                <label for="toggle-history-storage" class="storage-toggle-label">
+                    <span class="storage-toggle-label-text">Save History</span>
+                    <span class="storage-toggle-badge" id="storage-status-badge">Off</span>
+                </label>
+            </div>
+            <button type="button" id="btn-clear-history" class="btn btn--secondary btn--small" title="Clear saved video history from browser storage">
+                <span aria-hidden="true">🗑</span> Clear
+            </button>
+        </div>
+    </div>
+
+    <!-- In-place Browser Storage & Privacy Info (NO POPUPS) -->
+    <div class="history-storage-info" id="history-storage-info" role="note">
+        <span class="history-storage-info__icon" aria-hidden="true">🔒</span>
+        <p class="history-storage-info__text" id="storage-info-text">
+            <strong>Privacy First:</strong> Downloaded video records stay strictly in your local browser cache. Nothing is tracked externally. You can clear history anytime.
+        </p>
+    </div>
+
+    <div id="jobs-list" class="jobs-list" aria-live="polite">
+        <div class="empty-state" id="empty-state">
+            <div class="empty-state__icon-wrap">
+                <div class="empty-state__icon" aria-hidden="true">
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                </div>
+            </div>
+            <h3 class="empty-state__heading" id="empty-state-text">Ready to Download</h3>
+            <p class="empty-state__hint" id="empty-state-hint">Paste any YouTube URL above and hit <strong>Download</strong> to begin processing.</p>
+            <div class="empty-state__features">
+                <span class="feature-tag"><span class="feature-tag__dot"></span>⚡ yt-dlp Engine</span>
+                <span class="feature-tag"><span class="feature-tag__dot"></span>🎬 Up to 4K UHD</span>
+                <span class="feature-tag"><span class="feature-tag__dot"></span>🎵 320k Audio</span>
+                <span class="feature-tag"><span class="feature-tag__dot"></span>📋 Batch Playlists</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========================================================================
+     Below-The-Fold Rich SEO Content (3 Steps, Features, Matrix & Blog Links)
+     ======================================================================== -->
+<hr style="border:none; border-top:1px solid rgba(255,255,255,0.07); margin:var(--space-12) 0 var(--space-8);">
+
+<article class="prose content-article" style="max-width:100%;">
+    <!-- How to Use in 3 Steps -->
+    <section>
+        <h2>🚀 How to Download YouTube Videos in 3 Simple Steps</h2>
+        <p>
+            Whether you want to save a music track as an MP3, archive an educational lecture in crisp 1080p, or download a 50-video playlist for offline study, our tool streamlines the entire process into three fast steps:
+        </p>
+
+        <div class="step-cards">
+            <div class="step-card">
+                <div class="step-card__number">1</div>
+                <h3 class="step-card__title">Copy &amp; Paste URL</h3>
+                <p class="step-card__text">
+                    Copy the video or playlist link from YouTube and paste it into the search box above. Click <strong>Inspect</strong> to view the title and thumbnail.
+                </p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">2</div>
+                <h3 class="step-card__title">Select Format &amp; Quality</h3>
+                <p class="step-card__text">
+                    Choose <strong>Video</strong> (Best Available, 1080p, 720p) or <strong>Audio</strong> (Universal MP3 or High-Fidelity M4A).
+                </p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">3</div>
+                <h3 class="step-card__title">Instant Local Download</h3>
+                <p class="step-card__text">
+                    Hit <strong>Download</strong>. Our multi-threaded yt-dlp service merges streams with FFmpeg and delivers your file with live progress.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Features & Architecture -->
+    <section>
+        <h2>✨ Why Choose Our YT-DLP Web Downloader?</h2>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:var(--space-4); margin:1.5rem 0;">
+            <div class="card" style="padding:var(--space-5);">
+                <h3 style="margin-top:0; color:#00d9d0;">🔒 Private &amp; Local-First</h3>
+                <p style="font-size:0.9rem; color:var(--text-muted); margin:0;">
+                    No user accounts, zero trackers, and no third-party telemetry. Downloaded history is strictly optional and stored in your browser's local cache. Files are deleted after 24 hours.
+                </p>
+            </div>
+            <div class="card" style="padding:var(--space-5);">
+                <h3 style="margin-top:0; color:#a285fd;">⚡ Powered by yt-dlp &amp; FFmpeg</h3>
+                <p style="font-size:0.9rem; color:var(--text-muted); margin:0;">
+                    Unlike legacy browser extensions that scrape degraded streams, our backend executes the latest yt-dlp extractor to download full-bitrate video and audio streams with frame-accurate FFmpeg muxing.
+                </p>
+            </div>
+            <div class="card" style="padding:var(--space-5);">
+                <h3 style="margin-top:0; color:#ffcb47;">📦 Multi-Threaded Queue</h3>
+                <p style="font-size:0.9rem; color:var(--text-muted); margin:0;">
+                    Supports up to 3 concurrent worker threads with real-time ETA, speed indicators, duplicate detection, and batch processing for up to 50 playlist items and 20 bulk URLs.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quality & Format Comparison Table -->
+    <section>
+        <h2>📊 Supported Video &amp; Audio Formats</h2>
+        <p>
+            Review our available presets to choose the ideal balance between visual quality, sound fidelity, and file size:
+        </p>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Preset</th>
+                        <th>Resolution / Spec</th>
+                        <th>Container</th>
+                        <th>Typical Bitrate</th>
+                        <th>Best For</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="highlight-col">⚡ Best Available</td>
+                        <td>4K UHD (2160p) / 1440p / 1080p</td>
+                        <td>MKV / MP4</td>
+                        <td>12 – 45 Mbps</td>
+                        <td>Home theaters, 4K monitors &amp; master archiving</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">🎬 1080p Full HD</td>
+                        <td>1920 &times; 1080 @ 60fps</td>
+                        <td>MP4</td>
+                        <td>4 – 8 Mbps</td>
+                        <td>Laptops, tablets &amp; high-definition viewing</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">📺 720p HD</td>
+                        <td>1280 &times; 720 @ 30/60fps</td>
+                        <td>MP4</td>
+                        <td>2 – 3 Mbps</td>
+                        <td>Fast downloads, phones &amp; limited storage</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">📱 480p SD</td>
+                        <td>854 &times; 480</td>
+                        <td>MP4</td>
+                        <td>0.8 – 1.5 Mbps</td>
+                        <td>Older devices, voice recordings &amp; cellular data</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">🎵 Best Audio (M4A)</td>
+                        <td>Native AAC / Opus Source</td>
+                        <td>M4A / WebM</td>
+                        <td>128 – 160 kbps (Lossless source)</td>
+                        <td>Highest audio fidelity with zero transcode loss</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">🎧 MP3 Audio</td>
+                        <td>Universal Transcoded MP3</td>
+                        <td>MP3</td>
+                        <td>Up to 320 kbps (CBR)</td>
+                        <td>Car stereos, legacy MP3 players &amp; smart speakers</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="callout callout--info">
+            <span class="callout__icon">ℹ️</span>
+            <div class="callout__content">
+                <strong>24-Hour Automated Cleanup Policy</strong>
+                To protect system privacy and conserve disk space, all downloaded media files are strictly temporary. Files are permanently purged by an automated background worker 24 hours after completion. Make sure to download files to your local drive before the retention window closes.
+            </div>
+        </div>
+    </section>
+
+    <!-- Internal Tool Deep-Dives & Top Blog Guides -->
+    <section>
+        <h2>📚 Specialized Download Tools &amp; Tutorials</h2>
+        <p>
+            Looking for a specific task? Explore our dedicated utility landing pages and in-depth developer tutorials:
+        </p>
+        <div class="step-cards">
+            <div class="step-card">
+                <h3 class="step-card__title">🎵 <a href="{{ url_for('youtube_to_mp3') }}" style="color:inherit; text-decoration:none;">YouTube to MP3</a></h3>
+                <p class="step-card__text">
+                    Extract audio tracks with FFmpeg. Read our guide on bitrates, transcode realities, and M4A vs MP3 fidelity.
+                </p>
+                <div style="margin-top:var(--space-3);"><a href="{{ url_for('youtube_to_mp3') }}" class="footer-link" style="color:var(--accent-secondary); font-weight:600;">Go to MP3 Converter &rarr;</a></div>
+            </div>
+            <div class="step-card">
+                <h3 class="step-card__title">📋 <a href="{{ url_for('youtube_playlist_downloader') }}" style="color:inherit; text-decoration:none;">Playlist Downloader</a></h3>
+                <p class="step-card__text">
+                    Queue full YouTube music and video playlists up to 50 items with automated duplicate filtration and batch tracking.
+                </p>
+                <div style="margin-top:var(--space-3);"><a href="{{ url_for('youtube_playlist_downloader') }}" class="footer-link" style="color:var(--accent-secondary); font-weight:600;">Download Playlists &rarr;</a></div>
+            </div>
+            <div class="step-card">
+                <h3 class="step-card__title">📦 <a href="{{ url_for('bulk_youtube_downloader') }}" style="color:inherit; text-decoration:none;">Bulk URL Queue</a></h3>
+                <p class="step-card__text">
+                    Paste up to 20 links at once. Learn how concurrency and our 3-worker background thread pool process jobs safely.
+                </p>
+                <div style="margin-top:var(--space-3);"><a href="{{ url_for('bulk_youtube_downloader') }}" class="footer-link" style="color:var(--accent-secondary); font-weight:600;">Open Bulk Tool &rarr;</a></div>
+            </div>
+        </div>
+
+        <h3 style="margin-top:var(--space-6);">Trending Guides from Our Tech Blog</h3>
+        <ul style="padding-left:1.2rem; line-height:1.9;">
+            <li><a href="{{ url_for('blog_post', slug='what-is-yt-dlp') }}"><strong>What is yt-dlp?</strong> Complete history, performance benchmarks, and difference from youtube-dl</a></li>
+            <li><a href="{{ url_for('blog_post', slug='install-ffmpeg-windows-mac-linux') }}"><strong>How to Install FFmpeg on Windows, Mac &amp; Linux:</strong> Terminal copy-paste commands and verification</a></li>
+            <li><a href="{{ url_for('blog_post', slug='best-video-quality-for-downloads') }}"><strong>4K vs 1080p vs 720p:</strong> File size, codec differences (VP9, AV1, H.264), and storage comparison</a></li>
+            <li><a href="{{ url_for('blog_index') }}" style="color:var(--accent-secondary); font-weight:600;">Read all 10 in-depth articles on our Engineering Blog &rarr;</a></li>
+        </ul>
+    </section>
+</article>
+{% endblock %}

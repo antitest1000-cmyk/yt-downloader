@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About YT Downloader – Open Source, Local-First Media Archiver</title>
+    <meta name="description" content="Learn about YT Downloader, our mission to provide a transparent, ad-free, local-first media downloading and conversion toolkit powered by yt-dlp and FFmpeg.">
+    
+    <link rel="canonical" href="http://localhost/about">
+    
+    
+    <!-- OpenGraph / Social -->
+    <meta property="og:site_name" content="YT Downloader">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="About YT Downloader – Open Source, Local-First Media Archiver">
+    <meta property="og:description" content="Learn about YT Downloader, our mission to provide a transparent, ad-free, local-first media downloading and conversion toolkit powered by yt-dlp and FFmpeg.">
+    <meta property="og:url" content="http://localhost/about">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="About YT Downloader – Open Source, Local-First Media Archiver">
+    <meta name="twitter:description" content="Learn about YT Downloader, our mission to provide a transparent, ad-free, local-first media downloading and conversion toolkit powered by yt-dlp and FFmpeg.">
+
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Design System Stylesheets -->
+    <link rel="stylesheet" href="./static/css/style.css">
+    <link rel="stylesheet" href="./static/css/glow-cursor.css">
+    <link rel="stylesheet" href="./static/css/content.css">
+
+    <!-- Structured Data (JSON-LD) -->
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "YT Downloader",
+      "url": "http://localhost/",
+      "description": "High-speed local YouTube video and audio downloader powered by yt-dlp and FFmpeg.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+    
+</head>
+<body>
+    <!-- Aurora Mesh Background Canvas -->
+    <canvas id="aurora-canvas" aria-hidden="true"></canvas>
+    <!-- Glow Cursor Fluid Background -->
+    <div id="glow-cursor-container" class="glow-cursor-root"></div>
+
+    <!-- Header & Navigation -->
+    <header class="header" role="banner">
+        <div class="header__inner">
+            <div class="header__brand">
+                <a href="./" style="text-decoration:none; display:flex; align-items:center;">
+                    <h1 class="header__title">
+                        <span class="header__icon" aria-hidden="true">▶</span>
+                        <span class="shiny-text" data-text="YT Downloader">YT Downloader</span>
+                    </h1>
+                </a>
+                <span class="header__subtitle">Local Media Toolkit</span>
+            </div>
+
+            <!-- Global Nav Links -->
+            <nav class="nav-links" aria-label="Main Navigation">
+                <a href="./" class="nav-link ">Downloader</a>
+                <a href="./youtube-to-mp3.html" class="nav-link ">MP3</a>
+                <a href="./youtube-playlist-downloader.html" class="nav-link ">Playlists</a>
+                <a href="./bulk-youtube-downloader.html" class="nav-link ">Bulk</a>
+                <a href="./faq.html" class="nav-link ">FAQ</a>
+                <a href="./blog.html" class="nav-link ">Blog</a>
+                <a href="./self-host.html" class="nav-link nav-link--highlight ">Self-Host</a>
+            </nav>
+
+            <div class="header__status" id="health-status" title="System Status">
+                <span class="status-dot" id="status-dot"></span>
+                <span class="status-text" id="status-text">Checking...</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main" role="main">
+        <div class="container">
+            
+<section class="content-header">
+    <div class="content-badge">
+        <span>ℹ️</span> About the Project
+    </div>
+    <h1 class="content-title">About YT Downloader</h1>
+    <p class="content-lead">
+        A privacy-conscious, open-source media archiving tool created to give users complete control over their personal educational and archival video downloads without predatory ads or deceptive software.
+    </p>
+</section>
+
+<article class="content-article">
+    <div class="content-prose">
+        <h2>Our Mission &amp; Purpose</h2>
+        <p>
+            The modern web is inundated with video converter websites designed to exploit users. A typical online downloader bombards visitors with aggressive pop-under advertisements, fraudulent "system alert" notifications, cryptocurrency mining scripts, and confusing fake download buttons that trick users into installing malicious extensions or bloatware.
+        </p>
+        <p>
+            <strong>YT Downloader was created as an antidote to this ecosystem.</strong> Our goal is simple: provide a clean, lightning-fast, and trustworthy web interface on top of the world's most battle-tested open-source media extraction engines—<a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener noreferrer" style="color:var(--accent-secondary)">yt-dlp</a> and <a href="https://ffmpeg.org" target="_blank" rel="noopener noreferrer" style="color:var(--accent-secondary)">FFmpeg</a>.
+        </p>
+
+        <div class="callout callout--info">
+            <div class="callout__title">100% Free &amp; Ad-Free Commitment</div>
+            <p>
+                We do not display third-party advertisements, we do not require account registration, and we will never sell or monetize user data. The tool is free for personal archival, academic research, and fair-use educational purposes.
+            </p>
+        </div>
+
+        <h2>Core Engineering Principles</h2>
+        <div class="grid-2" style="margin:2rem 0;">
+            <div class="feature-card">
+                <div class="feature-card__icon">🔒</div>
+                <h3 class="feature-card__title">Privacy by Default</h3>
+                <p class="feature-card__desc">
+                    We do not track user identities, browsing habits, or download history. Rate limiting is kept in transient server memory, and completed files are automatically and permanently purged from server disk storage after 24 hours.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-card__icon">⚡</div>
+                <h3 class="feature-card__title">Local-First Architecture</h3>
+                <p class="feature-card__desc">
+                    Media processing occurs locally on your host environment. When you run our container or self-hosted Python script, data flows directly between YouTube and your machine—no third-party proxy interceptors.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-card__icon">🛠️</div>
+                <h3 class="feature-card__title">Open &amp; Auditable Tech</h3>
+                <p class="feature-card__desc">
+                    Built with clean Python, Flask, Jinja2, SQLite, and vanilla modern CSS. Every line of backend routing and queue processing is fully inspectable, transparent, and reproducible.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-card__icon">🛡️</div>
+                <h3 class="feature-card__title">Responsible Archiving</h3>
+                <p class="feature-card__desc">
+                    We support only publicly accessible videos, lecture materials, and creative commons works. The application strictly forbids DRM circumvention and enforces robust SSRF defenses against malicious probing.
+                </p>
+            </div>
+        </div>
+
+        <h2>Technology Stack</h2>
+        <p>
+            YT Downloader is built with modern, lightweight technologies chosen for reliability, deterministic resource usage, and low overhead:
+        </p>
+        <ul style="color:var(--text-secondary); line-height:1.8; margin-left:1.5rem; margin-bottom:1.5rem;">
+            <li><strong>Python 3.11 &amp; Flask</strong>: Powers the responsive HTTP API, server-side template rendering, and asynchronous job life-cycle handling.</li>
+            <li><strong>yt-dlp</strong>: The gold standard open-source command-line audio/video stream extractor, actively maintained by an international open-source community.</li>
+            <li><strong>FFmpeg</strong>: The industry benchmark multimedia framework used for multiplexing DASH audio/video streams, audio transcoding, and ID3 metadata tagging.</li>
+            <li><strong>SQLite (WAL Mode)</strong>: Lightweight, zero-configuration relational database maintaining thread-safe state for active download jobs, batches, and progress updates.</li>
+            <li><strong>Vanilla CSS Design System</strong>: Bespoke modern dark UI utilizing HSL color palettes, subtle glowing gradients, and fluid micro-animations without bloated runtime frameworks.</li>
+        </ul>
+
+        <h2>Who We Are &amp; Open Source</h2>
+        <p>
+            YT Downloader is developed by independent software engineers and digital preservation enthusiasts who believe that access to personal media archives should be open, secure, and respectful of user autonomy. Whether you need to archive public educational lectures before traveling offline or convert your personal creative projects into high-fidelity audio stems, our software provides the tools you need.
+        </p>
+
+        <h2>Get in Touch</h2>
+        <p>
+            Have feedback, noticed a bug with stream extraction, or want to contribute to our self-hosting documentation? Visit our <a href="./contact.html" style="color:var(--accent-secondary); font-weight:600;">Contact &amp; Support page</a> or check our comprehensive <a href="./faq.html" style="color:var(--accent-secondary); font-weight:600;">Frequently Asked Questions</a>.
+        </p>
+    </div>
+</article>
+
+        </div>
+    </main>
+
+    <!-- Comprehensive Global Footer -->
+    <footer class="site-footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Col 1: Brand & Philosophy -->
+                <div class="footer-brand">
+                    <div class="footer-brand__name">
+                        <span style="color:var(--accent-primary)">▶</span> YT Downloader
+                    </div>
+                    <p class="footer-brand__desc">
+                        A private, local-first web utility for downloading publicly accessible media via yt-dlp and FFmpeg. Fast conversion, no signup, zero third-party ads.
+                    </p>
+                    <div class="footer-brand__badge">
+                        <span>🔒</span> 100% Local &amp; Private Storage
+                    </div>
+                </div>
+
+                <!-- Col 2: Core Tools -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Core Tools</h4>
+                    <ul class="footer-links">
+                        <li><a href="./" class="footer-link">Video &amp; Audio Downloader</a></li>
+                        <li><a href="./youtube-to-mp3.html" class="footer-link">YouTube to MP3 Converter</a></li>
+                        <li><a href="./youtube-playlist-downloader.html" class="footer-link">Playlist Downloader</a></li>
+                        <li><a href="./bulk-youtube-downloader.html" class="footer-link">Bulk Queue Downloader</a></li>
+                        <li><a href="./youtube-video-info.html" class="footer-link">Video Info &amp; Thumbnail Checker</a></li>
+                        <li><a href="./how-it-works.html" class="footer-link">How Downloader Works</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Guides & Articles -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Guides &amp; Articles</h4>
+                    <ul class="footer-links">
+                        <li><a href="/blog/what-is-yt-dlp" class="footer-link">What is yt-dlp?</a></li>
+                        <li><a href="/blog/install-ffmpeg-windows-mac-linux" class="footer-link">Install FFmpeg (Win/Mac/Linux)</a></li>
+                        <li><a href="/blog/best-video-quality-for-downloads" class="footer-link">Quality Guide: 4K vs 1080p vs 720p</a></li>
+                        <li><a href="/blog/mp3-vs-m4a-vs-opus" class="footer-link">Audio Guide: MP3 vs M4A vs Opus</a></li>
+                        <li><a href="/blog/yt-dlp-common-errors-and-fixes" class="footer-link">Common yt-dlp Errors &amp; Fixes</a></li>
+                        <li><a href="/blog/ssrf-protection-in-flask-apps" class="footer-link">SSRF Protection in Web Apps</a></li>
+                        <li><a href="./blog.html" class="footer-link" style="color:var(--accent-secondary); font-weight:600;">Browse All 10 Guides &rarr;</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Trust & Developers -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Trust &amp; Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="./faq.html" class="footer-link">Frequently Asked Questions</a></li>
+                        <li><a href="./about.html" class="footer-link">About the Project</a></li>
+                        <li><a href="./contact.html" class="footer-link">Contact &amp; Support</a></li>
+                        <li><a href="./privacy.html" class="footer-link">Privacy Policy</a></li>
+                        <li><a href="./terms.html" class="footer-link">Terms of Service</a></li>
+                        <li><a href="./dmca.html" class="footer-link">DMCA &amp; Takedown Policy</a></li>
+                        <li><a href="./self-host.html" class="footer-link" style="color:#a285fd; font-weight:600;">💻 Self-Host Guide</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom Note -->
+            <div class="footer-bottom">
+                <div>
+                    &copy; 2026 YT Downloader. Powered by <a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener noreferrer" style="color:var(--accent-secondary)">yt-dlp</a> &amp; <a href="https://ffmpeg.org" target="_blank" rel="noopener noreferrer" style="color:var(--accent-secondary)">FFmpeg</a>. For personal, educational, and archival use.
+                </div>
+                <div>
+                    Retention Policy: Downloaded media purged automatically after 24 hours.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Client Scripts -->
+    <script src="./static/js/glow-cursor.js"></script>
+    <script src="./static/js/ui-effects.js"></script>
+    
+    <script src="./static/js/app.js"></script>
+    
+</body>
+</html>
