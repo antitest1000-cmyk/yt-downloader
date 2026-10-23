@@ -639,6 +639,26 @@ class DownloaderService:
 
         return batch
 
+    def _apply_common_ydl_opts(self, ydl_opts: dict):
+        """Add android client fallback and optional cookies to reduce bot checks in cloud environments."""
+        ydl_opts.setdefault('extractor_args', {})
+        ydl_opts['extractor_args']['youtube'] = {
+            'player_client': ['android', 'web']
+        }
+        cookie_path = os.getenv('YTDL_COOKIES_PATH')
+        cookie_text = os.getenv('YTDL_COOKIES_TEXT')
+        if cookie_path and os.path.isfile(cookie_path):
+            ydl_opts['cookiefile'] = cookie_path
+        elif cookie_text:
+            tmp_cookies = os.path.join(self.download_dir, 'cookies.txt')
+            try:
+                if not os.path.exists(tmp_cookies):
+                    with open(tmp_cookies, 'w', encoding='utf-8') as f:
+                        f.write(cookie_text)
+                ydl_opts['cookiefile'] = tmp_cookies
+            except Exception as e:
+                logger.warning("Could not write cookies.txt: %s", e)
+
     # -----------------------------------------------------------------------
     # Playlist Handling
     # -----------------------------------------------------------------------
@@ -664,6 +684,7 @@ class DownloaderService:
             'ignoreerrors': True,
             'allowed_extractors': ['youtube', 'youtube:tab', 'youtube:playlist'],
         }
+        self._apply_common_ydl_opts(ydl_opts)
 
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -728,6 +749,7 @@ class DownloaderService:
             'socket_timeout': 30,
             'allowed_extractors': ['youtube', 'youtube:tab', 'youtube:playlist'],
         }
+        self._apply_common_ydl_opts(ydl_opts)
 
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -814,6 +836,7 @@ class DownloaderService:
                 'progress_hooks': [lambda d: self._progress_hook(job_id, d)],
                 'postprocessor_hooks': [lambda d: self._postprocessor_hook(job_id, d)],
             }
+            self._apply_common_ydl_opts(ydl_opts)
 
             # FFmpeg options — pass the full exe path so yt-dlp resolves the
             # versioned binary (e.g. ffmpeg-win-x86_64-v7.1.exe from imageio_ffmpeg).
