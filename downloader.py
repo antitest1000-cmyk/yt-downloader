@@ -643,32 +643,23 @@ class DownloaderService:
         """
         Apply anti-bot and reliability options to every yt-dlp call.
 
-        Strategy (in priority order):
-        1. If YTDL_COOKIES_PATH env var points to a valid cookies.txt, use it.
-        2. If YTDL_COOKIES_TEXT env var contains cookie data, write it to a
-           temp file and use it.
-        3. If YTDL_COOKIES_BROWSER env var is set (e.g. "chrome", "firefox",
-           "edge", "brave"), extract cookies from that browser automatically.
-           Defaults to trying Chrome → Firefox → Edge in that order when the
-           env var is not set, so it works out-of-the-box for most users.
-        4. Fall back to cookieless mode with iOS/TV client args, which avoids
-           bot checks for most publicly accessible videos.
-        """
-        # --- Player-client strategy -----------------------------------------
-        # 'tv' (priority=40) is the Smart TV innertube client — YouTube treats
-        # it as a first-party trusted device and rarely issues bot challenges.
-        # 'tv_simply' works without any cookies and is a great cookieless
-        # fallback. 'mweb' covers mobile-web browsers.
-        # When cookies ARE available, 'tv' is preferred because it supports them.
-        ydl_opts.setdefault('extractor_args', {})
-        ydl_opts['extractor_args']['youtube'] = {
-            'player_client': ['tv', 'tv_simply', 'mweb'],
-        }
+        yt-dlp maintainers actively update which YouTube innertube clients
+        bypass bot detection with every release. We use player_client=['default']
+        to always defer to whatever the installed yt-dlp version considers best,
+        so every Render redeploy automatically benefits from upstream fixes.
 
-        # --- HTTP headers that reduce fingerprinting ------------------------
-        ydl_opts.setdefault('http_headers', {
-            'Accept-Language': 'en-US,en;q=0.9',
-        })
+        Cookie strategy (optional, in priority order):
+        1. YTDL_COOKIES_PATH env var — path to a Netscape cookies.txt file.
+        2. YTDL_COOKIES_TEXT env var — raw cookie text, written to temp file.
+        3. YTDL_COOKIES_BROWSER env var — auto-extract from a named browser.
+        4. Auto-probe Chrome → Firefox → Edge → Brave (local installs only).
+        """
+        # --- Defer client selection to yt-dlp's own defaults ----------------
+        # 'default' = whatever _DEFAULT_CLIENTS is in the installed yt-dlp.
+        # The maintainers tune this constantly; we just follow their lead.
+        ydl_opts.setdefault('extractor_args', {})
+        ydl_opts['extractor_args'].setdefault('youtube', {})
+        ydl_opts['extractor_args']['youtube']['player_client'] = ['default']
 
         # --- Cookie resolution (priority order) -----------------------------
         cookie_path = os.getenv('YTDL_COOKIES_PATH')
@@ -693,12 +684,10 @@ class DownloaderService:
                 logger.warning("Could not write cookies.txt: %s", e)
 
         else:
-            # Auto-extract from an installed browser (zero-config for local users).
-            # Probe each browser in order; silently skip any that are unavailable.
-            # Set YTDL_COOKIES_BROWSER=none to disable this entirely.
-            if cookie_browser == 'none':
-                logger.debug("Browser cookie extraction disabled via YTDL_COOKIES_BROWSER=none.")
-            else:
+            # Auto-extract from an installed browser (works on local/dev machines).
+            # On cloud servers with no browser installed this silently does nothing.
+            # Set YTDL_COOKIES_BROWSER=none to disable entirely.
+            if cookie_browser != 'none':
                 browsers_to_try = [cookie_browser] if cookie_browser else [
                     'chrome', 'firefox', 'edge', 'brave', 'safari', 'chromium'
                 ]
@@ -707,15 +696,11 @@ class DownloaderService:
                     if not browser:
                         continue
                     try:
-                        # Probe: yt-dlp raises if the browser profile/keyring
-                        # is missing or locked. Catch all errors and try next.
                         _yt_cookies.extract_cookies_from_browser(browser)
-                        # Probe succeeded — use this browser for real downloads
                         ydl_opts['cookiesfrombrowser'] = (browser,)
                         logger.info("Auto-using cookies from browser: %s", browser)
                         break
                     except Exception:
-                        # Not installed, locked, or keyring unavailable — skip
                         continue
 
     # -----------------------------------------------------------------------
