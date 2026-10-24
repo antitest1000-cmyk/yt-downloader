@@ -69,3 +69,22 @@ A self-hosted web application providing a browser-based interface for downloadin
 
 - If deploying behind a reverse proxy (e.g., Nginx, Caddy), configure `ProxyFix` middleware.
 - Optional user authentication (e.g., HTTP Basic Auth or session login) if hosted on a multi-user network.
+
+## Bot-Detection Fix (Phase 9)
+
+YouTube's bot-detection `"Sign in to confirm you're not a bot"` error was resolved by updating
+`_apply_common_ydl_opts` in `downloader.py`:
+
+1. **Player client upgrade**: Switched from `['android', 'web']` to `['tv', 'tv_simply', 'mweb']`.
+   The `tv` (Smart TV) innertube client has priority=40 and is treated as a trusted first-party
+   client by YouTube, rarely triggering bot challenges. `tv_simply` works without cookies. `mweb`
+   covers mobile-web as a fallback.
+
+2. **Automatic browser cookie extraction**: Added zero-config browser cookie detection. On startup,
+   the app probes Chrome → Firefox → Edge → Brave and automatically uses the first available
+   browser's YouTube session cookies. Controlled via `YTDL_COOKIES_BROWSER` env var
+   (set to `none` to disable).
+
+3. **Env vars documented** in `.env.example`: `YTDL_COOKIES_BROWSER`, `YTDL_COOKIES_PATH`,
+   `YTDL_COOKIES_TEXT`.
+
