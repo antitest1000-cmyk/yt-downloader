@@ -4,10 +4,17 @@ services:
     env: python
     region: oregon
     plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
+    buildCommand: |
+      pip install -r requirements.txt
+      curl -fsSL https://deno.land/install.sh | DENO_INSTALL=/opt/deno sh
+      /opt/deno/bin/deno --version
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120
     envVars:
       - key: FLASK_ENV
         value: production
       - key: PYTHON_VERSION
         value: 3.11.9
+      - key: DENO_INSTALL
+        value: /opt/deno
+      - key: PATH
+        value: /opt/deno/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin

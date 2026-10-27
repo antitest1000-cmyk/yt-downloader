@@ -9,6 +9,7 @@ import logging
 import os
 import re
 import secrets
+import shutil
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -377,10 +378,21 @@ def create_app(test_config: dict = None) -> Flask:
                 'queued_jobs': stats['queued_jobs'],
                 'max_batch_size': dl_service.max_batch_size,
                 'max_queue_depth': dl_service.max_queue_depth,
-                'version': '1.0.5',
+                'version': '1.0.6',
                 'cookie_env_keys': [k for k in os.environ if 'cookie' in k.lower()],
                 'has_rendered_cookies': os.path.isfile('/etc/secrets/cookies.txt'),
                 'download_cookie': os.path.isfile(os.path.join(dl_service.download_dir, 'cookies.txt')),
+                'deno_available': bool(
+                    shutil.which('deno')
+                    or os.path.isfile('/opt/deno/bin/deno')
+                    or os.path.isfile(os.path.expanduser('~/.deno/bin/deno'))
+                ),
+                'deno_path': (
+                    shutil.which('deno')
+                    or ('/opt/deno/bin/deno' if os.path.isfile('/opt/deno/bin/deno') else None)
+                    or (os.path.expanduser('~/.deno/bin/deno') if os.path.isfile(os.path.expanduser('~/.deno/bin/deno')) else None)
+                ),
+                'node_available': bool(shutil.which('node')),
             }
         })
 

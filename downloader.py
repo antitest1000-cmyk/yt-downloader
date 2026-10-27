@@ -658,19 +658,34 @@ class DownloaderService:
         4. Auto-probe Chrome → Edge → Firefox → Brave (local installs only).
         """
         # --- Player client priority
-        # 'visionos' and 'android' bypass datacenter bot-detection without requiring PO tokens.
-        # 'web' is included as fallback when valid session cookies are present.
+        # Use 'web' first (best with cookies + PO tokens), then visionos/android as fallback.
         ydl_opts.setdefault('extractor_args', {})
         ydl_opts['extractor_args'].setdefault('youtube', {})
         ydl_opts['extractor_args']['youtube']['player_client'] = [
-            'visionos', 'android', 'web'
+            'web', 'visionos', 'android'
         ]
 
-        # --- JavaScript challenge solver (Node.js + EJS) --------------------
-        # Only enable if node is actually installed on the system
-        if shutil.which('node'):
-            ydl_opts.setdefault('js_runtimes', {'node': {}})
-            ydl_opts.setdefault('remote_components', ['ejs:npm'])
+        # --- JavaScript runtime for PO token / EJS challenge solving ----------
+        # Deno is default and recommended. We check common install paths explicitly
+        # because Render's PATH may not include custom install locations.
+        _deno = (
+            shutil.which('deno')
+            or (os.path.isfile('/opt/deno/bin/deno') and '/opt/deno/bin/deno')
+            or (os.path.isfile(os.path.expanduser('~/.deno/bin/deno')) and os.path.expanduser('~/.deno/bin/deno'))
+        )
+        _node = shutil.which('node')
+
+        if _deno:
+            deno_path = _deno if isinstance(_deno, str) else shutil.which('deno')
+            ydl_opts['js_runtimes'] = {'deno': {'path': deno_path} if deno_path != shutil.which('deno') else {}}
+            ydl_opts['remote_components'] = ['ejs:pip']
+            logger.info("Using Deno JS runtime for PO token solving: %s", deno_path)
+        elif _node:
+            ydl_opts['js_runtimes'] = {'node': {}}
+            ydl_opts['remote_components'] = ['ejs:pip']
+            logger.info("Using Node.js JS runtime for PO token solving")
+        else:
+            logger.warning("No JS runtime found (Deno/Node). yt-dlp may fail on videos requiring PO tokens.")
 
         # --- Additional anti-bot / reliability options ----------------------
         ydl_opts.setdefault('http_headers', {})
