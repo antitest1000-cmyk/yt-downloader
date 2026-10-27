@@ -971,6 +971,105 @@ class DownloaderService:
         }
 
     # -----------------------------------------------------------------------
+    # Direct Stream URL Extraction (browser-side download fast path)
+    # -----------------------------------------------------------------------
+
+    def get_stream_url(self, url: str, fmt: str = 'audio_best') -> dict:
+        """
+        Extract the direct signed YouTube CDN URL for an audio stream.
+
+        The caller (browser) downloads straight from YouTube at their full
+        internet speed — this server never touches the media data.
+
+        Args:
+            url: Validated YouTube video URL.
+            fmt: 'audio_best' (M4A/WebM native) or 'audio_mp3' (best audio,
+                  browser will receive M4A/WebM — MP3 transcoding is skipped
+                  since we're not downloading server-side).
+
+        Returns:
+            dict with keys: stream_url, title, thumbnail, ext, filesize, duration
+        """
+        # Pick format selector — always audio only, no video track needed
+        format_selector = 'bestaudio[ext=m4a]/bestaudio[ext=webm]/bestaudio/best'
+
+        ydl_opts = {
+            'format': format_selector,
+            'quiet': True,
+            'no_warnings': True,
+            'skip_download': True,          # never download — just get the URL
+            'noplaylist': True,
+            'socket_timeout': 20,
+            'allowed_extractors': ['youtube', 'youtube:tab'],
+        }
+        self._apply_common_ydl_opts(ydl_opts)
+
+        try:
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(url, download=False)
+        except yt_dlp.utils.DownloadError as e:
+            err_msg = str(e).lower()
+            if 'sign in' in err_msg or 'bot' in err_msg or 'confirm' in err_msg:
+                # Retry without cookies using visionos client
+                import copy
+                fb_opts = copy.deepcopy(ydl_opts)
+                fb_opts.pop('cookiefile', None)
+                fb_opts.pop('cookiesfrombrowser', None)
+                fb_opts.setdefault('extractor_args', {})
+                fb_opts['extractor_args']['youtube'] = {'player_client': ['visionos', 'android']}
+                try:
+                    with yt_dlp.YoutubeDL(fb_opts) as fb_ydl:
+                        info = fb_ydl.extract_info(url, download=False)
+                except Exception as fb_err:
+                    raise DownloadError(f"Could not extract stream URL: {_sanitize_error(str(fb_err))}")
+            else:
+                raise DownloadError(f"Could not extract stream URL: {_sanitize_error(str(e))}")
+        except Exception as e:
+            raise DownloadError(f"Unexpected error extracting stream URL: {_sanitize_error(str(e))}")
+
+        if info is None:
+            raise DownloadError("Could not extract stream information.")
+
+        # Get the selected format's direct URL
+        requested = info.get('requested_formats') or []
+        stream_url = None
+        ext = 'm4a'
+        filesize = None
+
+        # Try requested_formats first (split streams)
+        for f in requested:
+            if f.get('acodec') and f.get('acodec') != 'none' and f.get('url'):
+                stream_url = f['url']
+                ext = f.get('ext', 'm4a')
+                filesize = f.get('filesize') or f.get('filesize_approx')
+                break
+
+        # Fall back to the top-level URL (pre-merged or single stream)
+        if not stream_url:
+            stream_url = info.get('url')
+            ext = info.get('ext', 'm4a')
+            filesize = info.get('filesize') or info.get('filesize_approx')
+
+        if not stream_url:
+            raise DownloadError("Could not extract a playable stream URL.")
+
+        title = info.get('title', 'audio')
+        thumbnail = info.get('thumbnail') or get_youtube_thumbnail(url)
+        duration = info.get('duration')
+
+        logger.info("Stream URL extracted for '%s' (ext=%s, size=%s)", title, ext, filesize)
+
+        return {
+            'stream_url': stream_url,
+            'title': title,
+            'thumbnail': thumbnail,
+            'ext': ext,
+            'filesize': filesize,
+            'duration': duration,
+            'filename': f"{title}.{ext}",
+        }
+
+    # -----------------------------------------------------------------------
     # Download Task (runs in worker thread)
     # -----------------------------------------------------------------------
 

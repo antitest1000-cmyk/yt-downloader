@@ -396,6 +396,27 @@ def create_app(test_config: dict = None) -> Flask:
             }
         })
 
+    @app.route('/api/stream-url', methods=['POST'])
+    def stream_url():
+        """
+        Extract a direct YouTube CDN audio stream URL.
+        The browser downloads straight from YouTube at full speed —
+        no file ever touches this server.
+        """
+        data = _get_json()
+        url = data.get('url', '').strip()
+        fmt = data.get('format', 'audio_best').strip()   # 'audio_best' or 'audio_mp3'
+
+        if not url:
+            raise InvalidURLError("URL is required.")
+
+        val = validate_url(url)
+        if not val['valid']:
+            raise InvalidURLError(val['error'])
+
+        result = dl_service.get_stream_url(val['normalized'], fmt)
+        return jsonify({'success': True, 'data': result})
+
     @app.route('/api/metadata', methods=['POST'])
     def metadata():
         """Extract video or playlist metadata without downloading."""

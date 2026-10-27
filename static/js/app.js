@@ -34,6 +34,7 @@
     BASE: API_BASE,
     HEALTH: `${API_BASE}/api/health`,
     METADATA: `${API_BASE}/api/metadata`,
+    STREAM_URL: `${API_BASE}/api/stream-url`,
     DOWNLOADS: `${API_BASE}/api/downloads`,
     BATCHES: `${API_BASE}/api/batches`,
     JOBS: `${API_BASE}/api/jobs`,
@@ -1091,6 +1092,58 @@
     const eagerThumbnail = (state.lastFetchedMeta && state.lastFetchedMeta.thumbnail) || getYouTubeThumbnail(url);
     const eagerTitle = (state.lastFetchedMeta && state.lastFetchedMeta.title) || '';
 
+    setSubmitting(dom.btnDownload, true);
+
+    // ---- AUDIO FAST PATH -----------------------------------------------
+    // For audio-only requests: get the signed CDN stream URL from the server,
+    // then trigger a direct browser download. No server disk I/O, full speed.
+    if (formatType === 'audio' && downloadType !== 'playlist') {
+      try {
+        showToast('⚡ Getting direct stream link…', 'info');
+        const streamResp = await fetchAPI(`${API.BASE}/api/stream-url`, {
+          method: 'POST',
+          body: JSON.stringify({ url, format: quality }),
+        });
+
+        if (streamResp.success && streamResp.data && streamResp.data.stream_url) {
+          const d = streamResp.data;
+          const safeTitle = (d.title || 'audio').replace(/[/\\?%*:|"<>]/g, '-');
+          const filename = `${safeTitle}.${d.ext || 'm4a'}`;
+
+          // Trigger browser-native download via a hidden anchor
+          const a = document.createElement('a');
+          a.href = d.stream_url;
+          a.download = filename;
+          a.style.display = 'none';
+          a.setAttribute('referrerpolicy', 'no-referrer');
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(() => document.body.removeChild(a), 2000);
+
+          showToast(`⚡ Downloading "${d.title || 'audio'}" directly at full speed!`, 'success');
+
+          // Show the video info in the preview if not already shown
+          if (d.thumbnail) {
+            dom.metaThumb.style.backgroundImage = `url(${d.thumbnail})`;
+            dom.metaTitle.textContent = d.title || '';
+            dom.metaDetail.textContent = d.ext ? `Direct stream · ${d.ext.toUpperCase()}` : 'Direct stream';
+            dom.metaPreview.classList.remove('hidden');
+          }
+
+          return; // done — no server job needed
+        }
+        // If stream URL extraction failed, fall through to server-side download
+        showToast('Direct stream unavailable, falling back to server queue…', 'info');
+      } catch (fastPathErr) {
+        console.warn('Audio fast-path failed, falling back to server download:', fastPathErr);
+        showToast('Falling back to server download…', 'info');
+      } finally {
+        setSubmitting(dom.btnDownload, false);
+      }
+    }
+    // ---- END AUDIO FAST PATH -------------------------------------------
+
+    // Re-set submitting for the server-side path (was cleared in fast-path finally)
     setSubmitting(dom.btnDownload, true);
 
     try {
