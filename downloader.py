@@ -667,8 +667,8 @@ class DownloaderService:
         # --- JavaScript challenge solver (Node.js + EJS) --------------------
         # Solves signature and throttle (n-parameter) challenges that YouTube
         # uses to block non-browser downloads. Requires Node.js >= 20.
-        ydl_opts.setdefault('js_runtimes', ['node'])
-        ydl_opts.setdefault('remote_components', 'ejs:npm')
+        ydl_opts.setdefault('js_runtimes', {'node': {}})
+        ydl_opts.setdefault('remote_components', ['ejs:npm'])
 
         # --- Additional anti-bot / reliability options ----------------------
         ydl_opts.setdefault('http_headers', {})
