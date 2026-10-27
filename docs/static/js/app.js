@@ -198,43 +198,39 @@
   // =========================================================================
 
   function bindEvents() {
-    // Tabs
-    dom.tabSingle.addEventListener('click', () => switchTab('single'));
-    dom.tabBulk.addEventListener('click', () => switchTab('bulk'));
+    // Tabs (if present)
+    dom.tabSingle?.addEventListener('click', () => switchTab('single'));
+    dom.tabBulk?.addEventListener('click', () => switchTab('bulk'));
 
     // Single URL input
-    dom.urlInput.addEventListener('input', debounce(validateSingleUrl, 300));
-    dom.urlInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') dom.btnDownload.click();
+    dom.urlInput?.addEventListener('input', debounce(validateSingleUrl, 300));
+    dom.urlInput?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') dom.btnDownload?.click();
     });
 
     // Metadata fetch
-    dom.btnFetchMeta.addEventListener('click', fetchMetadata);
+    dom.btnFetchMeta?.addEventListener('click', fetchMetadata);
 
     // Playlist mode toggles
-    if (dom.modePlaylist) {
-      dom.modePlaylist.addEventListener('click', () => setPlaylistMode('playlist'));
-    }
-    if (dom.modeSingle) {
-      dom.modeSingle.addEventListener('click', () => setPlaylistMode('video'));
-    }
+    dom.modePlaylist?.addEventListener('click', () => setPlaylistMode('playlist'));
+    dom.modeSingle?.addEventListener('click', () => setPlaylistMode('video'));
 
     // Format toggle (single)
-    dom.fmtVideo.addEventListener('click', () => setFormat('video'));
-    dom.fmtAudio.addEventListener('click', () => setFormat('audio'));
+    dom.fmtVideo?.addEventListener('click', () => setFormat('video'));
+    dom.fmtAudio?.addEventListener('click', () => setFormat('audio'));
 
     // Download button
-    dom.btnDownload.addEventListener('click', submitSingleDownload);
+    dom.btnDownload?.addEventListener('click', submitSingleDownload);
 
     // Bulk input
-    dom.bulkInput.addEventListener('input', debounce(validateBulkUrls, 500));
+    dom.bulkInput?.addEventListener('input', debounce(validateBulkUrls, 500));
 
     // Format toggle (bulk)
-    dom.bulkFmtVideo.addEventListener('click', () => setBulkFormat('video'));
-    dom.bulkFmtAudio.addEventListener('click', () => setBulkFormat('audio'));
+    dom.bulkFmtVideo?.addEventListener('click', () => setBulkFormat('video'));
+    dom.bulkFmtAudio?.addEventListener('click', () => setBulkFormat('audio'));
 
     // Bulk download button
-    dom.btnBulkDownload.addEventListener('click', submitBulkDownload);
+    dom.btnBulkDownload?.addEventListener('click', submitBulkDownload);
 
     // Structured Batch Assistant events
     if (dom.btnBatchAutoAll) {
@@ -323,15 +319,15 @@
   function switchTab(tab) {
     state.activeTab = tab;
 
-    dom.tabSingle.classList.toggle('active', tab === 'single');
-    dom.tabBulk.classList.toggle('active', tab === 'bulk');
-    dom.tabSingle.setAttribute('aria-selected', tab === 'single');
-    dom.tabBulk.setAttribute('aria-selected', tab === 'bulk');
+    dom.tabSingle?.classList.toggle('active', tab === 'single');
+    dom.tabBulk?.classList.toggle('active', tab === 'bulk');
+    dom.tabSingle?.setAttribute('aria-selected', tab === 'single');
+    dom.tabBulk?.setAttribute('aria-selected', tab === 'bulk');
 
-    dom.panelSingle.classList.toggle('active', tab === 'single');
-    dom.panelBulk.classList.toggle('active', tab === 'bulk');
-    dom.panelSingle.hidden = tab !== 'single';
-    dom.panelBulk.hidden = tab !== 'bulk';
+    dom.panelSingle?.classList.toggle('active', tab === 'single');
+    dom.panelBulk?.classList.toggle('active', tab === 'bulk');
+    if (dom.panelSingle) dom.panelSingle.hidden = tab !== 'single';
+    if (dom.panelBulk) dom.panelBulk.hidden = tab !== 'bulk';
   }
 
   // =========================================================================
@@ -340,10 +336,10 @@
 
   function setFormat(type) {
     state.formatType = type;
-    dom.fmtVideo.classList.toggle('active', type === 'video');
-    dom.fmtAudio.classList.toggle('active', type === 'audio');
-    dom.fmtVideo.setAttribute('aria-checked', type === 'video');
-    dom.fmtAudio.setAttribute('aria-checked', type === 'audio');
+    dom.fmtVideo?.classList.toggle('active', type === 'video');
+    dom.fmtAudio?.classList.toggle('active', type === 'audio');
+    dom.fmtVideo?.setAttribute('aria-checked', type === 'video');
+    dom.fmtAudio?.setAttribute('aria-checked', type === 'audio');
 
     // Show/hide audio sub-options
     if (dom.audioOptions) dom.audioOptions.classList.toggle('hidden', type !== 'audio');
@@ -375,10 +371,10 @@
 
   function setBulkFormat(type) {
     state.bulkFormatType = type;
-    dom.bulkFmtVideo.classList.toggle('active', type === 'video');
-    dom.bulkFmtAudio.classList.toggle('active', type === 'audio');
-    dom.bulkFmtVideo.setAttribute('aria-checked', type === 'video');
-    dom.bulkFmtAudio.setAttribute('aria-checked', type === 'audio');
+    dom.bulkFmtVideo?.classList.toggle('active', type === 'video');
+    dom.bulkFmtAudio?.classList.toggle('active', type === 'audio');
+    dom.bulkFmtVideo?.setAttribute('aria-checked', type === 'video');
+    dom.bulkFmtAudio?.setAttribute('aria-checked', type === 'audio');
 
     const bulkBtnText = document.getElementById('btn-bulk-download-text');
     if (bulkBtnText) {

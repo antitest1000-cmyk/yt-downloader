@@ -437,6 +437,7 @@ a:hover { text-decoration: underline; }
   position: relative;
   z-index: 1;
   overflow: hidden;
+  text-decoration: none;
 }
 
 .tab:hover:not(.active) {
@@ -2586,3 +2587,45 @@ a:hover { text-decoration: underline; }
   filter: grayscale(0.3);
 }
 
+/* ==========================================================================
+   Server Notice Banner
+   ========================================================================== */
+
+.server-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border-radius: 10px;
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  animation: noticeSlideIn 0.3s ease;
+}
+
+@keyframes noticeSlideIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.server-notice--warning {
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #fcd34d;
+}
+
+.server-notice__icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.server-notice__body {
+  color: rgba(253, 211, 77, 0.9);
+}
+
+.server-notice__body strong {
+  color: #fcd34d;
+  display: block;
+  margin-bottom: 0.2rem;
+}

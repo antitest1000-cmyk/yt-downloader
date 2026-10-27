@@ -437,6 +437,7 @@ a:hover { text-decoration: underline; }
   position: relative;
   z-index: 1;
   overflow: hidden;
+  text-decoration: none;
 }
 
 .tab:hover:not(.active) {

@@ -215,9 +215,28 @@ def create_app(test_config: dict = None) -> Flask:
     # ---------------------------------------------------------------
 
     @app.route('/')
+    @app.route('/audio-downloader')
     def index():
-        """Render the main dashboard."""
+        """Render the main audio downloader (default)."""
         return render_template('index.html')
+
+    @app.route('/bulk-audio')
+    @app.route('/bulk-audio-downloader')
+    def bulk_audio():
+        """Dedicated bulk audio downloader."""
+        return render_template('bulk_audio.html')
+
+    @app.route('/video')
+    @app.route('/video-downloader')
+    def video_downloader():
+        """Dedicated single video downloader."""
+        return render_template('video_downloader.html')
+
+    @app.route('/bulk-video')
+    @app.route('/bulk-video-downloader')
+    def bulk_video_downloader():
+        """Dedicated bulk video downloader."""
+        return render_template('bulk_video.html')
 
     @app.route('/favicon.ico')
     def favicon():
@@ -234,7 +253,7 @@ def create_app(test_config: dict = None) -> Flask:
 
     @app.route('/bulk-youtube-downloader')
     def bulk_youtube_downloader():
-        return render_template('bulk_downloader.html')
+        return render_template('bulk_audio.html')
 
     @app.route('/youtube-video-info')
     def youtube_video_info():
