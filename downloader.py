@@ -661,7 +661,7 @@ class DownloaderService:
         ydl_opts.setdefault('extractor_args', {})
         ydl_opts['extractor_args'].setdefault('youtube', {})
         ydl_opts['extractor_args']['youtube']['player_client'] = [
-            'android', 'web_embedded', 'ios', 'mweb'
+            'web', 'web_embedded', 'android', 'ios', 'mweb'
         ]
 
         # --- JavaScript challenge solver (Node.js + EJS) --------------------
