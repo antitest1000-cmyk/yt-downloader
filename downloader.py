@@ -872,7 +872,7 @@ class DownloaderService:
                         info = fb_ydl.extract_info(val['normalized'], download=False)
                 except Exception as fb_err:
                     logger.error("Fallback extraction failed: %s", fb_err)
-                    raise DownloadError(f"Could not extract metadata: {_sanitize_error(str(e))} (Fallback: {fb_err})")
+                    raise DownloadError(f"Could not extract metadata: {_sanitize_error(str(e))}")
             else:
                 raise DownloadError(f"Could not extract metadata: {_sanitize_error(str(e))}")
         except Exception as e:
