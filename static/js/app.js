@@ -1833,6 +1833,13 @@
       const resp = await fetchAPI(`${API.JOBS}/${jobId}/retry`, { method: 'POST' });
       if (resp.success) {
         state.sessionJobIds.add(jobId);
+        const existing = state.jobs.get(jobId);
+        if (existing) {
+          existing.status = 'QUEUED';
+          existing.error_message = null;
+          existing.progress_percent = null;
+          renderJobCard(existing);
+        }
         showToast('Job requeued for retry.', 'success');
         startPolling();
       } else {
