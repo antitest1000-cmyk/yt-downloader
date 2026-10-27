@@ -131,7 +131,18 @@
             </div>
         </div>
 
-        <button type="button" id="btn-download" class="btn btn--primary btn--full">
+        <!-- Terms of Service Agreement -->
+        <div class="tos-agree-bar" id="tos-bar-single">
+            <label class="tos-agree-label" for="tos-check-single">
+                <input type="checkbox" id="tos-check-single" class="tos-check">
+                <span class="tos-agree-text">
+                    I agree to the <a href="{{ url_for('terms') }}" target="_blank" class="tos-link">Terms of Service</a>.
+                    I will only download content I own or have the right to download.
+                </span>
+            </label>
+        </div>
+
+        <button type="button" id="btn-download" class="btn btn--primary btn--full" disabled>
             <span class="btn__text">Download</span>
             <span class="btn__spinner hidden" aria-hidden="true"></span>
         </button>
@@ -278,7 +289,18 @@
             </div>
         </div>
 
-        <button type="button" id="btn-bulk-download" class="btn btn--primary btn--full">
+        <!-- Terms of Service Agreement (Bulk) -->
+        <div class="tos-agree-bar" id="tos-bar-bulk">
+            <label class="tos-agree-label" for="tos-check-bulk">
+                <input type="checkbox" id="tos-check-bulk" class="tos-check">
+                <span class="tos-agree-text">
+                    I agree to the <a href="{{ url_for('terms') }}" target="_blank" class="tos-link">Terms of Service</a>.
+                    I will only download content I own or have the right to download.
+                </span>
+            </label>
+        </div>
+
+        <button type="button" id="btn-bulk-download" class="btn btn--primary btn--full" disabled>
             <span class="btn__text" id="btn-bulk-download-text">Download All</span>
             <span class="btn__spinner hidden" aria-hidden="true"></span>
         </button>

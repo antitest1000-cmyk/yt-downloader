@@ -643,59 +643,84 @@ class DownloaderService:
         """
         Apply anti-bot and reliability options to every yt-dlp call.
 
-        yt-dlp maintainers actively update which YouTube innertube clients
-        bypass bot detection with every release. We use player_client=['default']
-        to always defer to whatever the installed yt-dlp version considers best,
-        so every Render redeploy automatically benefits from upstream fixes.
+        Player client strategy (2025+):
+        - 'tv_embedded' is the most permissive innertube client — it does NOT
+          require a PO token and bypasses the "Sign in to confirm" bot gate on
+          headless/server environments.
+        - 'android' is the next fallback — also very permissive.
+        - 'web_embedded' works without full sign-in for most public videos.
+        - 'ios' and 'mweb' kept as additional fallbacks.
 
         Cookie strategy (optional, in priority order):
         1. YTDL_COOKIES_PATH env var — path to a Netscape cookies.txt file.
         2. YTDL_COOKIES_TEXT env var — raw cookie text, written to temp file.
         3. YTDL_COOKIES_BROWSER env var — auto-extract from a named browser.
-        4. Auto-probe Chrome → Firefox → Edge → Brave (local installs only).
+        4. Auto-probe Chrome → Edge → Firefox → Brave (local installs only).
         """
-        # --- Defer client selection to yt-dlp's own defaults ----------------
-        # 'default' = whatever _DEFAULT_CLIENTS is in the installed yt-dlp.
-        # The maintainers tune this constantly; we just follow their lead.
+        # --- Player client: tv_embedded bypasses bot-detection without PO token
         ydl_opts.setdefault('extractor_args', {})
         ydl_opts['extractor_args'].setdefault('youtube', {})
-        ydl_opts['extractor_args']['youtube']['player_client'] = ['default']
+        ydl_opts['extractor_args']['youtube']['player_client'] = [
+            'android', 'web_embedded', 'ios', 'mweb'
+        ]
+
+        # --- JavaScript challenge solver (Node.js + EJS) --------------------
+        # Solves signature and throttle (n-parameter) challenges that YouTube
+        # uses to block non-browser downloads. Requires Node.js >= 20.
+        ydl_opts.setdefault('js_runtimes', ['node'])
+        ydl_opts.setdefault('remote_components', 'ejs:npm')
+
+        # --- Additional anti-bot / reliability options ----------------------
+        ydl_opts.setdefault('http_headers', {})
+        ydl_opts['http_headers'].setdefault(
+            'User-Agent',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+            'AppleWebKit/537.36 (KHTML, like Gecko) '
+            'Chrome/130.0.0.0 Safari/537.36'
+        )
+        ydl_opts.setdefault('sleep_interval_requests', 1)
+        ydl_opts.setdefault('max_sleep_interval', 5)
 
         # --- Cookie resolution (priority order) -----------------------------
         cookie_path = os.getenv('YTDL_COOKIES_PATH')
         cookie_text = os.getenv('YTDL_COOKIES_TEXT')
         cookie_browser = os.getenv('YTDL_COOKIES_BROWSER', '').strip().lower()
 
-        if cookie_path and os.path.isfile(cookie_path):
-            # Explicit cookies file path — highest priority
-            ydl_opts['cookiefile'] = cookie_path
-            logger.debug("Using cookies file: %s", cookie_path)
+        if cookie_path:
+            if os.path.isfile(cookie_path):
+                # Explicit cookies file path — highest priority
+                ydl_opts['cookiefile'] = cookie_path
+                logger.info("Using cookies file: %s", cookie_path)
+            else:
+                logger.warning(
+                    "YTDL_COOKIES_PATH is set to '%s' but the file does not exist. "
+                    "Falling back to browser/no-cookie mode.", cookie_path
+                )
 
-        elif cookie_text:
+        if 'cookiefile' not in ydl_opts and cookie_text:
             # Inline cookie data written to a temp file
             tmp_cookies = os.path.join(self.download_dir, 'cookies.txt')
             try:
-                if not os.path.exists(tmp_cookies):
-                    with open(tmp_cookies, 'w', encoding='utf-8') as f:
-                        f.write(cookie_text)
+                with open(tmp_cookies, 'w', encoding='utf-8') as f:
+                    f.write(cookie_text)
                 ydl_opts['cookiefile'] = tmp_cookies
-                logger.debug("Using cookies from YTDL_COOKIES_TEXT env var.")
+                logger.info("Using cookies from YTDL_COOKIES_TEXT env var.")
             except Exception as e:
                 logger.warning("Could not write cookies.txt: %s", e)
 
-        else:
+        if 'cookiefile' not in ydl_opts:
             # Auto-extract from an installed browser (works on local/dev machines).
             # On cloud servers with no browser installed this silently does nothing.
             # Set YTDL_COOKIES_BROWSER=none to disable entirely.
             if cookie_browser != 'none':
                 browsers_to_try = [cookie_browser] if cookie_browser else [
-                    'chrome', 'firefox', 'edge', 'brave', 'safari', 'chromium'
+                    'chrome', 'edge', 'firefox', 'brave', 'safari', 'chromium'
                 ]
-                import yt_dlp.cookies as _yt_cookies
                 for browser in browsers_to_try:
                     if not browser:
                         continue
                     try:
+                        import yt_dlp.cookies as _yt_cookies
                         _yt_cookies.extract_cookies_from_browser(browser)
                         ydl_opts['cookiesfrombrowser'] = (browser,)
                         logger.info("Auto-using cookies from browser: %s", browser)
@@ -1153,8 +1178,25 @@ class DownloaderService:
 # ---------------------------------------------------------------------------
 
 def _sanitize_error(error_str: str) -> str:
-    """Remove sensitive information from error messages."""
-    # Remove filesystem paths
+    """Remove sensitive information from error messages and humanize known errors."""
+    # --- Humanize known YouTube errors first ---------------------------------
+    lower = error_str.lower()
+    if 'sign in to confirm' in lower or 'confirm you\'re not a bot' in lower or 'bot' in lower and 'cookie' in lower:
+        return (
+            'YouTube requires sign-in to download this video (bot detection). '
+            'To fix this: set the YTDL_COOKIES_PATH environment variable to a '
+            'Netscape-format cookies.txt exported from your YouTube-signed-in browser, '
+            'or set YTDL_COOKIES_TEXT to the raw cookie content. '
+            'See the .env.example file for details.'
+        )
+    if 'video unavailable' in lower or 'this video is not available' in lower:
+        return 'This video is unavailable (private, region-blocked, or deleted).'
+    if 'private video' in lower:
+        return 'This is a private video and cannot be downloaded without authentication.'
+    if 'age' in lower and ('restricted' in lower or 'gate' in lower or 'confirm' in lower):
+        return 'This video is age-restricted. Provide YouTube cookies via YTDL_COOKIES_PATH to download it.'
+
+    # --- Remove filesystem paths
     sanitized = re.sub(r'[A-Za-z]:\\[^\s]+', '[path]', error_str)
     sanitized = re.sub(r'/[^\s]+/[^\s]+', '[path]', sanitized)
     # Remove potential secrets/tokens
