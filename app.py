@@ -377,7 +377,10 @@ def create_app(test_config: dict = None) -> Flask:
                 'queued_jobs': stats['queued_jobs'],
                 'max_batch_size': dl_service.max_batch_size,
                 'max_queue_depth': dl_service.max_queue_depth,
-                'version': '1.0.3',
+                'version': '1.0.4',
+                'cookie_env_keys': [k for k in os.environ if 'cookie' in k.lower()],
+                'has_rendered_cookies': os.path.isfile('/etc/secrets/cookies.txt'),
+                'download_cookie': os.path.isfile(os.path.join(dl_service.download_dir, 'cookies.txt')),
             }
         })
 

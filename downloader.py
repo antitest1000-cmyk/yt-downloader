@@ -861,13 +861,17 @@ class DownloaderService:
             err_msg = str(e).lower()
             if 'sign in' in err_msg or 'bot' in err_msg or 'confirm' in err_msg or 'cookie' in err_msg:
                 logger.info("Bot challenge or cookie issue in metadata extraction. Retrying with clean visionos client...")
-                fb_opts = dict(ydl_opts)
+                import copy
+                fb_opts = copy.deepcopy(ydl_opts)
                 fb_opts.pop('cookiefile', None)
-                fb_opts['extractor_args'] = {'youtube': {'player_client': ['visionos', 'android']}}
+                fb_opts.pop('cookiesfrombrowser', None)
+                fb_opts.setdefault('extractor_args', {})
+                fb_opts['extractor_args']['youtube'] = {'player_client': ['visionos', 'android']}
                 try:
                     with yt_dlp.YoutubeDL(fb_opts) as fb_ydl:
                         info = fb_ydl.extract_info(val['normalized'], download=False)
-                except Exception:
+                except Exception as fb_err:
+                    logger.error("Fallback extraction failed: %s", fb_err)
                     raise DownloadError(f"Could not extract metadata: {_sanitize_error(str(e))}")
             else:
                 raise DownloadError(f"Could not extract metadata: {_sanitize_error(str(e))}")
@@ -982,9 +986,12 @@ class DownloaderService:
                 err_msg = str(dl_err).lower()
                 if 'sign in' in err_msg or 'bot' in err_msg or 'confirm' in err_msg or 'cookie' in err_msg:
                     logger.info("Bot challenge or cookie failure during download. Retrying with visionos fallback...")
-                    fb_opts = dict(ydl_opts)
+                    import copy
+                    fb_opts = copy.deepcopy(ydl_opts)
                     fb_opts.pop('cookiefile', None)
-                    fb_opts['extractor_args'] = {'youtube': {'player_client': ['visionos', 'android']}}
+                    fb_opts.pop('cookiesfrombrowser', None)
+                    fb_opts.setdefault('extractor_args', {})
+                    fb_opts['extractor_args']['youtube'] = {'player_client': ['visionos', 'android']}
                     with yt_dlp.YoutubeDL(fb_opts) as fb_ydl:
                         info = fb_ydl.extract_info(url, download=True)
                 else:
