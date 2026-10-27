@@ -658,12 +658,12 @@ class DownloaderService:
         4. Auto-probe Chrome → Edge → Firefox → Brave (local installs only).
         """
         # --- Player client priority
-        # 'web' client is required for YouTube session cookies to work properly.
-        # Fallbacks: 'web_embedded', 'android', 'ios', 'mweb'
+        # 'visionos' and 'android' bypass datacenter bot-detection without requiring PO tokens.
+        # 'web' is included as fallback when valid session cookies are present.
         ydl_opts.setdefault('extractor_args', {})
         ydl_opts['extractor_args'].setdefault('youtube', {})
         ydl_opts['extractor_args']['youtube']['player_client'] = [
-            'web', 'web_embedded', 'android', 'ios', 'mweb'
+            'visionos', 'android', 'web'
         ]
 
         # --- JavaScript challenge solver (Node.js + EJS) --------------------
@@ -857,43 +857,55 @@ class DownloaderService:
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(val['normalized'], download=False)
-                if info is None:
-                    raise DownloadError("Could not extract video information.")
-
-                # Determine available qualities
-                formats_available = ['best']
-                if info.get('formats'):
-                    heights = set()
-                    for f in info['formats']:
-                        h = f.get('height')
-                        if h:
-                            heights.add(h)
-                    if any(h >= 1080 for h in heights):
-                        formats_available.append('1080p')
-                    if any(h >= 720 for h in heights):
-                        formats_available.append('720p')
-                    if any(h >= 480 for h in heights):
-                        formats_available.append('480p')
-                formats_available.extend(['audio_best', 'audio_mp3'])
-
-                return {
-                    'title': info.get('title', 'Unknown'),
-                    'duration': info.get('duration'),
-                    'thumbnail': info.get('thumbnail'),
-                    'uploader': info.get('uploader', 'Unknown'),
-                    'view_count': info.get('view_count'),
-                    'upload_date': info.get('upload_date'),
-                    'formats_available': formats_available,
-                    'url_type': val['url_type'],
-                    'has_playlist': val.get('has_playlist', False),
-                    'playlist_id': val.get('playlist_id'),
-                }
-
         except yt_dlp.utils.DownloadError as e:
-            raise DownloadError(f"Could not extract metadata: {_sanitize_error(str(e))}")
+            err_msg = str(e).lower()
+            if 'sign in' in err_msg or 'bot' in err_msg or 'confirm' in err_msg or 'cookie' in err_msg:
+                logger.info("Bot challenge or cookie issue in metadata extraction. Retrying with clean visionos client...")
+                fb_opts = dict(ydl_opts)
+                fb_opts.pop('cookiefile', None)
+                fb_opts['extractor_args'] = {'youtube': {'player_client': ['visionos', 'android']}}
+                try:
+                    with yt_dlp.YoutubeDL(fb_opts) as fb_ydl:
+                        info = fb_ydl.extract_info(val['normalized'], download=False)
+                except Exception:
+                    raise DownloadError(f"Could not extract metadata: {_sanitize_error(str(e))}")
+            else:
+                raise DownloadError(f"Could not extract metadata: {_sanitize_error(str(e))}")
         except Exception as e:
             logger.error("Metadata extraction error: %s", e)
             raise DownloadError("An unexpected error occurred during metadata extraction.")
+
+        if info is None:
+            raise DownloadError("Could not extract video information.")
+
+        # Determine available qualities
+        formats_available = ['best']
+        if info.get('formats'):
+            heights = set()
+            for f in info['formats']:
+                h = f.get('height')
+                if h:
+                    heights.add(h)
+            if any(h >= 1080 for h in heights):
+                formats_available.append('1080p')
+            if any(h >= 720 for h in heights):
+                formats_available.append('720p')
+            if any(h >= 480 for h in heights):
+                formats_available.append('480p')
+        formats_available.extend(['audio_best', 'audio_mp3'])
+
+        return {
+            'title': info.get('title', 'Unknown'),
+            'duration': info.get('duration'),
+            'thumbnail': info.get('thumbnail'),
+            'uploader': info.get('uploader', 'Unknown'),
+            'view_count': info.get('view_count'),
+            'upload_date': info.get('upload_date'),
+            'formats_available': formats_available,
+            'url_type': val['url_type'],
+            'has_playlist': val.get('has_playlist', False),
+            'playlist_id': val.get('playlist_id'),
+        }
 
     # -----------------------------------------------------------------------
     # Download Task (runs in worker thread)
@@ -963,47 +975,60 @@ class DownloaderService:
                     }]
 
             # Download
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                info = ydl.extract_info(url, download=True)
-                if info is None:
-                    raise DownloadError("Download returned no information.")
+            try:
+                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                    info = ydl.extract_info(url, download=True)
+            except yt_dlp.utils.DownloadError as dl_err:
+                err_msg = str(dl_err).lower()
+                if 'sign in' in err_msg or 'bot' in err_msg or 'confirm' in err_msg or 'cookie' in err_msg:
+                    logger.info("Bot challenge or cookie failure during download. Retrying with visionos fallback...")
+                    fb_opts = dict(ydl_opts)
+                    fb_opts.pop('cookiefile', None)
+                    fb_opts['extractor_args'] = {'youtube': {'player_client': ['visionos', 'android']}}
+                    with yt_dlp.YoutubeDL(fb_opts) as fb_ydl:
+                        info = fb_ydl.extract_info(url, download=True)
+                else:
+                    raise
 
-                title = info.get('title', 'Unknown')
+            if info is None:
+                raise DownloadError("Download returned no information.")
 
-                # Find the actual output file
-                output_file = None
-                # Check for the expected filename patterns
-                for ext in ['mp4', 'mkv', 'webm', 'mp3', 'm4a', 'ogg', 'opus', 'flac', 'wav']:
-                    candidate = os.path.join(self.download_dir, f"{safe_name}.{ext}")
-                    if os.path.isfile(candidate):
-                        output_file = candidate
+            title = info.get('title', 'Unknown')
+
+            # Find the actual output file
+            output_file = None
+            # Check for the expected filename patterns
+            for ext in ['mp4', 'mkv', 'webm', 'mp3', 'm4a', 'ogg', 'opus', 'flac', 'wav']:
+                candidate = os.path.join(self.download_dir, f"{safe_name}.{ext}")
+                if os.path.isfile(candidate):
+                    output_file = candidate
+                    break
+
+            if output_file is None:
+                # Try to find any file starting with the job ID
+                for fname in os.listdir(self.download_dir):
+                    if fname.startswith(safe_name):
+                        output_file = os.path.join(self.download_dir, fname)
                         break
 
-                if output_file is None:
-                    # Try to find any file starting with the job ID
-                    for fname in os.listdir(self.download_dir):
-                        if fname.startswith(safe_name):
-                            output_file = os.path.join(self.download_dir, fname)
-                            break
+            if output_file is None:
+                raise DownloadError("Download completed but output file was not found.")
 
-                if output_file is None:
-                    raise DownloadError("Download completed but output file was not found.")
+            filename = os.path.basename(output_file)
+            file_size = os.path.getsize(output_file)
 
-                filename = os.path.basename(output_file)
-                file_size = os.path.getsize(output_file)
+            thumbnail = info.get('thumbnail') or get_youtube_thumbnail(url)
 
-                thumbnail = info.get('thumbnail') or get_youtube_thumbnail(url)
+            # Mark completed
+            with _db_write_lock:
+                conn = get_db(self.db_path)
+                conn.execute(
+                    """UPDATE jobs SET status = 'COMPLETED', title = ?, thumbnail = COALESCE(?, thumbnail),
+                       filename = ?, file_size = ?, progress_percent = 100, updated_at = ? WHERE id = ?""",
+                    (title, thumbnail, filename, file_size, _now(), job_id)
+                )
 
-                # Mark completed
-                with _db_write_lock:
-                    conn = get_db(self.db_path)
-                    conn.execute(
-                        """UPDATE jobs SET status = 'COMPLETED', title = ?, thumbnail = COALESCE(?, thumbnail),
-                           filename = ?, file_size = ?, progress_percent = 100, updated_at = ? WHERE id = ?""",
-                        (title, thumbnail, filename, file_size, _now(), job_id)
-                    )
-
-                logger.info("Job %s completed: %s (%d bytes)", job_id, filename, file_size)
+            logger.info("Job %s completed: %s (%d bytes)", job_id, filename, file_size)
 
         except Exception as e:
             error_msg = _sanitize_error(str(e))

@@ -377,7 +377,7 @@ def create_app(test_config: dict = None) -> Flask:
                 'queued_jobs': stats['queued_jobs'],
                 'max_batch_size': dl_service.max_batch_size,
                 'max_queue_depth': dl_service.max_queue_depth,
-                'version': '1.0.0',
+                'version': '1.0.3',
             }
         })
 
