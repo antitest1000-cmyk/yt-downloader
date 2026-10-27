@@ -686,16 +686,27 @@ class DownloaderService:
         cookie_text = os.getenv('YTDL_COOKIES_TEXT')
         cookie_browser = os.getenv('YTDL_COOKIES_BROWSER', '').strip().lower()
 
-        if cookie_path:
-            if os.path.isfile(cookie_path):
-                # Explicit cookies file path — highest priority
-                ydl_opts['cookiefile'] = cookie_path
-                logger.info("Using cookies file: %s", cookie_path)
-            else:
-                logger.warning(
-                    "YTDL_COOKIES_PATH is set to '%s' but the file does not exist. "
-                    "Falling back to browser/no-cookie mode.", cookie_path
-                )
+        # Check explicit env var first
+        if cookie_path and os.path.isfile(cookie_path):
+            ydl_opts['cookiefile'] = cookie_path
+            logger.info("Using cookies file from YTDL_COOKIES_PATH: %s", cookie_path)
+        # Check standard Render Secret File mount location
+        elif os.path.isfile('/etc/secrets/cookies.txt'):
+            ydl_opts['cookiefile'] = '/etc/secrets/cookies.txt'
+            logger.info("Using cookies file from Render secret: /etc/secrets/cookies.txt")
+        # Check local/root cookies.txt
+        elif os.path.isfile('cookies.txt'):
+            ydl_opts['cookiefile'] = 'cookies.txt'
+            logger.info("Using local cookies file: cookies.txt")
+        elif os.path.isfile(os.path.join(os.path.dirname(__file__), 'cookies.txt')):
+            p = os.path.join(os.path.dirname(__file__), 'cookies.txt')
+            ydl_opts['cookiefile'] = p
+            logger.info("Using relative cookies file: %s", p)
+        elif cookie_path:
+            logger.warning(
+                "YTDL_COOKIES_PATH is set to '%s' but the file does not exist. "
+                "Falling back to other cookie options.", cookie_path
+            )
 
         if 'cookiefile' not in ydl_opts and cookie_text:
             # Inline cookie data written to a temp file
