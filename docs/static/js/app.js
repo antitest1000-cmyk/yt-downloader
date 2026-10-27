@@ -19,7 +19,12 @@
       const saved = localStorage.getItem('ytdl_backend_url');
       if (saved) return saved.replace(/\/+$/, '');
     } catch (_) {}
-    if (window.location.hostname.includes('github.io')) {
+    if (
+      window.location.hostname.includes('github.io') ||
+      window.location.hostname.includes('pages.dev') ||
+      window.location.hostname.includes('cloudflare') ||
+      (!['localhost', '127.0.0.1', ''].includes(window.location.hostname))
+    ) {
       return 'https://yt-downloader-backend-n68l.onrender.com';
     }
     return '';
@@ -183,26 +188,7 @@
     loadJobs();
     setInterval(checkHealth, 30000);
 
-    // Initialize GlowCursor fluid background if available
-    const cursorRoot = document.getElementById('glow-cursor-container');
-    if (cursorRoot && window.initGlowCursor) {
-      try {
-        window.initGlowCursor(cursorRoot, {
-          color: '#6c5ce7',
-          secondaryColor: '#a29bfe',
-          intensity: 1.3,
-          trailWidth: 3.5,
-          linger: 1.4,
-          glow: 1.2,
-          hotspot: 0.8,
-          followSpeed: 0.65,
-          clickBurst: true,
-          theme: 'dark',
-        });
-      } catch (e) {
-        console.warn('GlowCursor initialization skipped:', e);
-      }
-    }
+    // Glow cursor removed per user request
   }
 
   // =========================================================================
@@ -389,7 +375,11 @@
       if (resp.success) {
         dom.statusDot.className = 'status-dot healthy';
         const d = resp.data;
-        dom.statusText.textContent = `${d.active_jobs} active · ${d.queued_jobs} queued`;
+        if (window.innerWidth <= 480) {
+          dom.statusText.textContent = d.active_jobs > 0 ? `${d.active_jobs} active` : 'Online';
+        } else {
+          dom.statusText.textContent = `${d.active_jobs} active · ${d.queued_jobs} queued`;
+        }
         if (d.max_batch_size) state.bulkBatchLimit = Number(d.max_batch_size);
         if (d.max_queue_depth) state.bulkQueueLimit = Number(d.max_queue_depth);
       } else {

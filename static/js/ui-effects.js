@@ -78,6 +78,7 @@
   // Magnetic Button — subtle attraction to cursor (ReactBits Magnet pattern)
   // =========================================================================
   function initMagneticButtons() {
+    if (window.matchMedia('(pointer: coarse)').matches) return;
     const buttons = document.querySelectorAll('.btn--primary, .btn--download');
     buttons.forEach(btn => {
       btn.addEventListener('mousemove', (e) => {
@@ -303,6 +304,41 @@
     initStaggerObserver();
     initTabUnderline();
     initPasteAction();
+    initMobileMenu();
+  }
+
+  // =========================================================================
+  // Mobile Navigation Menu Toggle
+  // =========================================================================
+  function initMobileMenu() {
+    const btn = document.getElementById('mobile-menu-btn');
+    const drawer = document.getElementById('mobile-nav-drawer');
+    if (!btn || !drawer) return;
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = !drawer.hidden;
+      drawer.hidden = isOpen;
+      btn.setAttribute('aria-expanded', String(!isOpen));
+      btn.classList.toggle('active', !isOpen);
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!drawer.hidden && !drawer.contains(e.target) && !btn.contains(e.target)) {
+        drawer.hidden = true;
+        btn.setAttribute('aria-expanded', 'false');
+        btn.classList.toggle('active', false);
+      }
+    });
+
+    // Close drawer when a link is clicked
+    drawer.querySelectorAll('.mobile-nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        drawer.hidden = true;
+        btn.setAttribute('aria-expanded', 'false');
+        btn.classList.toggle('active', false);
+      });
+    });
   }
 
   if (document.readyState === 'loading') {

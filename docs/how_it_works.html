@@ -26,7 +26,6 @@
     
     <!-- Design System Stylesheets -->
     <link rel="stylesheet" href="./static/css/style.css">
-    <link rel="stylesheet" href="./static/css/glow-cursor.css">
     <link rel="stylesheet" href="./static/css/content.css">
 
     <!-- Structured Data (JSON-LD) -->
@@ -52,24 +51,19 @@
 <body>
     <!-- Aurora Mesh Background Canvas -->
     <canvas id="aurora-canvas" aria-hidden="true"></canvas>
-    <!-- Glow Cursor Fluid Background -->
-    <div id="glow-cursor-container" class="glow-cursor-root"></div>
-
     <!-- Header & Navigation -->
     <header class="header" role="banner">
         <div class="header__inner">
             <div class="header__brand">
-                <a href="./" style="text-decoration:none; display:flex; align-items:center;">
-                    <h1 class="header__title">
-                        <span class="header__icon" aria-hidden="true">▶</span>
-                        <span class="shiny-text" data-text="YT Downloader">YT Downloader</span>
-                    </h1>
+                <a href="./" class="header__brand-link" aria-label="YT Downloader Home">
+                    <span class="header__icon" aria-hidden="true">▶</span>
+                    <span class="shiny-text header__brand-title" data-text="YT Downloader">YT Downloader</span>
                 </a>
                 <span class="header__subtitle">Local Media Toolkit</span>
             </div>
 
-            <!-- Global Nav Links -->
-            <nav class="nav-links" aria-label="Main Navigation">
+            <!-- Global Nav Links (Desktop) -->
+            <nav class="nav-links" id="main-nav" aria-label="Main Navigation">
                 <a href="./" class="nav-link ">Downloader</a>
                 <a href="./youtube-to-mp3.html" class="nav-link ">MP3</a>
                 <a href="./youtube-playlist-downloader.html" class="nav-link ">Playlists</a>
@@ -79,11 +73,55 @@
                 <a href="./self-host.html" class="nav-link nav-link--highlight ">Self-Host</a>
             </nav>
 
-            <div class="header__status" id="health-status" title="System Status">
-                <span class="status-dot" id="status-dot"></span>
-                <span class="status-text" id="status-text">Checking...</span>
+            <div class="header__actions">
+                <div class="header__status" id="health-status" title="System Status">
+                    <span class="status-dot" id="status-dot"></span>
+                    <span class="status-text" id="status-text">Checking...</span>
+                </div>
+                <!-- Mobile Navigation Toggle Button -->
+                <button type="button" class="header__menu-btn" id="mobile-menu-btn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-nav-drawer">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
             </div>
         </div>
+
+        <!-- Mobile Navigation Drawer -->
+        <nav class="mobile-nav-drawer" id="mobile-nav-drawer" aria-label="Mobile Navigation" hidden>
+            <div class="mobile-nav-links">
+                <a href="./" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📥</span>
+                    <span>Downloader</span>
+                </a>
+                <a href="./youtube-to-mp3.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">🎵</span>
+                    <span>MP3 Converter</span>
+                </a>
+                <a href="./youtube-playlist-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📋</span>
+                    <span>Playlists</span>
+                </a>
+                <a href="./bulk-youtube-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📦</span>
+                    <span>Bulk URLs</span>
+                </a>
+                <a href="./faq.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">❓</span>
+                    <span>FAQ</span>
+                </a>
+                <a href="./blog.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📖</span>
+                    <span>Blog &amp; Guides</span>
+                </a>
+                <a href="./self-host.html" class="mobile-nav-link mobile-nav-link--highlight ">
+                    <span class="mobile-nav-icon">💻</span>
+                    <span>Self-Host Guide</span>
+                </a>
+            </div>
+        </nav>
     </header>
 
     <main class="main" role="main">
@@ -349,7 +387,6 @@ for family, stype, proto, canonname, sockaddr in resolved_ips:
     <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
 
     <!-- Client Scripts -->
-    <script src="./static/js/glow-cursor.js"></script>
     <script src="./static/js/ui-effects.js"></script>
     
     <script src="./static/js/app.js"></script>

@@ -119,16 +119,16 @@
 
 .content-title {
   font-family: 'Outfit', var(--font-primary);
-  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-size: clamp(1.4rem, 4.5vw, 2.4rem);
   font-weight: 800;
-  line-height: 1.15;
+  line-height: 1.2;
   letter-spacing: -0.025em;
   color: var(--text-primary);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-3);
 }
 
 .content-subtitle {
-  font-size: var(--text-lg);
+  font-size: clamp(0.88rem, 2.5vw, 1.05rem);
   color: var(--text-secondary);
   line-height: var(--leading-relaxed);
   max-width: 720px;
@@ -706,17 +706,34 @@
 
 @media (max-width: 640px) {
   .nav-links {
-    display: none; /* Accessible in mobile footer or menu */
+    display: none; /* Handled by header drawer */
   }
   .footer-grid {
     grid-template-columns: 1fr;
     gap: var(--space-6);
   }
   .content-title {
-    font-size: 1.8rem;
+    font-size: 1.45rem;
+    line-height: 1.25;
+  }
+  .content-subtitle {
+    font-size: 0.92rem;
+  }
+  .content-article__hero {
+    margin-bottom: var(--space-5);
   }
   .prose {
-    font-size: 0.98rem;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .content-title {
+    font-size: 1.35rem;
+  }
+  .content-badge {
+    font-size: 0.72rem;
+    padding: 3px 10px;
   }
 }
 
