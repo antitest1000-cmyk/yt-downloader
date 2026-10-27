@@ -46,3 +46,7 @@ coverage.xml
 
 # Logs
 *.log
+
+# Cookies & Secrets
+cookies.txt
+*cookies*.txt
