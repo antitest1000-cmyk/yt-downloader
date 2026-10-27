@@ -691,9 +691,17 @@ class DownloaderService:
             ydl_opts['cookiefile'] = cookie_path
             logger.info("Using cookies file from YTDL_COOKIES_PATH: %s", cookie_path)
         # Check standard Render Secret File mount location
+        # Render mounts /etc/secrets as read-only, but yt-dlp attempts to write updated session cookies.
+        # So we copy it to download_dir where the process has write permissions.
         elif os.path.isfile('/etc/secrets/cookies.txt'):
-            ydl_opts['cookiefile'] = '/etc/secrets/cookies.txt'
-            logger.info("Using cookies file from Render secret: /etc/secrets/cookies.txt")
+            writable_cookies = os.path.join(self.download_dir, 'cookies.txt')
+            try:
+                shutil.copyfile('/etc/secrets/cookies.txt', writable_cookies)
+                ydl_opts['cookiefile'] = writable_cookies
+                logger.info("Copied Render secret cookies to writable location: %s", writable_cookies)
+            except Exception as e:
+                ydl_opts['cookiefile'] = '/etc/secrets/cookies.txt'
+                logger.warning("Failed to copy Render cookies to writable path (%s), using direct path: %s", e, '/etc/secrets/cookies.txt')
         # Check local/root cookies.txt
         elif os.path.isfile('cookies.txt'):
             ydl_opts['cookiefile'] = 'cookies.txt'
