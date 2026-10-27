@@ -46,6 +46,7 @@
   const STORAGE_KEYS = {
     PERMISSION: 'ytdl_save_history_enabled',
     HISTORY: 'ytdl_video_history',
+    TOS_ACCEPTED: 'ytdl_tos_accepted',
   };
 
   // =========================================================================
@@ -163,6 +164,12 @@
 
     // Toast
     toastContainer: $('#toast-container'),
+
+    // ToS
+    tosCheckSingle: $('#tos-check-single'),
+    tosCheckBulk: $('#tos-check-bulk'),
+    tosBarSingle: $('#tos-bar-single'),
+    tosBarBulk: $('#tos-bar-bulk'),
   };
 
   // =========================================================================
@@ -171,6 +178,7 @@
 
   function init() {
     bindEvents();
+    initToS();
     checkHealth();
     loadJobs();
     setInterval(checkHealth, 30000);
@@ -267,6 +275,60 @@
     if (dom.btnClearHistory) {
       dom.btnClearHistory.addEventListener('click', handleClearHistory);
     }
+
+    // ToS checkboxes
+    if (dom.tosCheckSingle) {
+      dom.tosCheckSingle.addEventListener('change', () => handleTosCheck('single'));
+    }
+    if (dom.tosCheckBulk) {
+      dom.tosCheckBulk.addEventListener('change', () => handleTosCheck('bulk'));
+    }
+  }
+
+  // =========================================================================
+  // Terms of Service Agreement
+  // =========================================================================
+
+  function initToS() {
+    let alreadyAccepted = false;
+    try {
+      alreadyAccepted = localStorage.getItem(STORAGE_KEYS.TOS_ACCEPTED) === 'true';
+    } catch (_) {}
+
+    if (alreadyAccepted) {
+      // Pre-check and enable everything for returning users
+      _setTosState(true);
+    }
+    // Buttons stay disabled (HTML attr) for new users until they check
+  }
+
+  function handleTosCheck(panel) {
+    // Sync both checkboxes — accepting in either panel accepts globally
+    const checked = panel === 'single'
+      ? dom.tosCheckSingle?.checked
+      : dom.tosCheckBulk?.checked;
+
+    _setTosState(!!checked);
+
+    if (checked) {
+      try { localStorage.setItem(STORAGE_KEYS.TOS_ACCEPTED, 'true'); } catch (_) {}
+    } else {
+      try { localStorage.removeItem(STORAGE_KEYS.TOS_ACCEPTED); } catch (_) {}
+    }
+  }
+
+  function _setTosState(accepted) {
+    // Sync both checkboxes
+    if (dom.tosCheckSingle) dom.tosCheckSingle.checked = accepted;
+    if (dom.tosCheckBulk)   dom.tosCheckBulk.checked   = accepted;
+
+    // Toggle bar styling
+    if (dom.tosBarSingle) dom.tosBarSingle.classList.toggle('accepted', accepted);
+    if (dom.tosBarBulk)   dom.tosBarBulk.classList.toggle('accepted', accepted);
+
+    // Enable / disable download buttons
+    if (dom.btnDownload)     dom.btnDownload.disabled     = !accepted;
+    if (dom.btnBulkDownload) dom.btnBulkDownload.disabled = !accepted;
   }
 
   // =========================================================================
@@ -1771,6 +1833,13 @@
       const resp = await fetchAPI(`${API.JOBS}/${jobId}/retry`, { method: 'POST' });
       if (resp.success) {
         state.sessionJobIds.add(jobId);
+        const existing = state.jobs.get(jobId);
+        if (existing) {
+          existing.status = 'QUEUED';
+          existing.error_message = null;
+          existing.progress_percent = null;
+          renderJobCard(existing);
+        }
         showToast('Job requeued for retry.', 'success');
         startPolling();
       } else {

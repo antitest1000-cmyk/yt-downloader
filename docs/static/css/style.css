@@ -2259,3 +2259,98 @@ a:hover { text-decoration: underline; }
     opacity: 1;
   }
 }
+
+/* --------------------------------------------------------------------------
+   Terms of Service Agreement Bar
+   -------------------------------------------------------------------------- */
+
+.tos-agree-bar {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-4);
+  background: rgba(255, 203, 71, 0.06);
+  border: 1px solid rgba(255, 203, 71, 0.2);
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.tos-agree-bar.accepted {
+  background: rgba(0, 212, 168, 0.06);
+  border-color: rgba(0, 212, 168, 0.25);
+}
+
+.tos-agree-label {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  cursor: pointer;
+  width: 100%;
+}
+
+.tos-check {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  border: 2px solid rgba(255, 203, 71, 0.5);
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  top: 1px;
+  transition: all var(--transition-fast);
+}
+
+.tos-check:hover {
+  border-color: var(--status-queued);
+  background: rgba(255, 203, 71, 0.1);
+}
+
+.tos-check:checked {
+  background: var(--status-completed);
+  border-color: var(--status-completed);
+  box-shadow: 0 0 8px rgba(0, 212, 168, 0.4);
+}
+
+.tos-check:checked::after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 4px;
+  width: 5px;
+  height: 9px;
+  border: 2px solid #0a0a10;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg);
+}
+
+.tos-agree-text {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: 1.5;
+  user-select: none;
+}
+
+.tos-link {
+  color: var(--accent-secondary);
+  font-weight: var(--font-semibold);
+  text-decoration: none;
+  transition: opacity var(--transition-fast);
+}
+
+.tos-link:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+/* Slightly dim the download button when ToS is not yet accepted */
+.btn--primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: grayscale(0.3);
+}
+
