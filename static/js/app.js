@@ -1081,11 +1081,13 @@
 
     if (state.isSubmitting) return;
 
-    let quality = dom.qualitySelect.value;
     let formatType = state.formatType;
+    let quality = 'audio_best';
 
     if (formatType === 'audio') {
-      quality = dom.audioFormatSelect.value;
+      quality = dom.audioFormatSelect ? dom.audioFormatSelect.value : 'audio_best';
+    } else {
+      quality = dom.qualitySelect ? dom.qualitySelect.value : 'best';
     }
 
     const playlistMatch = url.match(/[?&]list=([a-zA-Z0-9_-]+)/i);
@@ -1207,7 +1209,7 @@
 
     if (state.isSubmitting) return;
 
-    const quality = dom.bulkQualitySelect.value;
+    const quality = dom.bulkQualitySelect ? dom.bulkQualitySelect.value : (state.bulkFormatType === 'audio' ? 'audio_best' : 'best');
     const formatType = state.bulkFormatType;
 
     setSubmitting(dom.btnBulkDownload, true);
