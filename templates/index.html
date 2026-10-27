@@ -98,8 +98,8 @@
         <div class="options-row">
             <div class="form-group form-group--half">
                 <label for="quality-select" class="form-label">Quality</label>
-                <select id="quality-select" class="form-select">
-                    <option value="best" selected>⚡ Best Available (up to 4K UHD)</option>
+                <select id="quality-select" class="form-select" style="display:none">
+                    <option value="best">⚡ Best Available (up to 4K UHD)</option>
                     <option value="1080p">🎬 1080p Full HD</option>
                     <option value="720p">📺 720p HD</option>
                     <option value="480p">📱 480p SD</option>
@@ -108,25 +108,48 @@
             <div class="form-group form-group--half">
                 <label class="form-label">Format</label>
                 <div class="pill-group" role="radiogroup" aria-label="Output format">
-                    <button type="button" class="pill active" id="fmt-video"
-                            role="radio" aria-checked="true" data-format="video">
+                    <button type="button" class="pill" id="fmt-video"
+                            role="radio" aria-checked="false" data-format="video">
                         🎬 Video
                     </button>
-                    <button type="button" class="pill" id="fmt-audio"
-                            role="radio" aria-checked="false" data-format="audio">
-                        🎵 Audio
+                    <button type="button" class="pill active" id="fmt-audio"
+                            role="radio" aria-checked="true" data-format="audio">
+                        🎵 Audio ⭐
                     </button>
                 </div>
             </div>
         </div>
 
+        <!-- Server Notice: shown when video is selected -->
+        <div id="video-server-notice" class="server-notice server-notice--warning" style="display:none" aria-live="polite">
+            <span class="server-notice__icon">⏳</span>
+            <div class="server-notice__body">
+                <strong>Heads up — video downloads take longer.</strong>
+                We're running on a smaller shared server right now, so heavy video tasks (especially HD/4K) may take a few minutes to queue and process.
+                <br><span style="opacity:.8;">For instant results, try <strong>🎵 Audio</strong> — audio extractions finish in seconds.</span>
+            </div>
+        </div>
+
         <!-- Audio Sub-options -->
-        <div id="audio-options" class="audio-options hidden">
+        <div id="audio-options" class="audio-options">
             <div class="form-group">
                 <label for="audio-format-select" class="form-label">Audio Format</label>
                 <select id="audio-format-select" class="form-select">
                     <option value="audio_best" selected>🎵 Best Quality (M4A / WebM · High Bitrate)</option>
-                    <option value="audio_mp3">🎧 MP3 (Universal Audio)</option>
+                    <option value="audio_mp3">🎧 MP3 (Universal · 192kbps)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Quality picker — only shown for video -->
+        <div id="video-quality-row" style="display:none">
+            <div class="form-group">
+                <label for="quality-select-v" class="form-label">Video Quality</label>
+                <select id="quality-select-v" class="form-select">
+                    <option value="best" selected>⚡ Best Available (up to 4K UHD)</option>
+                    <option value="1080p">🎬 1080p Full HD</option>
+                    <option value="720p">📺 720p HD</option>
+                    <option value="480p">📱 480p SD</option>
                 </select>
             </div>
         </div>
@@ -159,7 +182,7 @@
                     <span class="form-label__icon" aria-hidden="true">📦</span>
                     YouTube URLs (one per line)
                 </label>
-                <span class="form-label__hint" id="bulk-limit-hint">Standard limit: 20 per batch · Large lists structured automatically</span>
+                <span class="form-label__hint" id="bulk-limit-hint">Up to 50 URLs per batch · Large lists auto-structured · <span style="color:#f59e0b">⏳ Video tasks may queue longer on shared server</span></span>
             </div>
             <textarea id="bulk-input" class="form-textarea" rows="6"
                       placeholder="https://www.youtube.com/watch?v=abc123&#10;https://www.youtube.com/watch?v=def456&#10;https://youtu.be/ghi789"

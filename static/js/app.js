@@ -60,8 +60,8 @@
 
   const state = {
     activeTab: 'single',
-    formatType: 'video',
-    bulkFormatType: 'video',
+    formatType: 'audio',
+    bulkFormatType: 'audio',
     playlistMode: 'playlist', // 'playlist' or 'video'
     lastFetchedMeta: null,
     jobs: new Map(),          // job_id -> job data
@@ -187,8 +187,8 @@
     checkHealth();
     loadJobs();
     setInterval(checkHealth, 30000);
-
-    // Glow cursor removed per user request
+    // Default to audio mode on load
+    setFormat('audio');
   }
 
   // =========================================================================
@@ -346,15 +346,26 @@
     dom.fmtVideo.setAttribute('aria-checked', type === 'video');
     dom.fmtAudio.setAttribute('aria-checked', type === 'audio');
 
-    // Show/hide audio options
-    dom.audioOptions.classList.toggle('hidden', type !== 'audio');
+    // Show/hide audio sub-options
+    if (dom.audioOptions) dom.audioOptions.classList.toggle('hidden', type !== 'audio');
 
-    // Update quality options
-    if (type === 'audio') {
-      dom.qualitySelect.closest('.form-group').classList.add('hidden');
-    } else {
-      dom.qualitySelect.closest('.form-group').classList.remove('hidden');
+    // Show/hide server warning notice for video
+    const notice = document.getElementById('video-server-notice');
+    if (notice) notice.style.display = type === 'video' ? 'flex' : 'none';
+
+    // Show/hide video quality row
+    const vqRow = document.getElementById('video-quality-row');
+    if (vqRow) vqRow.style.display = type === 'video' ? 'block' : 'none';
+
+    // Keep legacy quality-select (hidden) in sync with video-quality-select-v
+    const vqSel = document.getElementById('quality-select-v');
+    if (vqSel && dom.qualitySelect) {
+      vqSel.addEventListener('change', () => { dom.qualitySelect.value = vqSel.value; }, { once: false });
+      if (type === 'video') dom.qualitySelect.value = vqSel.value;
     }
+
+    // Hide legacy quality group (was inside options-row, now replaced)
+    if (dom.qualitySelect) dom.qualitySelect.closest('.form-group')?.classList.add('hidden');
   }
 
   function setBulkFormat(type) {
