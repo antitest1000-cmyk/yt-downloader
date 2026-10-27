@@ -32,11 +32,11 @@ logger = logging.getLogger(__name__)
 VALID_STATUSES = {'QUEUED', 'RUNNING', 'COMPLETED', 'FAILED', 'CANCELLED'}
 
 QUALITY_PRESETS = {
-    'best': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best',
-    '1080p': 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo[height<=1080]+bestaudio/best[height<=1080]',
-    '720p': 'bestvideo[height<=720][ext=mp4]+bestaudio[ext=m4a]/bestvideo[height<=720]+bestaudio/best[height<=720]',
-    '480p': 'bestvideo[height<=480][ext=mp4]+bestaudio[ext=m4a]/bestvideo[height<=480]+bestaudio/best[height<=480]',
-    'audio_best': 'bestaudio/best',
+    'best': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best[ext=mp4]/best/b',
+    '1080p': 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo[height<=1080]+bestaudio/best[height<=1080]/best/b',
+    '720p': 'bestvideo[height<=720][ext=mp4]+bestaudio[ext=m4a]/bestvideo[height<=720]+bestaudio/best[height<=720]/best/b',
+    '480p': 'bestvideo[height<=480][ext=mp4]+bestaudio[ext=m4a]/bestvideo[height<=480]+bestaudio/best[height<=480]/best/b',
+    'audio_best': 'bestaudio[ext=m4a]/bestaudio/best',
     'audio_mp3': 'bestaudio/best',
 }
 
@@ -661,7 +661,7 @@ class DownloaderService:
         ydl_opts.setdefault('extractor_args', {})
         ydl_opts['extractor_args'].setdefault('youtube', {})
         ydl_opts['extractor_args']['youtube']['player_client'] = [
-            'web', 'web_embedded', 'android', 'ios', 'mweb'
+            'web_embedded', 'tv_samsung', 'android', 'ios', 'mweb', 'web'
         ]
 
         # --- JavaScript challenge solver (Node.js + EJS) --------------------
