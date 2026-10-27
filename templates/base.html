@@ -64,12 +64,10 @@
 
             <!-- Global Nav Links (Desktop) -->
             <nav class="nav-links" id="main-nav" aria-label="Main Navigation">
-                <a href="{{ url_for('index') }}" class="nav-link {% if request.path == '/' %}active{% endif %}">Downloader</a>
-                <a href="{{ url_for('youtube_to_mp3') }}" class="nav-link {% if request.path == '/youtube-to-mp3' %}active{% endif %}">MP3</a>
+                <a href="{{ url_for('index') }}" class="nav-link {% if request.path == '/' %}active{% endif %}">🎵 Audio &amp; MP3</a>
+                <a href="{{ url_for('bulk_youtube_downloader') }}" class="nav-link {% if request.path == '/bulk-youtube-downloader' %}active{% endif %}">⚡ Bulk Audio</a>
                 <a href="{{ url_for('youtube_playlist_downloader') }}" class="nav-link {% if request.path == '/youtube-playlist-downloader' %}active{% endif %}">Playlists</a>
-                <a href="{{ url_for('bulk_youtube_downloader') }}" class="nav-link {% if request.path == '/bulk-youtube-downloader' %}active{% endif %}">Bulk</a>
                 <a href="{{ url_for('faq') }}" class="nav-link {% if request.path == '/faq' %}active{% endif %}">FAQ</a>
-                <a href="{{ url_for('blog_index') }}" class="nav-link {% if request.path.startswith('/blog') %}active{% endif %}">Blog</a>
                 <a href="{{ url_for('self_host') }}" class="nav-link nav-link--highlight {% if request.path == '/self-host' %}active{% endif %}">Self-Host</a>
             </nav>
 

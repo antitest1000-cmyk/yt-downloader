@@ -190,6 +190,7 @@
     setInterval(checkHealth, 30000);
     // Default to audio mode on load
     setFormat('audio');
+    setBulkFormat('audio');
   }
 
   // =========================================================================
@@ -277,16 +278,13 @@
   // =========================================================================
 
   function initToS() {
-    let alreadyAccepted = false;
+    let alreadyAccepted = true;
     try {
-      alreadyAccepted = localStorage.getItem(STORAGE_KEYS.TOS_ACCEPTED) === 'true';
+      const stored = localStorage.getItem(STORAGE_KEYS.TOS_ACCEPTED);
+      if (stored === 'false') alreadyAccepted = false;
     } catch (_) {}
 
-    if (alreadyAccepted) {
-      // Pre-check and enable everything for returning users
-      _setTosState(true);
-    }
-    // Buttons stay disabled (HTML attr) for new users until they check
+    _setTosState(alreadyAccepted);
   }
 
   function handleTosCheck(panel) {
@@ -358,6 +356,12 @@
     const vqRow = document.getElementById('video-quality-row');
     if (vqRow) vqRow.style.display = type === 'video' ? 'block' : 'none';
 
+    // Update button text
+    const btnText = dom.btnDownload?.querySelector('.btn__text');
+    if (btnText) {
+      btnText.textContent = type === 'audio' ? '⬇ Download Audio' : '⬇ Download Video';
+    }
+
     // Keep legacy quality-select (hidden) in sync with video-quality-select-v
     const vqSel = document.getElementById('quality-select-v');
     if (vqSel && dom.qualitySelect) {
@@ -375,6 +379,11 @@
     dom.bulkFmtAudio.classList.toggle('active', type === 'audio');
     dom.bulkFmtVideo.setAttribute('aria-checked', type === 'video');
     dom.bulkFmtAudio.setAttribute('aria-checked', type === 'audio');
+
+    const bulkBtnText = document.getElementById('btn-bulk-download-text');
+    if (bulkBtnText) {
+      bulkBtnText.textContent = type === 'audio' ? '⬇ Download All Audio (Batch)' : '⬇ Download All Videos';
+    }
   }
 
   // =========================================================================
@@ -1092,58 +1101,6 @@
     const eagerThumbnail = (state.lastFetchedMeta && state.lastFetchedMeta.thumbnail) || getYouTubeThumbnail(url);
     const eagerTitle = (state.lastFetchedMeta && state.lastFetchedMeta.title) || '';
 
-    setSubmitting(dom.btnDownload, true);
-
-    // ---- AUDIO FAST PATH -----------------------------------------------
-    // For audio-only requests: get the signed CDN stream URL from the server,
-    // then trigger a direct browser download. No server disk I/O, full speed.
-    if (formatType === 'audio' && downloadType !== 'playlist') {
-      try {
-        showToast('⚡ Getting direct stream link…', 'info');
-        const streamResp = await fetchAPI(`${API.BASE}/api/stream-url`, {
-          method: 'POST',
-          body: JSON.stringify({ url, format: quality }),
-        });
-
-        if (streamResp.success && streamResp.data && streamResp.data.stream_url) {
-          const d = streamResp.data;
-          const safeTitle = (d.title || 'audio').replace(/[/\\?%*:|"<>]/g, '-');
-          const filename = `${safeTitle}.${d.ext || 'm4a'}`;
-
-          // Trigger browser-native download via a hidden anchor
-          const a = document.createElement('a');
-          a.href = d.stream_url;
-          a.download = filename;
-          a.style.display = 'none';
-          a.setAttribute('referrerpolicy', 'no-referrer');
-          document.body.appendChild(a);
-          a.click();
-          setTimeout(() => document.body.removeChild(a), 2000);
-
-          showToast(`⚡ Downloading "${d.title || 'audio'}" directly at full speed!`, 'success');
-
-          // Show the video info in the preview if not already shown
-          if (d.thumbnail) {
-            dom.metaThumb.style.backgroundImage = `url(${d.thumbnail})`;
-            dom.metaTitle.textContent = d.title || '';
-            dom.metaDetail.textContent = d.ext ? `Direct stream · ${d.ext.toUpperCase()}` : 'Direct stream';
-            dom.metaPreview.classList.remove('hidden');
-          }
-
-          return; // done — no server job needed
-        }
-        // If stream URL extraction failed, fall through to server-side download
-        showToast('Direct stream unavailable, falling back to server queue…', 'info');
-      } catch (fastPathErr) {
-        console.warn('Audio fast-path failed, falling back to server download:', fastPathErr);
-        showToast('Falling back to server download…', 'info');
-      } finally {
-        setSubmitting(dom.btnDownload, false);
-      }
-    }
-    // ---- END AUDIO FAST PATH -------------------------------------------
-
-    // Re-set submitting for the server-side path (was cleared in fast-path finally)
     setSubmitting(dom.btnDownload, true);
 
     try {

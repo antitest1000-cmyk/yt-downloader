@@ -6,10 +6,10 @@
 {% block content %}
 <!-- Tool Header Hero -->
 <div class="content-article__hero content-article__hero--center" style="margin-bottom:var(--space-6);">
-    <span class="content-badge">⚡ Free Local Media Toolkit</span>
-    <h1 class="content-title" style="margin-bottom:var(--space-2);">Download Public YouTube Videos and Audio</h1>
-    <p class="content-subtitle" style="margin: 0 auto; font-size: 1rem;">
-        Clean web interface powered by <strong style="color:#00d9d0;">yt-dlp</strong> and <strong style="color:#a285fd;">FFmpeg</strong>. No signups, no external ads, 100% private.
+    <span class="content-badge">⚡ Instant Audio &amp; MP3 Extractor</span>
+    <h1 class="content-title" style="margin-bottom:var(--space-2);">YouTube Audio &amp; Bulk MP3 Downloader</h1>
+    <p class="content-subtitle" style="margin: 0 auto; font-size: 1.05rem; max-width: 620px;">
+        Fast, clean YouTube audio extraction and 50-track bulk batches. 100% free, private, and no signup needed.
     </p>
 </div>
 
@@ -18,14 +18,14 @@
     <button class="tab active" id="tab-single" role="tab"
             aria-selected="true" aria-controls="panel-single"
             data-tab="single">
-        <span class="tab__icon" aria-hidden="true">📥</span>
-        Single &amp; Playlist
+        <span class="tab__icon" aria-hidden="true">🎵</span>
+        Single Audio
     </button>
     <button class="tab" id="tab-bulk" role="tab"
             aria-selected="false" aria-controls="panel-bulk"
             data-tab="bulk">
-        <span class="tab__icon" aria-hidden="true">📦</span>
-        Bulk URLs
+        <span class="tab__icon" aria-hidden="true">⚡</span>
+        Bulk Audio (Up to 50)
     </button>
 </nav>
 
@@ -155,18 +155,18 @@
         </div>
 
         <!-- Terms of Service Agreement -->
-        <div class="tos-agree-bar" id="tos-bar-single">
+        <div class="tos-agree-bar accepted" id="tos-bar-single">
             <label class="tos-agree-label" for="tos-check-single">
-                <input type="checkbox" id="tos-check-single" class="tos-check">
+                <input type="checkbox" id="tos-check-single" class="tos-check" checked>
                 <span class="tos-agree-text">
                     I agree to the <a href="{{ url_for('terms') }}" target="_blank" class="tos-link">Terms of Service</a>.
-                    I will only download content I own or have the right to download.
+                    Fair use / personal media only.
                 </span>
             </label>
         </div>
 
-        <button type="button" id="btn-download" class="btn btn--primary btn--full" disabled>
-            <span class="btn__text">Download</span>
+        <button type="button" id="btn-download" class="btn btn--primary btn--full">
+            <span class="btn__text">⬇ Download Audio</span>
             <span class="btn__spinner hidden" aria-hidden="true"></span>
         </button>
     </div>
@@ -289,42 +289,43 @@
         <!-- Bulk Options -->
         <div class="options-row">
             <div class="form-group form-group--half">
-                <label for="bulk-quality-select" class="form-label">Quality</label>
-                <select id="bulk-quality-select" class="form-select">
-                    <option value="best" selected>⚡ Best Available (up to 4K)</option>
-                    <option value="1080p">🎬 1080p Full HD</option>
-                    <option value="720p">📺 720p HD</option>
-                    <option value="480p">📱 480p SD</option>
-                </select>
-            </div>
-            <div class="form-group form-group--half">
                 <label class="form-label">Format</label>
                 <div class="pill-group" role="radiogroup" aria-label="Bulk output format">
-                    <button type="button" class="pill active" id="bulk-fmt-video"
-                            role="radio" aria-checked="true" data-format="video">
+                    <button type="button" class="pill active" id="bulk-fmt-audio"
+                            role="radio" aria-checked="true" data-format="audio">
+                        🎵 Audio ⭐ (Fast)
+                    </button>
+                    <button type="button" class="pill" id="bulk-fmt-video"
+                            role="radio" aria-checked="false" data-format="video">
                         🎬 Video
                     </button>
-                    <button type="button" class="pill" id="bulk-fmt-audio"
-                            role="radio" aria-checked="false" data-format="audio">
-                        🎵 Audio
-                    </button>
                 </div>
+            </div>
+            <div class="form-group form-group--half">
+                <label for="bulk-quality-select" class="form-label">Quality</label>
+                <select id="bulk-quality-select" class="form-select">
+                    <option value="audio_best" selected>🎵 Best Quality Audio (High Bitrate)</option>
+                    <option value="audio_mp3">🎧 MP3 Audio (Universal · 192k)</option>
+                    <option value="best">⚡ Best Video (Up to 4K)</option>
+                    <option value="1080p">🎬 1080p Full HD</option>
+                    <option value="720p">📺 720p HD</option>
+                </select>
             </div>
         </div>
 
         <!-- Terms of Service Agreement (Bulk) -->
-        <div class="tos-agree-bar" id="tos-bar-bulk">
+        <div class="tos-agree-bar accepted" id="tos-bar-bulk">
             <label class="tos-agree-label" for="tos-check-bulk">
-                <input type="checkbox" id="tos-check-bulk" class="tos-check">
+                <input type="checkbox" id="tos-check-bulk" class="tos-check" checked>
                 <span class="tos-agree-text">
                     I agree to the <a href="{{ url_for('terms') }}" target="_blank" class="tos-link">Terms of Service</a>.
-                    I will only download content I own or have the right to download.
+                    Fair use / personal media only.
                 </span>
             </label>
         </div>
 
-        <button type="button" id="btn-bulk-download" class="btn btn--primary btn--full" disabled>
-            <span class="btn__text" id="btn-bulk-download-text">Download All</span>
+        <button type="button" id="btn-bulk-download" class="btn btn--primary btn--full">
+            <span class="btn__text" id="btn-bulk-download-text">⬇ Download All Audio (Batch)</span>
             <span class="btn__spinner hidden" aria-hidden="true"></span>
         </button>
     </div>

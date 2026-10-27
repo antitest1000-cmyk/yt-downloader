@@ -34,6 +34,7 @@
     BASE: API_BASE,
     HEALTH: `${API_BASE}/api/health`,
     METADATA: `${API_BASE}/api/metadata`,
+    STREAM_URL: `${API_BASE}/api/stream-url`,
     DOWNLOADS: `${API_BASE}/api/downloads`,
     BATCHES: `${API_BASE}/api/batches`,
     JOBS: `${API_BASE}/api/jobs`,
@@ -60,8 +61,8 @@
 
   const state = {
     activeTab: 'single',
-    formatType: 'video',
-    bulkFormatType: 'video',
+    formatType: 'audio',
+    bulkFormatType: 'audio',
     playlistMode: 'playlist', // 'playlist' or 'video'
     lastFetchedMeta: null,
     jobs: new Map(),          // job_id -> job data
@@ -187,8 +188,9 @@
     checkHealth();
     loadJobs();
     setInterval(checkHealth, 30000);
-
-    // Glow cursor removed per user request
+    // Default to audio mode on load
+    setFormat('audio');
+    setBulkFormat('audio');
   }
 
   // =========================================================================
@@ -276,16 +278,13 @@
   // =========================================================================
 
   function initToS() {
-    let alreadyAccepted = false;
+    let alreadyAccepted = true;
     try {
-      alreadyAccepted = localStorage.getItem(STORAGE_KEYS.TOS_ACCEPTED) === 'true';
+      const stored = localStorage.getItem(STORAGE_KEYS.TOS_ACCEPTED);
+      if (stored === 'false') alreadyAccepted = false;
     } catch (_) {}
 
-    if (alreadyAccepted) {
-      // Pre-check and enable everything for returning users
-      _setTosState(true);
-    }
-    // Buttons stay disabled (HTML attr) for new users until they check
+    _setTosState(alreadyAccepted);
   }
 
   function handleTosCheck(panel) {
@@ -346,15 +345,32 @@
     dom.fmtVideo.setAttribute('aria-checked', type === 'video');
     dom.fmtAudio.setAttribute('aria-checked', type === 'audio');
 
-    // Show/hide audio options
-    dom.audioOptions.classList.toggle('hidden', type !== 'audio');
+    // Show/hide audio sub-options
+    if (dom.audioOptions) dom.audioOptions.classList.toggle('hidden', type !== 'audio');
 
-    // Update quality options
-    if (type === 'audio') {
-      dom.qualitySelect.closest('.form-group').classList.add('hidden');
-    } else {
-      dom.qualitySelect.closest('.form-group').classList.remove('hidden');
+    // Show/hide server warning notice for video
+    const notice = document.getElementById('video-server-notice');
+    if (notice) notice.style.display = type === 'video' ? 'flex' : 'none';
+
+    // Show/hide video quality row
+    const vqRow = document.getElementById('video-quality-row');
+    if (vqRow) vqRow.style.display = type === 'video' ? 'block' : 'none';
+
+    // Update button text
+    const btnText = dom.btnDownload?.querySelector('.btn__text');
+    if (btnText) {
+      btnText.textContent = type === 'audio' ? '⬇ Download Audio' : '⬇ Download Video';
     }
+
+    // Keep legacy quality-select (hidden) in sync with video-quality-select-v
+    const vqSel = document.getElementById('quality-select-v');
+    if (vqSel && dom.qualitySelect) {
+      vqSel.addEventListener('change', () => { dom.qualitySelect.value = vqSel.value; }, { once: false });
+      if (type === 'video') dom.qualitySelect.value = vqSel.value;
+    }
+
+    // Hide legacy quality group (was inside options-row, now replaced)
+    if (dom.qualitySelect) dom.qualitySelect.closest('.form-group')?.classList.add('hidden');
   }
 
   function setBulkFormat(type) {
@@ -363,6 +379,11 @@
     dom.bulkFmtAudio.classList.toggle('active', type === 'audio');
     dom.bulkFmtVideo.setAttribute('aria-checked', type === 'video');
     dom.bulkFmtAudio.setAttribute('aria-checked', type === 'audio');
+
+    const bulkBtnText = document.getElementById('btn-bulk-download-text');
+    if (bulkBtnText) {
+      bulkBtnText.textContent = type === 'audio' ? '⬇ Download All Audio (Batch)' : '⬇ Download All Videos';
+    }
   }
 
   // =========================================================================
