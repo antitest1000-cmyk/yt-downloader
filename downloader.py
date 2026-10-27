@@ -657,18 +657,20 @@ class DownloaderService:
         3. YTDL_COOKIES_BROWSER env var — auto-extract from a named browser.
         4. Auto-probe Chrome → Edge → Firefox → Brave (local installs only).
         """
-        # --- Player client: tv_embedded bypasses bot-detection without PO token
+        # --- Player client priority
+        # 'web' client is required for YouTube session cookies to work properly.
+        # Fallbacks: 'web_embedded', 'android', 'ios', 'mweb'
         ydl_opts.setdefault('extractor_args', {})
         ydl_opts['extractor_args'].setdefault('youtube', {})
         ydl_opts['extractor_args']['youtube']['player_client'] = [
-            'web_embedded', 'tv_samsung', 'android', 'ios', 'mweb', 'web'
+            'web', 'web_embedded', 'android', 'ios', 'mweb'
         ]
 
         # --- JavaScript challenge solver (Node.js + EJS) --------------------
-        # Solves signature and throttle (n-parameter) challenges that YouTube
-        # uses to block non-browser downloads. Requires Node.js >= 20.
-        ydl_opts.setdefault('js_runtimes', {'node': {}})
-        ydl_opts.setdefault('remote_components', ['ejs:npm'])
+        # Only enable if node is actually installed on the system
+        if shutil.which('node'):
+            ydl_opts.setdefault('js_runtimes', {'node': {}})
+            ydl_opts.setdefault('remote_components', ['ejs:npm'])
 
         # --- Additional anti-bot / reliability options ----------------------
         ydl_opts.setdefault('http_headers', {})
@@ -682,18 +684,42 @@ class DownloaderService:
         ydl_opts.setdefault('max_sleep_interval', 5)
 
         # --- Cookie resolution (priority order) -----------------------------
-        cookie_path = os.getenv('YTDL_COOKIES_PATH')
-        cookie_text = os.getenv('YTDL_COOKIES_TEXT')
+        # Support all common environment variable names:
+        # e.g. YTDL_COOKIES_TEXT, cookies.txt (common on Render), COOKIES_TXT, COOKIES
+        raw_cookie_text = None
+        for env_key in ['YTDL_COOKIES_TEXT', 'cookies.txt', 'COOKIES_TXT', 'cookies', 'COOKIES', 'YTDL_COOKIES']:
+            val = os.getenv(env_key)
+            if val and val.strip():
+                v = val.strip()
+                # Check if it looks like raw cookie text or a file path
+                if '\n' in v or 'youtube.com' in v or 'Netscape' in v or '\t' in v:
+                    raw_cookie_text = v
+                    logger.info("Found cookie content in environment variable '%s'", env_key)
+                    break
+                elif os.path.isfile(v):
+                    ydl_opts['cookiefile'] = v
+                    logger.info("Using cookie file from environment variable '%s': %s", env_key, v)
+                    break
+
+        cookie_path = os.getenv('YTDL_COOKIES_PATH') or os.getenv('COOKIES_PATH')
         cookie_browser = os.getenv('YTDL_COOKIES_BROWSER', '').strip().lower()
 
-        # Check explicit env var first
-        if cookie_path and os.path.isfile(cookie_path):
+        # Check explicit path env var first
+        if 'cookiefile' not in ydl_opts and cookie_path and os.path.isfile(cookie_path):
             ydl_opts['cookiefile'] = cookie_path
             logger.info("Using cookies file from YTDL_COOKIES_PATH: %s", cookie_path)
-        # Check standard Render Secret File mount location
-        # Render mounts /etc/secrets as read-only, but yt-dlp attempts to write updated session cookies.
-        # So we copy it to download_dir where the process has write permissions.
-        elif os.path.isfile('/etc/secrets/cookies.txt'):
+        # Check raw cookie text from env vars (e.g. Render env var named cookies.txt or YTDL_COOKIES_TEXT)
+        elif 'cookiefile' not in ydl_opts and raw_cookie_text:
+            tmp_cookies = os.path.join(self.download_dir, 'cookies.txt')
+            try:
+                with open(tmp_cookies, 'w', encoding='utf-8') as f:
+                    f.write(raw_cookie_text)
+                ydl_opts['cookiefile'] = tmp_cookies
+                logger.info("Wrote cookies from environment variable to: %s", tmp_cookies)
+            except Exception as e:
+                logger.warning("Could not write cookies to %s: %s", tmp_cookies, e)
+        # Check standard Render Secret File mount location (/etc/secrets/cookies.txt)
+        elif 'cookiefile' not in ydl_opts and os.path.isfile('/etc/secrets/cookies.txt'):
             writable_cookies = os.path.join(self.download_dir, 'cookies.txt')
             try:
                 shutil.copyfile('/etc/secrets/cookies.txt', writable_cookies)
@@ -703,10 +729,10 @@ class DownloaderService:
                 ydl_opts['cookiefile'] = '/etc/secrets/cookies.txt'
                 logger.warning("Failed to copy Render cookies to writable path (%s), using direct path: %s", e, '/etc/secrets/cookies.txt')
         # Check local/root cookies.txt
-        elif os.path.isfile('cookies.txt'):
+        elif 'cookiefile' not in ydl_opts and os.path.isfile('cookies.txt'):
             ydl_opts['cookiefile'] = 'cookies.txt'
             logger.info("Using local cookies file: cookies.txt")
-        elif os.path.isfile(os.path.join(os.path.dirname(__file__), 'cookies.txt')):
+        elif 'cookiefile' not in ydl_opts and os.path.isfile(os.path.join(os.path.dirname(__file__), 'cookies.txt')):
             p = os.path.join(os.path.dirname(__file__), 'cookies.txt')
             ydl_opts['cookiefile'] = p
             logger.info("Using relative cookies file: %s", p)
@@ -715,17 +741,6 @@ class DownloaderService:
                 "YTDL_COOKIES_PATH is set to '%s' but the file does not exist. "
                 "Falling back to other cookie options.", cookie_path
             )
-
-        if 'cookiefile' not in ydl_opts and cookie_text:
-            # Inline cookie data written to a temp file
-            tmp_cookies = os.path.join(self.download_dir, 'cookies.txt')
-            try:
-                with open(tmp_cookies, 'w', encoding='utf-8') as f:
-                    f.write(cookie_text)
-                ydl_opts['cookiefile'] = tmp_cookies
-                logger.info("Using cookies from YTDL_COOKIES_TEXT env var.")
-            except Exception as e:
-                logger.warning("Could not write cookies.txt: %s", e)
 
         if 'cookiefile' not in ydl_opts:
             # Auto-extract from an installed browser (works on local/dev machines).
@@ -1209,7 +1224,7 @@ def _sanitize_error(error_str: str) -> str:
             'See the .env.example file for details.'
         )
     if 'video unavailable' in lower or 'this video is not available' in lower:
-        return 'This video is unavailable (private, region-blocked, or deleted).'
+        return 'Video unavailable: this video is unavailable (private, region-blocked, or deleted).'
     if 'private video' in lower:
         return 'This is a private video and cannot be downloaded without authentication.'
     if 'age' in lower and ('restricted' in lower or 'gate' in lower or 'confirm' in lower):
