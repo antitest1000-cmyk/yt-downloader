@@ -289,10 +289,10 @@ class DownloaderService:
     def __init__(self, config: dict):
         self.download_dir = os.path.abspath(config.get('DOWNLOAD_DIR', './downloads'))
         self.db_path = config.get('DATABASE_PATH', './ytdl.db')
-        self.max_concurrent = int(config.get('MAX_CONCURRENT_DOWNLOADS', 3))
-        self.max_batch_size = int(config.get('MAX_BATCH_SIZE', 20))
+        self.max_concurrent = int(config.get('MAX_CONCURRENT_DOWNLOADS', 5))
+        self.max_batch_size = int(config.get('MAX_BATCH_SIZE', 50))
         self.max_playlist_items = int(config.get('MAX_PLAYLIST_ITEMS', 50))
-        self.max_queue_depth = int(config.get('MAX_QUEUE_DEPTH', 50))
+        self.max_queue_depth = int(config.get('MAX_QUEUE_DEPTH', 100))
         self.download_timeout = int(config.get('DOWNLOAD_TIMEOUT', 1800))
         self.file_retention_hours = int(config.get('FILE_RETENTION_HOURS', 24))
         self.max_retries = int(config.get('MAX_RETRIES', 3))
@@ -572,17 +572,60 @@ class DownloaderService:
                 (batch_id, len(valid_items), quality, format_type, now, now)
             )
 
-        # Create individual jobs
+        # Create individual jobs — bulk insert all at once, then submit to worker pool in parallel
         jobs = []
+        job_records = []
+        now_ts = _now()
+
+        # Build all job records first (no DB write yet)
         for v in valid_items:
-            try:
-                job_data = self.create_job(
-                    v['url'], quality, format_type, batch_id=batch_id,
-                    title=v['title'], thumbnail=v['thumbnail']
+            val_url = validate_url(v['url'])
+            if not val_url['valid']:
+                errors.append({'url': v['url'][:200], 'error': val_url['error']})
+                continue
+            job_id = str(uuid.uuid4())
+            thumb = v['thumbnail'] or get_youtube_thumbnail(val_url['normalized'])
+            job_records.append({
+                'job_id': job_id,
+                'url': val_url['normalized'],
+                'title': v['title'],
+                'thumbnail': thumb,
+            })
+
+        # Bulk insert all jobs in a single DB transaction for speed
+        if job_records:
+            with _db_write_lock:
+                conn = get_db(self.db_path)
+                conn.executemany(
+                    """INSERT INTO jobs (id, batch_id, url, title, thumbnail, status, quality, format_type, retry_count, max_retries, created_at, updated_at)
+                       VALUES (:job_id, :batch_id, :url, :title, :thumbnail, 'QUEUED', :quality, :format_type, 0, :max_retries, :now, :now)""",
+                    [{
+                        'job_id': r['job_id'],
+                        'batch_id': batch_id,
+                        'url': r['url'],
+                        'title': r['title'],
+                        'thumbnail': r['thumbnail'],
+                        'quality': quality,
+                        'format_type': format_type,
+                        'max_retries': self.max_retries,
+                        'now': now_ts,
+                    } for r in job_records]
                 )
-                jobs.append(job_data)
-            except Exception as e:
-                errors.append({'url': v['url'][:200], 'error': str(e)})
+
+            # Submit all jobs to worker pool simultaneously
+            for r in job_records:
+                self._executor.submit(self._download_task, r['job_id'])
+                jobs.append({
+                    'job_id': r['job_id'],
+                    'status': 'QUEUED',
+                    'url': r['url'],
+                    'title': r['title'],
+                    'thumbnail': r['thumbnail'],
+                    'quality': quality,
+                    'format_type': format_type,
+                })
+
+            logger.info("Batch %s: submitted %d jobs to worker pool", batch_id, len(jobs))
 
         # Update batch status
         if jobs:
@@ -695,8 +738,9 @@ class DownloaderService:
             'AppleWebKit/537.36 (KHTML, like Gecko) '
             'Chrome/130.0.0.0 Safari/537.36'
         )
-        ydl_opts.setdefault('sleep_interval_requests', 1)
-        ydl_opts.setdefault('max_sleep_interval', 5)
+        # No artificial sleep — let yt-dlp decide timing naturally for speed
+        # ydl_opts.setdefault('sleep_interval_requests', 1)  # disabled for bulk speed
+        # ydl_opts.setdefault('max_sleep_interval', 5)       # disabled for bulk speed
 
         # --- Cookie resolution (priority order) -----------------------------
         # Support all common environment variable names:
