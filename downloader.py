@@ -1005,14 +1005,20 @@ class DownloaderService:
                 'outtmpl': output_template,
                 'quiet': True,
                 'no_warnings': True,
-                'noprogress': True,
+                'noprogress': False,          # must be False for progress hooks to fire
                 'noplaylist': True,
                 'socket_timeout': 30,
                 'retries': 3,
-                'fragment_retries': 3,
+                'fragment_retries': 5,
+                'skip_unavailable_fragments': True,
                 'allowed_extractors': ['youtube', 'youtube:tab', 'youtube:playlist'],
                 'progress_hooks': [lambda d: self._progress_hook(job_id, d)],
                 'postprocessor_hooks': [lambda d: self._postprocessor_hook(job_id, d)],
+                # ---- Speed tuning ----
+                'concurrent_fragment_downloads': 16,   # download 16 fragments at once
+                'buffersize': 1024 * 256,              # 256 KB buffer (default is 1 KB)
+                'http_chunk_size': 1024 * 1024 * 10,  # 10 MB chunks
+                'throttledratelimit': 1024 * 100,      # re-pick format if throttled below 100 KB/s
             }
             self._apply_common_ydl_opts(ydl_opts)
 
