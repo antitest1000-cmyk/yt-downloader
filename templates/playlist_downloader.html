@@ -3,6 +3,67 @@
 {% block title %}YouTube Playlist Downloader – Bulk, Up to 50 Items{% endblock %}
 {% block meta_description %}Download entire YouTube playlists up to 50 videos in one click. Multi-threaded batch queue with live progress tracking powered by yt-dlp.{% endblock %}
 
+{% block json_ld %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "YouTube Playlist Downloader",
+      "url": "https://YOURDOMAIN.COM/youtube-playlist-downloader",
+      "description": "Download entire YouTube playlists up to 50 videos as MP3 or MP4 with concurrent batch tracking.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://YOURDOMAIN.COM/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Playlist Downloader",
+          "item": "https://YOURDOMAIN.COM/youtube-playlist-downloader"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How many items can a playlist contain?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The public instance downloads up to 50 items from any valid playlist URL. Self-hosted instances can configure MAX_PLAYLIST_ITEMS to higher thresholds."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I convert the entire playlist to MP3?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. You can select Audio / MP3 format to extract audio tracks from every video in the playlist automatically."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="breadcrumbs" aria-label="Breadcrumb">
     <a href="{{ url_for('index') }}">Home</a>
@@ -13,11 +74,25 @@
 <article class="content-article">
     <header class="content-article__hero content-article__hero--center">
         <span class="content-badge">📋 Batch Media Tool</span>
-        <h1 class="content-title">Download a Full YouTube Playlist</h1>
-        <p class="content-subtitle" style="margin:0 auto;">
-            Queue complete music albums, tutorial series, and educational courses. Multi-threaded background processing with live progress for every track.
+        <h1 class="content-title">Download YouTube Playlists (Up to 50 Items)</h1>
+        <p class="content-subtitle" style="margin:0 auto; max-width:680px;">
+            Queue complete music albums, lecture courses, and tutorial series in MP3 or MP4 with automated track extraction via <strong>yt-dlp</strong>.
         </p>
     </header>
+
+    <div class="trust-strip">
+        <span class="trust-item"><span class="trust-item__icon">📋</span> <strong>Up to 50 Tracks</strong> Automatic Expansion</span>
+        <span class="trust-item"><span class="trust-item__icon">🎵</span> <strong>MP3 or MP4</strong> Preset Formats</span>
+        <span class="trust-item"><span class="trust-item__icon">🚫</span> <strong>No Ads</strong> Zero Popups</span>
+        <span class="trust-item"><span class="trust-item__icon">🔒</span> <strong>24h Auto-Purge</strong> Private Cache</span>
+    </div>
+
+    <div class="usage-notice">
+        <span class="usage-notice__icon">⚖️</span>
+        <div>
+            <strong>Notice:</strong> Please only archive playlists containing media you have permission to download, such as educational courses, public domain collections, or your own channel backups.
+        </div>
+    </div>
 
     <!-- Quick Tool Card for Playlist -->
     <div class="card" style="margin-bottom:var(--space-10);">

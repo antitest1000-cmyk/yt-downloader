@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block title %}Fair Use & Responsible Archival Policy – YT Downloader{% endblock %}
+{% block meta_description %}A balanced overview of fair use, Creative Commons licenses, public domain media, and responsible archiving practices for online media.{% endblock %}
+
+{% block json_ld %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "Fair Use & Responsible Archiving: Understanding the Legal Framework",
+      "description": "A balanced explanation of copyright law, fair use doctrines, Creative Commons, and educational media preservation.",
+      "author": {
+        "@type": "Organization",
+        "name": "YT Downloader Legal Research"
+      },
+      "datePublished": "2026-10-15"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://YOURDOMAIN.COM/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Fair Use Policy",
+          "item": "https://YOURDOMAIN.COM/fair-use"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is it legal to download YouTube videos for personal study?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Downloading content you created, works licensed under Creative Commons, or public domain material is lawful. Using downloads for personal educational study or research may fall under fair use depending on your jurisdiction, though YouTube's Terms of Service generally forbid unauthorized downloads."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is Creative Commons (CC BY)?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Creative Commons licenses allow creators to grant permission for their work to be reused, remixed, and shared by the public under standard terms (such as providing attribution to the original creator)."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="{{ url_for('index') }}">Home</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span class="breadcrumbs__current">Fair Use &amp; Archival Policy</span>
+</div>
+
+<article class="content-article">
+    <header class="content-article__hero content-article__hero--center">
+        <span class="content-badge">⚖️ Ethical &amp; Legal Framework</span>
+        <h1 class="content-title">Fair Use, Copyright &amp; Responsible Archiving</h1>
+        <p class="content-subtitle" style="margin:0 auto; max-width:680px;">
+            A transparent and balanced examination of digital copyright law, fair use doctrines, Creative Commons licenses, and ethical digital preservation.
+        </p>
+    </header>
+
+    <div class="callout callout--info" style="margin-bottom:var(--space-8);">
+        <span class="callout__icon">ℹ️</span>
+        <div class="callout__content">
+            <strong>Important Legal Notice:</strong> The information provided on this page is for educational and informational purposes only and does not constitute formal legal advice. Copyright legislation varies significantly across different countries and jurisdictions.
+        </div>
+    </div>
+
+    <div class="prose">
+        <div class="aeo-box">
+            <div class="aeo-box__header">⚡ Quick Answer / Key Takeaway</div>
+            <p class="aeo-box__content">
+                <strong>Is downloading YouTube videos legal?</strong> Downloading videos you uploaded, content licensed under Creative Commons, or public domain archives is fully lawful. Downloading copyrighted material without rights-holder authorization may infringe copyright laws and violate YouTube's Terms of Service. Under U.S. Fair Use (17 U.S.C. &sect; 107) and international fair dealing provisions, limited personal archiving for criticism, education, research, or news commentary may be legally protected.
+            </p>
+            <ul class="aeo-box__list">
+                <li><strong>Always Permitted:</strong> Your own content, Creative Commons, and Public Domain videos.</li>
+                <li><strong>Fair Use Grounds:</strong> Academic citation, commentary, parody, and non-commercial study.</li>
+                <li><strong>Strictly Prohibited:</strong> Commercial redistribution, DRM circumvention, and copyright piracy.</li>
+            </ul>
+        </div>
+
+        <h2>1. The Core Purpose of YT Downloader</h2>
+        <p>
+            YT Downloader is engineered as an open-source tool for digital preservation, academic research, and lawful personal archiving. It is intended for:
+        </p>
+        <ul>
+            <li><strong>Your Own Content:</strong> Downloading your personal archives, lecture recordings, or video assets from your own channel backups.</li>
+            <li><strong>Creative Commons Media:</strong> Content uploaded with a Creative Commons license (such as CC BY or CC0) allowing reuse and archiving.</li>
+            <li><strong>Public Domain Works:</strong> Historical speeches, government reports, astronomical footage (e.g. NASA), and works whose copyright terms have expired.</li>
+            <li><strong>Offline Educational Study:</strong> Students and educators saving lecture material before traveling to locations with intermittent or costly connectivity.</li>
+        </ul>
+
+        <h2>2. Understanding Fair Use (17 U.S.C. &sect; 107)</h2>
+        <p>
+            In the United States and similar common law jurisdictions, the doctrine of <strong>fair use</strong> allows limited use of copyrighted material without requiring permission from the copyright owner under specific conditions:
+        </p>
+        <ol>
+            <li><strong>Purpose and Character of the Use:</strong> Non-profit, educational, commentary, parody, and transformative research uses are favored over commercial exploitation.</li>
+            <li><strong>Nature of the Copyrighted Work:</strong> Factual and informational works receive less stringent protection than purely creative fictional entertainment.</li>
+            <li><strong>Amount and Substantiality:</strong> Using only a necessary portion of the work is favored over copying the entire whole.</li>
+            <li><strong>Effect on the Market Value:</strong> If the use serves as a direct market substitute that deprives the rights holder of sales or streaming revenue, it is unlikely to qualify as fair use.</li>
+        </ol>
+
+        <div class="table-wrap">
+            <table class="format-table">
+                <thead>
+                    <tr>
+                        <th>Content Type</th>
+                        <th>Legal Status</th>
+                        <th>Permitted Usage</th>
+                        <th>Recommended Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="highlight-col">Own Uploads</td>
+                        <td>Fully Lawful</td>
+                        <td>Unlimited personal &amp; commercial use</td>
+                        <td>Direct backup download</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Creative Commons (CC-BY)</td>
+                        <td>Lawful with Attribution</td>
+                        <td>Remixing, education, archival</td>
+                        <td>Attribute original creator</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Public Domain</td>
+                        <td>Lawful</td>
+                        <td>Free public &amp; personal archiving</td>
+                        <td>Direct download</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Commercial Copyrighted Media</td>
+                        <td>Restricted</td>
+                        <td>Fair use commentary / research only</td>
+                        <td>Do not redistribute or monetize</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>3. YouTube Terms of Service vs. Copyright Law</h2>
+        <p>
+            It is important to distinguish between <strong>contractual agreements (Terms of Service)</strong> and <strong>statutory copyright law</strong>:
+        </p>
+        <ul>
+            <li><strong>YouTube's Terms of Service:</strong> Section 5 of YouTube's Terms generally specifies that users may not access, reproduce, download, or distribute content unless permitted by the Service or with prior written permission. A breach of terms is a contractual matter between the user and the platform.</li>
+            <li><strong>Copyright Law:</strong> Federal and international copyright law governs intellectual property infringement. Extracting a Creative Commons video or a video you produced yourself does not infringe copyright law, regardless of the platform host.</li>
+        </ul>
+
+        <h2>4. Strict Prohibitions on Our Service</h2>
+        <p>
+            YT Downloader strictly prohibits the following uses:
+        </p>
+        <ul>
+            <li>Downloading copyrighted commercial movies, music albums, or television series without authorization.</li>
+            <li>Attempting to bypass DRM (Digital Rights Management) technologies such as Widevine, PlayReady, or FairPlay.</li>
+            <li>Commercial redistribution or monetization of downloaded media without permission from the copyright owner.</li>
+        </ul>
+
+        <h2>5. Frequently Asked Questions</h2>
+        <div class="faq-list">
+            <div class="faq-item">
+                <h3 class="faq-question">Can I legally download YouTube videos for offline personal study?</h3>
+                <div class="faq-answer">
+                    <p>
+                        In many jurisdictions, format-shifting for personal study or research without commercial redistribution falls under fair use or private copy exceptions. However, always respect the specific copyright licenses attached to each individual video.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">How do I verify if a YouTube video is Creative Commons?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Look beneath the video description on YouTube. If the creator chose a Creative Commons license, YouTube explicitly displays: "License: Creative Commons Attribution license (reuse allowed)."
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">What is YT Downloader's DMCA Takedown policy?</h3>
+                <div class="faq-answer">
+                    <p>
+                        We respond promptly to valid DMCA notifications. Because our service automatically deletes media files after 24 hours and hosts no permanent media repository, content takedowns are handled immediately via our <a href="{{ url_for('dmca') }}" style="color:var(--accent-secondary); font-weight:600;">DMCA Policy Page</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>
+{% endblock %}

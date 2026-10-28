@@ -1,0 +1,303 @@
+{% extends "base.html" %}
+
+{% block title %}YouTube to WAV Converter – Uncompressed 16-Bit Audio (yt-dlp){% endblock %}
+{% block meta_description %}Convert YouTube videos to uncompressed 16-bit WAV audio for video editors and audio engineering DAWs. Free, ad-free converter powered by FFmpeg.{% endblock %}
+
+{% block json_ld %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "YouTube to WAV Converter",
+      "url": "https://YOURDOMAIN.COM/youtube-to-wav",
+      "description": "Convert YouTube video audio tracks to uncompressed 16-bit 44.1kHz PCM WAV files.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://YOURDOMAIN.COM/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "YouTube to WAV",
+          "item": "https://YOURDOMAIN.COM/youtube-to-wav"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is a YouTube to WAV conversion truly studio lossless?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "YouTube uploads are compressed at source to ~160 kbps Opus or 128 kbps AAC. Converting to WAV decodes this into uncompressed PCM, preventing further generational compression loss when imported into audio workstations like Ableton, Premiere, or Audacity."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why would someone choose WAV over MP3?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "WAV does not use lossy psychoacoustic compression. Digital Audio Workstations (DAWs) and video editing suites prefer WAV because uncompressed PCM audio requires zero CPU overhead to decode and prevents cumulative compression artifacts."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="{{ url_for('index') }}">Home</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span class="breadcrumbs__current">YouTube to WAV</span>
+</div>
+
+<article class="content-article">
+    <header class="content-article__hero content-article__hero--center">
+        <span class="content-badge">🎚️ Uncompressed Audio Utility</span>
+        <h1 class="content-title">Convert YouTube Videos to WAV (16-Bit PCM)</h1>
+        <p class="content-subtitle" style="margin:0 auto; max-width:680px;">
+            Extract audio tracks into uncompressed 16-bit 44.1kHz WAV format. Ideal for video editors, music producers, and DAW workflows.
+        </p>
+    </header>
+
+    <div class="trust-strip">
+        <span class="trust-item"><span class="trust-item__icon">🎚️</span> <strong>16-Bit PCM</strong> Uncompressed WAV</span>
+        <span class="trust-item"><span class="trust-item__icon">🎹</span> <strong>DAW Compatible</strong> Premiere, FCP, Ableton</span>
+        <span class="trust-item"><span class="trust-item__icon">🚫</span> <strong>No Ads</strong> Clean Interface</span>
+        <span class="trust-item"><span class="trust-item__icon">🔒</span> <strong>24h Auto-Purge</strong> Private Cache</span>
+    </div>
+
+    <div class="usage-notice">
+        <span class="usage-notice__icon">⚖️</span>
+        <div>
+            <strong>Notice:</strong> Only convert audio from speech, sound effects, podcasts, or music that you own, that is licensed under Creative Commons, or that you have permission to edit.
+        </div>
+    </div>
+
+    <!-- Quick Tool Card for WAV -->
+    <div class="card" style="margin-bottom:var(--space-10);">
+        <h2 style="font-size:1.25rem; font-family:'Outfit',sans-serif; margin-top:0; margin-bottom:var(--space-3); color:var(--text-primary);">
+            🎚️ Convert Audio to WAV
+        </h2>
+        <div class="form-group">
+            <label for="url-input" class="form-label">YouTube Video URL</label>
+            <div class="input-row">
+                <div class="input-field-wrap">
+                    <span class="input-field-icon" aria-hidden="true">🎵</span>
+                    <input type="url" id="url-input" class="form-input form-input--has-actions"
+                           placeholder="https://www.youtube.com/watch?v=..." autocomplete="off">
+                    <button type="button" id="btn-paste-url" class="btn-input-action" title="Paste link from clipboard">
+                        <span>📋</span> Paste
+                    </button>
+                </div>
+                <button type="button" id="btn-fetch-meta" class="btn btn--fetch" title="Inspect video info">
+                    <span>✨</span> Inspect
+                </button>
+            </div>
+            <div id="url-feedback" class="form-feedback" role="alert" aria-live="polite"></div>
+        </div>
+
+        <div id="meta-preview" class="meta-preview hidden" aria-live="polite">
+            <div class="meta-preview__thumb" id="meta-thumb"></div>
+            <div class="meta-preview__info">
+                <span class="meta-preview__title" id="meta-title"></span>
+                <span class="meta-preview__detail" id="meta-detail"></span>
+            </div>
+        </div>
+
+        <input type="hidden" id="quality-select" value="audio_best">
+        <div class="options-row" style="margin-top:var(--space-4);">
+            <div class="form-group form-group--half">
+                <label for="audio-format-select" class="form-label">Output Audio Format</label>
+                <select id="audio-format-select" class="form-select">
+                    <option value="audio_best" selected>🎚️ Lossless Source (M4A/WAV · Highest Bitrate)</option>
+                    <option value="audio_mp3">🎧 MP3 (Universal 320kbps)</option>
+                </select>
+            </div>
+            <div class="form-group form-group--half" style="display:flex; align-items:flex-end;">
+                <button type="button" id="btn-download" class="btn btn--primary btn--full">
+                    <span class="btn__text">Convert to WAV</span>
+                    <span class="btn__spinner hidden" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <section class="section" id="jobs-section" style="margin-bottom:var(--space-10);">
+        <div class="history-header">
+            <h2 class="section__title" id="jobs-heading">
+                <span class="section__icon" aria-hidden="true">⬇</span>
+                Download Queue
+                <span class="badge" id="active-count">0</span>
+            </h2>
+            <div class="history-controls">
+                <button type="button" id="btn-clear-history" class="btn btn--secondary btn--small">🗑 Clear</button>
+            </div>
+        </div>
+        <div id="jobs-list" class="jobs-list">
+            <div class="empty-state" id="empty-state">
+                <h3 class="empty-state__heading" id="empty-state-text">No active audio conversions</h3>
+                <p class="empty-state__hint" id="empty-state-hint">Paste a link above and click <strong>Convert to WAV</strong>.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="prose">
+        <div class="aeo-box">
+            <div class="aeo-box__header">⚡ Quick Answer / Key Takeaway</div>
+            <p class="aeo-box__content">
+                <strong>Does converting YouTube to WAV improve sound quality?</strong> No. YouTube broadcasts audio compressed at ~128kbps AAC or ~160kbps Opus. Converting to WAV decodes this compressed audio into uncompressed 16-bit PCM (WAV). While it does not restore lost data, it eliminates further generational loss and provides zero-latency editing in video editors (Premiere, DaVinci) and DAWs (Ableton, FL Studio).
+            </p>
+            <ul class="aeo-box__list">
+                <li><strong>Uncompressed PCM:</strong> 16-bit / 44.1kHz linear PCM audio container.</li>
+                <li><strong>No Generational Degradation:</strong> Prevents re-encoding loss when editing or re-exporting.</li>
+                <li><strong>DAW &amp; NLE Ready:</strong> Native compatibility with audio mixing and video editing software.</li>
+            </ul>
+        </div>
+
+        <h2>The Honest Reality of YouTube to WAV Audio Conversion</h2>
+        <p>
+            Many audio conversion websites advertise "Studio Quality 24-Bit 96kHz Lossless WAV". As audio engineers, we believe in technical honesty: <strong>YouTube never stores uncompressed audio</strong>.
+        </p>
+        <p>
+            When a creator uploads a pristine 24-bit studio master to YouTube, YouTube's ingestion servers immediately encode that audio into two lossy stream formats:
+        </p>
+        <ul>
+            <li><strong>Opus in WebM container</strong> (~160 kbps variable bitrate).</li>
+            <li><strong>AAC in M4A container</strong> (~128 kbps constant bitrate).</li>
+        </ul>
+        <p>
+            Therefore, converting a YouTube video to WAV cannot magically restore frequencies that YouTube's encoder discarded. However, downloading as WAV offers real, practical benefits for creative professionals:
+        </p>
+
+        <div class="grid-2" style="margin:var(--space-6) 0;">
+            <div class="feature-card">
+                <div class="feature-card__icon">🛑</div>
+                <h3 class="feature-card__title">Stops Generational Loss</h3>
+                <p class="feature-card__desc">
+                    If you convert YouTube's lossy audio to MP3, and then import that MP3 into Premiere or Audacity and export your video as MP3 again, the audio undergoes <em>triple compression loss</em>. Converting to WAV decodes to uncompressed PCM, preventing further degradation.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-card__icon">💻</div>
+                <h3 class="feature-card__title">DAW &amp; NLE Native Support</h3>
+                <p class="feature-card__desc">
+                    Video editing software (Adobe Premiere Pro, DaVinci Resolve, Final Cut Pro) and audio workstations (Ableton Live, FL Studio, Logic Pro) handle uncompressed 16-bit WAV timelines with zero CPU decoding latency.
+                </p>
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <table class="format-table">
+                <thead>
+                    <tr>
+                        <th>Format</th>
+                        <th>Compression Type</th>
+                        <th>Bitrate</th>
+                        <th>File Size (4 min)</th>
+                        <th>Primary Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="highlight-col">WAV</td>
+                        <td>Uncompressed PCM</td>
+                        <td>1,411 kbps</td>
+                        <td>~42 MB</td>
+                        <td>Editing in Premiere, Audacity, DAWs, podcasts</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">MP3</td>
+                        <td>Lossy (MPEG-1 Layer 3)</td>
+                        <td>192–320 kbps</td>
+                        <td>~9.2 MB</td>
+                        <td>Everyday listening on phones and car stereos</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">M4A (AAC)</td>
+                        <td>Lossy (Native AAC)</td>
+                        <td>~128 kbps</td>
+                        <td>~3.8 MB</td>
+                        <td>Lightweight listening with zero re-encoding</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Step-by-Step: How to Download WAV Audio</h2>
+        <div class="step-cards">
+            <div class="step-card">
+                <div class="step-card__number">1</div>
+                <div class="step-card__title">Paste Video URL</div>
+                <p class="step-card__text">Copy any public YouTube video or sound effect link and paste it into the converter input above.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">2</div>
+                <div class="step-card__title">PCM Decoding</div>
+                <p class="step-card__text">FFmpeg extracts YouTube's highest quality audio track and decodes it directly into uncompressed 16-bit 44.1kHz WAV.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">3</div>
+                <div class="step-card__title">Import to Project</div>
+                <p class="step-card__text">Save the resulting .wav file. Drag and drop directly into any video editing timeline or digital audio workstation.</p>
+            </div>
+        </div>
+
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-list">
+            <div class="faq-item">
+                <h3 class="faq-question">How large is a WAV file compared to an MP3?</h3>
+                <div class="faq-answer">
+                    <p>
+                        A 4-minute uncompressed 16-bit 44.1kHz stereo WAV file is approximately 40 to 45 megabytes. By comparison, a 320 kbps MP3 of the same song is around 9 to 10 MB, and YouTube's native M4A stream is about 4 MB.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Why do video editors prefer WAV over MP3?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Uncompressed WAV files require zero CPU decompression during timeline playback and scrubbing in editing suites like Premiere Pro, DaVinci Resolve, or Final Cut. MP3s require real-time decompression which can cause stutter or sync drift during multi-track video editing.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">What format is recommended if I just want to listen on my phone?</h3>
+                <div class="faq-answer">
+                    <p>
+                        If you are listening for personal enjoyment on headphones, use our <a href="{{ url_for('youtube_to_mp3') }}" style="color:var(--accent-secondary);">YouTube to MP3 Converter</a> or select native M4A for light file sizes and identical acoustic fidelity.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Does YT Downloader keep files on the server permanently?</h3>
+                <div class="faq-answer">
+                    <p>
+                        No. All generated WAV files are automatically and permanently purged from server memory after 24 hours. No audio logs or download records are stored.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>
+{% endblock %}

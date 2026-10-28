@@ -3,6 +3,67 @@
 {% block title %}YouTube Video Info Checker – Title, Formats, Thumbnail{% endblock %}
 {% block meta_description %}Inspect YouTube video details before downloading. Check title, uploader, exact duration, high-resolution thumbnail, and format availability.{% endblock %}
 
+{% block json_ld %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "YouTube Video Info Checker",
+      "url": "https://YOURDOMAIN.COM/youtube-video-info",
+      "description": "Inspect YouTube video metadata, thumbnail dimensions, codecs, and tags without downloading.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://YOURDOMAIN.COM/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Video Info Checker",
+          "item": "https://YOURDOMAIN.COM/youtube-video-info"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can I download maximum resolution thumbnails?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The inspector fetches the maximum available thumbnail resolution (up to 1280x720 maxresdefault) which you can save directly to your drive."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does inspecting a video consume server download bandwidth?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The inspection tool queries only public metadata headers from YouTube via yt-dlp, without downloading the audio or video streams."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="breadcrumbs" aria-label="Breadcrumb">
     <a href="{{ url_for('index') }}">Home</a>
@@ -13,11 +74,25 @@
 <article class="content-article">
     <header class="content-article__hero content-article__hero--center">
         <span class="content-badge">✨ Metadata Inspector</span>
-        <h1 class="content-title">Inspect a YouTube Video Before Downloading</h1>
-        <p class="content-subtitle" style="margin:0 auto;">
-            Preview video metadata, channel name, exact duration, and full-resolution thumbnail without downloading a single byte of video data.
+        <h1 class="content-title">Inspect YouTube Video Details &amp; Thumbnails</h1>
+        <p class="content-subtitle" style="margin:0 auto; max-width:680px;">
+            Preview video metadata, channel name, exact duration, tags, and full-resolution thumbnail without downloading a single byte of video data.
         </p>
     </header>
+
+    <div class="trust-strip">
+        <span class="trust-item"><span class="trust-item__icon">🖼️</span> <strong>HD Thumbnails</strong> 1280 &times; 720 MaxRes</span>
+        <span class="trust-item"><span class="trust-item__icon">📊</span> <strong>Codec Details</strong> VP9, AV1, AAC</span>
+        <span class="trust-item"><span class="trust-item__icon">🚫</span> <strong>No Ads</strong> Zero Popups</span>
+        <span class="trust-item"><span class="trust-item__icon">⚡</span> <strong>Instant Fetch</strong> 0 MB Download</span>
+    </div>
+
+    <div class="usage-notice">
+        <span class="usage-notice__icon">⚖️</span>
+        <div>
+            <strong>Notice:</strong> Video metadata and thumbnails are fetched from public YouTube APIs for inspection and preview purposes.
+        </div>
+    </div>
 
     <!-- Inspection Tool Card -->
     <div class="card" style="margin-bottom:var(--space-10);">
@@ -90,6 +165,18 @@
 
     <!-- Deep-Dive Content -->
     <div class="prose">
+        <div class="aeo-box">
+            <div class="aeo-box__header">⚡ Quick Answer / Key Takeaway</div>
+            <p class="aeo-box__content">
+                <strong>How does YouTube video metadata inspection work?</strong> The Video Info Checker queries YouTube's initial page payload using yt-dlp in <code>skip_download=True</code> mode. In under a second, it retrieves title, channel author, duration, HD thumbnail, and DASH stream availability without downloading heavy video files or burning data.
+            </p>
+            <ul class="aeo-box__list">
+                <li><strong>Instant Inspection:</strong> Inspects title, duration, author, and available resolutions in &lt;1 second.</li>
+                <li><strong>Data Efficient:</strong> Uses &lt;50KB of bandwidth compared to downloading hundreds of megabytes.</li>
+                <li><strong>HD Cover Extraction:</strong> View and save original high-resolution video thumbnail artwork.</li>
+            </ul>
+        </div>
+
         <h2>Why Inspect a Video Before Downloading?</h2>
         <p>
             Downloading heavy 4K or 1080p video files consumes significant network bandwidth, device battery, and storage space. Using our <strong>YouTube Video Info Checker</strong> lets you verify video information before initiating a download:

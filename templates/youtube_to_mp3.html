@@ -3,6 +3,75 @@
 {% block title %}YouTube to MP3 Converter – Best Quality Audio{% endblock %}
 {% block meta_description %}Convert YouTube videos to high-quality MP3 or native M4A audio. Fast extraction powered by yt-dlp and FFmpeg with no quality loss or third-party ads.{% endblock %}
 
+{% block json_ld %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "YouTube to MP3 Converter",
+      "url": "https://YOURDOMAIN.COM/youtube-to-mp3",
+      "description": "Convert YouTube videos to high-quality 320kbps MP3 or native source M4A audio with ID3 metadata tagging.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://YOURDOMAIN.COM/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "YouTube to MP3",
+          "item": "https://YOURDOMAIN.COM/youtube-to-mp3"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can you really download YouTube audio in 320 kbps MP3?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "YouTube uploads are encoded at ~160 kbps Opus or 128 kbps AAC. When you choose 320 kbps MP3, our FFmpeg encoder transcodes the stream at high quality using libmp3lame, ensuring maximum fidelity without introducing compression artifacts."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which format has higher sound quality: MP3 or M4A?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "M4A has higher fidelity because it extracts YouTube's native AAC audio stream directly without any transcoding or generational loss. MP3 is best when you need playback compatibility with older car stereos and MP3 devices."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are artist tags and track titles embedded automatically?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Our audio extraction pipeline reads YouTube metadata and automatically writes standard ID3 metadata tags (title, artist/uploader, and year) to the generated MP3 file."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="breadcrumbs" aria-label="Breadcrumb">
     <a href="{{ url_for('index') }}">Home</a>
@@ -13,11 +82,27 @@
 <article class="content-article">
     <header class="content-article__hero content-article__hero--center">
         <span class="content-badge">🎵 Audio Extraction Utility</span>
-        <h1 class="content-title">Convert YouTube Videos to MP3</h1>
-        <p class="content-subtitle" style="margin:0 auto;">
-            Extract clean audio tracks from music videos, podcasts, speeches, and interviews. High-bitrate MP3 or native lossless-source M4A via FFmpeg.
+        <h1 class="content-title">Convert YouTube Videos to MP3 (Up to 320 kbps)</h1>
+        <p class="content-subtitle" style="margin:0 auto; max-width:680px;">
+            Extract clean, high-bitrate audio from podcasts, speeches, interviews, and public domain music. Powered by <strong>yt-dlp</strong> and <strong>FFmpeg</strong> with ID3 metadata tagging.
         </p>
     </header>
+
+    <!-- Trust Strip -->
+    <div class="trust-strip">
+        <span class="trust-item"><span class="trust-item__icon">🎧</span> <strong>320 kbps CBR</strong> LAME Encoder</span>
+        <span class="trust-item"><span class="trust-item__icon">🏷️</span> <strong>ID3 Metadata</strong> Auto-Tagged</span>
+        <span class="trust-item"><span class="trust-item__icon">🚫</span> <strong>No Ads</strong> Zero Popups</span>
+        <span class="trust-item"><span class="trust-item__icon">⚡</span> <strong>No Signup</strong> 1-Click Save</span>
+    </div>
+
+    <!-- Usage Notice -->
+    <div class="usage-notice">
+        <span class="usage-notice__icon">⚖️</span>
+        <div>
+            <strong>Audio Archival Notice:</strong> Only download audio tracks from videos you own, that are licensed under Creative Commons, or that you have permission to archive. We do not support downloading copyrighted commercial music.
+        </div>
+    </div>
 
     <!-- Quick Tool Card for Audio -->
     <div class="card" style="margin-bottom:var(--space-10);">

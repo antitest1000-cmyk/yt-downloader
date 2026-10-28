@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+
+{% block title %}Supported Sites & Platforms – Tested with yt-dlp{% endblock %}
+{% block meta_description %}Comprehensive list of streaming platforms verified and supported by YT Downloader, including YouTube, Vimeo, SoundCloud, Bandcamp, and Twitch.{% endblock %}
+
+{% block json_ld %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "YT Downloader Supported Platforms",
+      "url": "https://YOURDOMAIN.COM/supported-sites",
+      "description": "List of video and audio streaming services supported for extraction via yt-dlp and FFmpeg.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://YOURDOMAIN.COM/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Supported Sites",
+          "item": "https://YOURDOMAIN.COM/supported-sites"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does this tool support DRM-protected content (like Netflix or Spotify)?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. DRM-protected, encrypted, or paywalled streaming platforms are strictly unsupported. The tool works only with publicly accessible or Creative Commons media."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I download private or unlisted YouTube videos?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Unlisted videos with a direct share URL are supported. Private videos requiring Google account authentication are not accessible by our public instance."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="{{ url_for('index') }}">Home</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span class="breadcrumbs__current">Supported Sites</span>
+</div>
+
+<article class="content-article">
+    <header class="content-article__hero content-article__hero--center">
+        <span class="content-badge">🌐 Platform Compatibility</span>
+        <h1 class="content-title">Supported Sites &amp; Streaming Platforms</h1>
+        <p class="content-subtitle" style="margin:0 auto; max-width:680px;">
+            An honest, tested breakdown of platforms supported by our media extraction engine. We support only publicly available content without DRM circumvention.
+        </p>
+    </header>
+
+    <div class="trust-strip">
+        <span class="trust-item"><span class="trust-item__icon">✅</span> <strong>Public Videos</strong> Full Support</span>
+        <span class="trust-item"><span class="trust-item__icon">🚫</span> <strong>No DRM Bypass</strong> Honest Compliance</span>
+        <span class="trust-item"><span class="trust-item__icon">🎧</span> <strong>Audio &amp; Video</strong> MP3, M4A, MP4</span>
+        <span class="trust-item"><span class="trust-item__icon">🔒</span> <strong>Privacy First</strong> 24h Purge</span>
+    </div>
+
+    <div class="prose">
+        <div class="aeo-box">
+            <div class="aeo-box__header">⚡ Quick Answer / Key Takeaway</div>
+            <p class="aeo-box__content">
+                <strong>What streaming websites are supported?</strong> Powered by the open-source <strong>yt-dlp</strong> core, YT Downloader supports public media extraction from YouTube (Standard videos, Shorts, and Playlists), Vimeo, SoundCloud, Bandcamp, Twitter/X, and Twitch Clips. We strictly do NOT support DRM-encrypted services (such as Netflix, Spotify, or Disney+) or paywalled content.
+            </p>
+            <ul class="aeo-box__list">
+                <li><strong>Public Streams Only:</strong> No login or password bypass required.</li>
+                <li><strong>Zero DRM Circumvention:</strong> Pure adherence to open web media standards.</li>
+                <li><strong>Batch Compatible:</strong> Queue URLs from any verified platform simultaneously.</li>
+            </ul>
+        </div>
+
+        <h2>Tested &amp; Verified Platforms</h2>
+        <p>
+            Because our service is powered by the open-source <strong>yt-dlp</strong> extractor engine, our application can extract streams from numerous major media hosts. Below are the platforms our engineering team actively verifies:
+        </p>
+
+        <div class="table-wrap">
+            <table class="format-table">
+                <thead>
+                    <tr>
+                        <th>Platform</th>
+                        <th>Video Support</th>
+                        <th>Audio (MP3/M4A)</th>
+                        <th>Playlist Support</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="highlight-col">YouTube</td>
+                        <td>Up to 4K / 8K</td>
+                        <td>Yes (320k / AAC)</td>
+                        <td>Up to 50 items</td>
+                        <td>Supports Standard, Shorts, &amp; Music links</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Vimeo</td>
+                        <td>Up to 1080p / 4K</td>
+                        <td>Yes</td>
+                        <td>Single items</td>
+                        <td>Public, non-password protected videos only</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">SoundCloud</td>
+                        <td>N/A</td>
+                        <td>Yes (MP3)</td>
+                        <td>Public sets</td>
+                        <td>High-quality audio streaming tracks</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Bandcamp</td>
+                        <td>N/A</td>
+                        <td>Yes (128&ndash;320k)</td>
+                        <td>Single tracks</td>
+                        <td>Public streaming previews &amp; free tracks</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Twitch</td>
+                        <td>Up to 1080p60</td>
+                        <td>Yes</td>
+                        <td>Clips &amp; VODs</td>
+                        <td>Public broadcast highlights and clips</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Strict Limitations &amp; What We Do NOT Support</h2>
+        <p>
+            In adherence to ethical software engineering and copyright protection laws:
+        </p>
+        <ul>
+            <li><strong>DRM-Protected Services:</strong> We do NOT support and will never attempt to decrypt services protected by Widevine, FairPlay, or PlayReady DRM (e.g. Netflix, Amazon Prime, Spotify, Disney+, Hulu).</li>
+            <li><strong>Paywalled or Private Content:</strong> Videos requiring paid subscription tiers, patron access, or account login credentials are not accessible.</li>
+            <li><strong>Region-Blocked Content:</strong> We do not operate circumvention proxies or automated IP hopping to bypass platform geolocation restrictions.</li>
+        </ul>
+
+        <h2>Step-by-Step: Testing a Link from Any Supported Site</h2>
+        <div class="step-cards">
+            <div class="step-card">
+                <div class="step-card__number">1</div>
+                <div class="step-card__title">Copy Public Link</div>
+                <p class="step-card__text">Copy the URL of any public video or audio track from YouTube, Vimeo, or SoundCloud.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">2</div>
+                <div class="step-card__title">Inspect Codecs</div>
+                <p class="step-card__text">Use our Video Info Inspector to analyze the available resolutions and stream bitrate presets.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">3</div>
+                <div class="step-card__title">Download Media</div>
+                <p class="step-card__text">Queue your download into our thread pool and download the completed file with one click.</p>
+            </div>
+        </div>
+
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-list">
+            <div class="faq-item">
+                <h3 class="faq-question">What should I do if a link from a supported site fails?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Streaming platforms occasionally update their video player cipher or API format. Our yt-dlp upstream dependency publishes regular updates to accommodate these changes. You can also inspect the URL in our <a href="{{ url_for('youtube_video_info') }}" style="color:var(--accent-secondary);">Video Info Checker</a> to see if metadata is readable.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Can I test multiple links at once?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Yes. Use our <a href="{{ url_for('bulk_youtube_to_mp3') }}" style="color:var(--accent-secondary);">Bulk Audio</a> or <a href="{{ url_for('bulk_youtube_video_downloader') }}" style="color:var(--accent-secondary);">Bulk Video</a> tools to paste batches of up to 20 URLs.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Why does YT Downloader reject links to private videos?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Private and unlisted videos requiring user account authentication cannot and should not be accessed without the creator's authorization. We do not accept user passwords or session cookies to access restricted content.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Can I suggest a new streaming site for testing?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Yes. You can contact our team through the <a href="{{ url_for('contact') }}" style="color:var(--accent-secondary);">Contact &amp; Support</a> page or submit extractor pull requests directly to the open-source yt-dlp project.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>
+{% endblock %}

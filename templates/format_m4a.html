@@ -1,0 +1,302 @@
+{% extends "base.html" %}
+
+{% block title %}YouTube to M4A Downloader – Native AAC Audio Without Transcoding{% endblock %}
+{% block meta_description %}Download YouTube audio in native M4A (AAC) format. Zero transcoding loss, compact file sizes, and 100% native playback on iPhone, iPad, and Mac.{% endblock %}
+
+{% block json_ld %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "YouTube to M4A Downloader",
+      "url": "https://YOURDOMAIN.COM/youtube-to-m4a",
+      "description": "Download native AAC audio streams in M4A container with zero transcoding loss.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://YOURDOMAIN.COM/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "YouTube to M4A",
+          "item": "https://YOURDOMAIN.COM/youtube-to-m4a"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Why is M4A superior to MP3 for YouTube downloads?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "YouTube already stores audio as AAC inside an M4A stream. Downloading M4A simply extracts this stream directly without re-encoding, resulting in zero transcoding artifacts and a file that is 60% smaller than a 320kbps MP3."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does M4A play natively on iPhone, iPad, and Mac?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. M4A is Apple's native audio container. It plays instantly in iOS Files, Apple Music, QuickTime, and across modern Android media players."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="{{ url_for('index') }}">Home</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span class="breadcrumbs__current">YouTube to M4A</span>
+</div>
+
+<article class="content-article">
+    <header class="content-article__hero content-article__hero--center">
+        <span class="content-badge">🎵 Native Stream Extraction</span>
+        <h1 class="content-title">Convert YouTube Videos to M4A (AAC Audio)</h1>
+        <p class="content-subtitle" style="margin:0 auto; max-width:680px;">
+            Extract YouTube's original AAC audio track in native M4A container. <strong>Zero transcoding loss</strong>, tiny file sizes, and seamless playback on Apple and Android devices.
+        </p>
+    </header>
+
+    <div class="trust-strip">
+        <span class="trust-item"><span class="trust-item__icon">🍏</span> <strong>Apple &amp; iOS Ready</strong> Native AAC Container</span>
+        <span class="trust-item"><span class="trust-item__icon">⚡</span> <strong>Zero Transcode</strong> Exact YouTube Source</span>
+        <span class="trust-item"><span class="trust-item__icon">🚫</span> <strong>No Ads</strong> Zero Popups</span>
+        <span class="trust-item"><span class="trust-item__icon">🔒</span> <strong>24h Auto-Purge</strong> Private Cache</span>
+    </div>
+
+    <div class="usage-notice">
+        <span class="usage-notice__icon">⚖️</span>
+        <div>
+            <strong>Notice:</strong> Only download audio tracks from videos you have permission to archive, such as your own media, creative commons lectures, or public domain audio.
+        </div>
+    </div>
+
+    <!-- Quick Tool Card for M4A -->
+    <div class="card" style="margin-bottom:var(--space-10);">
+        <h2 style="font-size:1.25rem; font-family:'Outfit',sans-serif; margin-top:0; margin-bottom:var(--space-3); color:var(--text-primary);">
+            🎵 Extract Native M4A Audio
+        </h2>
+        <div class="form-group">
+            <label for="url-input" class="form-label">YouTube Video URL</label>
+            <div class="input-row">
+                <div class="input-field-wrap">
+                    <span class="input-field-icon" aria-hidden="true">🎵</span>
+                    <input type="url" id="url-input" class="form-input form-input--has-actions"
+                           placeholder="https://www.youtube.com/watch?v=..." autocomplete="off">
+                    <button type="button" id="btn-paste-url" class="btn-input-action" title="Paste link from clipboard">
+                        <span>📋</span> Paste
+                    </button>
+                </div>
+                <button type="button" id="btn-fetch-meta" class="btn btn--fetch" title="Inspect video details">
+                    <span>✨</span> Inspect
+                </button>
+            </div>
+            <div id="url-feedback" class="form-feedback" role="alert" aria-live="polite"></div>
+        </div>
+
+        <div id="meta-preview" class="meta-preview hidden" aria-live="polite">
+            <div class="meta-preview__thumb" id="meta-thumb"></div>
+            <div class="meta-preview__info">
+                <span class="meta-preview__title" id="meta-title"></span>
+                <span class="meta-preview__detail" id="meta-detail"></span>
+            </div>
+        </div>
+
+        <input type="hidden" id="quality-select" value="audio_best">
+        <div class="options-row" style="margin-top:var(--space-4);">
+            <div class="form-group form-group--half">
+                <label for="audio-format-select" class="form-label">Audio Quality Profile</label>
+                <select id="audio-format-select" class="form-select">
+                    <option value="audio_best" selected>🎵 Best Quality M4A (Native Source · Instant Save)</option>
+                    <option value="audio_mp3">🎧 MP3 Audio (Universal 320kbps)</option>
+                </select>
+            </div>
+            <div class="form-group form-group--half" style="display:flex; align-items:flex-end;">
+                <button type="button" id="btn-download" class="btn btn--primary btn--full">
+                    <span class="btn__text">Download M4A Audio</span>
+                    <span class="btn__spinner hidden" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <section class="section" id="jobs-section" style="margin-bottom:var(--space-10);">
+        <div class="history-header">
+            <h2 class="section__title" id="jobs-heading">
+                <span class="section__icon" aria-hidden="true">⬇</span>
+                Download Queue
+                <span class="badge" id="active-count">0</span>
+            </h2>
+            <div class="history-controls">
+                <button type="button" id="btn-clear-history" class="btn btn--secondary btn--small">🗑 Clear</button>
+            </div>
+        </div>
+        <div id="jobs-list" class="jobs-list">
+            <div class="empty-state" id="empty-state">
+                <h3 class="empty-state__heading" id="empty-state-text">No active M4A conversions</h3>
+                <p class="empty-state__hint" id="empty-state-hint">Paste a link above and click <strong>Download M4A Audio</strong>.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="prose">
+        <div class="aeo-box">
+            <div class="aeo-box__header">⚡ Quick Answer / Key Takeaway</div>
+            <p class="aeo-box__content">
+                <strong>Why choose M4A over MP3?</strong> YouTube stores audio natively in AAC format inside an M4A container (format code 140, ~128kbps). Downloading M4A extracts the exact audio track using stream-copy mode without re-encoding, preserving 100% of the broadcast quality and avoiding transcoding artifacts.
+            </p>
+            <ul class="aeo-box__list">
+                <li><strong>No Generation Loss:</strong> Zero lossy-to-lossy conversion distortion.</li>
+                <li><strong>Apple Native:</strong> Flawless playback in Apple Music, iOS Files, QuickTime, and podcasts.</li>
+                <li><strong>Lightweight Storage:</strong> Around 50-60% smaller file size than a 320kbps MP3 transcode.</li>
+            </ul>
+        </div>
+
+        <h2>Why M4A Is the Audio Connoisseur's Choice for YouTube</h2>
+        <p>
+            Most internet users automatically search for "YouTube to MP3". However, in terms of pure acoustics, engineering, and file efficiency, <strong>M4A is objectively superior</strong> for YouTube media.
+        </p>
+
+        <h3>1. Zero Generational Re-Encoding Loss</h3>
+        <p>
+            When you request an MP3, your server must take YouTube's compressed audio, decompress it into raw PCM, and re-encode it using the MP3 psychoacoustic model. Because both are lossy algorithms, this two-step transcode inevitably introduces subtle harmonic distortion and transient smearing.
+        </p>
+        <p>
+            In contrast, YouTube natively broadcasts audio as <strong>AAC inside an M4A stream</strong> (format code 140). Selecting M4A extracts the exact audio packets directly from YouTube's CDN and copies them into your file without touching the audio waveform or altering dynamic range.
+        </p>
+
+        <div class="table-wrap">
+            <table class="format-table">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>M4A (Native AAC)</th>
+                        <th>MP3 (Transcoded)</th>
+                        <th>Opus (WebM)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="highlight-col">YouTube Encoding</td>
+                        <td>Native source (no re-encode)</td>
+                        <td>Re-encoded by FFmpeg</td>
+                        <td>Native source (no re-encode)</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Acoustic Fidelity</td>
+                        <td>100% original stream fidelity</td>
+                        <td>Lossy generational transcode</td>
+                        <td>100% original stream fidelity</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Typical Bitrate</td>
+                        <td>~128 kbps AAC-LC</td>
+                        <td>192–320 kbps MP3</td>
+                        <td>~130–160 kbps Opus</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Average File Size (4m song)</td>
+                        <td>~3.8 MB</td>
+                        <td>~9.2 MB (at 320kbps)</td>
+                        <td>~4.0 MB</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Device Compatibility</td>
+                        <td>99% (iOS, macOS, Android, Windows)</td>
+                        <td>100% (Universal)</td>
+                        <td>85% (Needs modern player or browser)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>2. 60% Smaller File Sizes with Equal or Better Sound</h3>
+        <p>
+            Because Advanced Audio Coding (AAC) is a modern compression standard with superior modified discrete cosine transform (MDCT) algorithms compared to the 1993 MPEG-1 Audio Layer III standard, a 128 kbps AAC M4A file sounds cleaner and preserves crisper high frequencies than a 192 kbps MP3, all while occupying less than half the disk space.
+        </p>
+
+        <h3>3. Embedded Metadata & Chapter Support</h3>
+        <p>
+            M4A containers use the MPEG-4 Part 14 structured atom syntax (moov, trak, udta), allowing seamless preservation of track titles, artist tags, album artwork, and chapter marks without the corruption risks common to ID3v2 headers on older MP3 decoders.
+        </p>
+
+        <h2>Step-by-Step: How to Save M4A Audio</h2>
+        <div class="step-cards">
+            <div class="step-card">
+                <div class="step-card__number">1</div>
+                <div class="step-card__title">Copy Link</div>
+                <p class="step-card__text">Copy the URL of any public YouTube video or music upload from your browser or mobile app.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">2</div>
+                <div class="step-card__title">Paste &amp; Fetch</div>
+                <p class="step-card__text">Paste the link into the input field above. Our system immediately verifies the native AAC audio stream.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">3</div>
+                <div class="step-card__title">Instant Download</div>
+                <p class="step-card__text">Click Download M4A. The native audio stream is demuxed into an M4A container in seconds with zero re-encoding.</p>
+            </div>
+        </div>
+
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-list">
+            <div class="faq-item">
+                <h3 class="faq-question">Can I play M4A files on my iPhone or iPad?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Yes. M4A is Apple's native audio container. Files open and play instantly in iOS Files, Apple Music, QuickTime, and Podcasts without third-party apps.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Does Android support M4A natively?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Yes. Android has included native platform support for AAC in MP4/M4A containers since version 5.0 Lollipop. Google Files, Samsung Music, and VLC all play M4A out of the box.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Why does YouTube not offer 320 kbps audio?</h3>
+                <div class="faq-answer">
+                    <p>
+                        YouTube caps its audio stream bitrates at approximately 128 kbps (for AAC) and 160 kbps (for Opus). Any converter site claiming to provide "True 320 kbps YouTube MP3s" is simply upscaling a 128 kbps stream into a bloated file with no actual acoustic improvement.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Is an internet connection required to listen after downloading?</h3>
+                <div class="faq-answer">
+                    <p>
+                        No. The downloaded M4A file resides completely locally on your device storage, ready for offline playback during commutes, flights, or off-grid study sessions.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>
+{% endblock %}

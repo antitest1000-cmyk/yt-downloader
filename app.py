@@ -17,7 +17,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from flask import (
     Flask, jsonify, render_template, request, send_file, abort,
-    Response, make_response
+    Response, make_response, redirect, url_for
 )
 
 from downloader import (
@@ -213,66 +213,142 @@ def create_app(test_config: dict = None) -> Flask:
     # ---------------------------------------------------------------
     # Core UI pages
     # ---------------------------------------------------------------
+    # Core Canonical UI Pages
+    # ---------------------------------------------------------------
 
     @app.route('/')
-    @app.route('/audio-downloader')
     def index():
-        """Render the main audio downloader (default)."""
+        """Brand & Overview landing page ('Free YouTube Downloader, No Ads')."""
         return render_template('index.html')
-
-    @app.route('/bulk-audio')
-    @app.route('/bulk-audio-downloader')
-    def bulk_audio():
-        """Dedicated bulk audio downloader."""
-        return render_template('bulk_audio.html')
-
-    @app.route('/video')
-    @app.route('/video-downloader')
-    def video_downloader():
-        """Dedicated single video downloader."""
-        return render_template('video_downloader.html')
-
-    @app.route('/bulk-video')
-    @app.route('/bulk-video-downloader')
-    def bulk_video_downloader():
-        """Dedicated bulk video downloader."""
-        return render_template('bulk_video.html')
-
-    @app.route('/favicon.ico')
-    def favicon():
-        """Handle browser favicon request cleanly."""
-        return '', 204
 
     @app.route('/youtube-to-mp3')
     def youtube_to_mp3():
+        """Dedicated YouTube to MP3 & audio extraction utility."""
         return render_template('youtube_to_mp3.html')
+
+    @app.route('/youtube-video-downloader', endpoint='youtube_video_downloader')
+    @app.route('/youtube-video-downloader', endpoint='video_downloader')
+    def youtube_video_downloader():
+        """Dedicated high-definition video downloader (4K/1080p)."""
+        return render_template('video_downloader.html')
+
+    @app.route('/bulk-youtube-to-mp3', endpoint='bulk_youtube_to_mp3')
+    @app.route('/bulk-youtube-to-mp3', endpoint='bulk_audio')
+    @app.route('/bulk-youtube-to-mp3', endpoint='bulk_youtube_downloader')
+    def bulk_youtube_to_mp3():
+        """Dedicated bulk YouTube to MP3 queue downloader."""
+        return render_template('bulk_audio.html')
+
+    @app.route('/bulk-youtube-video-downloader', endpoint='bulk_youtube_video_downloader')
+    @app.route('/bulk-youtube-video-downloader', endpoint='bulk_video_downloader')
+    @app.route('/bulk-youtube-video-downloader', endpoint='bulk_video')
+    def bulk_youtube_video_downloader():
+        """Dedicated bulk YouTube video downloader."""
+        return render_template('bulk_video.html')
 
     @app.route('/youtube-playlist-downloader')
     def youtube_playlist_downloader():
+        """Dedicated playlist downloader for up to 50 items."""
         return render_template('playlist_downloader.html')
-
-    @app.route('/bulk-youtube-downloader')
-    def bulk_youtube_downloader():
-        return render_template('bulk_audio.html')
 
     @app.route('/youtube-video-info')
     def youtube_video_info():
+        """Inspect video metadata, codecs, and thumbnails before downloading."""
         return render_template('video_info.html')
+
+    # ---------------------------------------------------------------
+    # 301 Permanent Redirects for Duplicate & Legacy Slugs (Section 1)
+    # ---------------------------------------------------------------
+
+    @app.route('/shorts-downloader', endpoint='shorts_downloader')
+    @app.route('/youtube-shorts-downloader', endpoint='youtube_shorts_downloader')
+    def shorts_downloader_route():
+        return redirect(url_for('youtube_video_downloader'), code=301)
+
+    @app.route('/audio-downloader', endpoint='audio_downloader_legacy')
+    def audio_downloader_legacy():
+        return redirect(url_for('youtube_to_mp3'), code=301)
+
+    @app.route('/video', endpoint='video_legacy')
+    @app.route('/video-downloader', endpoint='video_downloader_legacy')
+    def video_downloader_legacy():
+        return redirect(url_for('youtube_video_downloader'), code=301)
+
+    @app.route('/bulk-audio', endpoint='bulk_audio_legacy')
+    @app.route('/bulk-audio-downloader', endpoint='bulk_audio_downloader_legacy')
+    @app.route('/bulk-youtube-downloader', endpoint='bulk_youtube_downloader_legacy')
+    def bulk_audio_legacy():
+        return redirect(url_for('bulk_youtube_to_mp3'), code=301)
+
+    @app.route('/bulk-video', endpoint='bulk_video_legacy')
+    @app.route('/bulk-video-downloader', endpoint='bulk_video_downloader_legacy')
+    def bulk_video_legacy():
+        return redirect(url_for('bulk_youtube_video_downloader'), code=301)
+
+    @app.route('/self-host', endpoint='self_host_legacy')
+    def self_host_legacy():
+        return redirect(url_for('self_hosted_youtube_downloader'), code=301)
+
+    @app.route('/self-hosted-youtube-downloader', endpoint='self_hosted_youtube_downloader')
+    @app.route('/self-hosted-youtube-downloader', endpoint='self_host')
+    def self_hosted_youtube_downloader():
+        return render_template('self_host.html')
+
+    # ---------------------------------------------------------------
+    # Format & Quality Converter Pages (Section 3A)
+    # ---------------------------------------------------------------
+
+    @app.route('/youtube-to-mp4')
+    def youtube_to_mp4():
+        return render_template('format_mp4.html')
+
+    @app.route('/youtube-to-wav')
+    def youtube_to_wav():
+        return render_template('format_wav.html')
+
+    @app.route('/youtube-to-m4a')
+    def youtube_to_m4a():
+        return render_template('format_m4a.html')
+
+    @app.route('/youtube-to-flac')
+    def youtube_to_flac():
+        return render_template('format_flac.html')
+
+    @app.route('/youtube-4k-downloader')
+    def youtube_4k_downloader():
+        return render_template('format_4k.html')
+
+    # ---------------------------------------------------------------
+    # Differentiator Pages (Section 3B)
+    # ---------------------------------------------------------------
+
+    @app.route('/ad-free-youtube-downloader')
+    def ad_free_youtube_downloader():
+        return render_template('ad_free.html')
+
+    @app.route('/safe-youtube-downloader')
+    def safe_youtube_downloader():
+        return render_template('safe_downloader.html')
+
+    @app.route('/yt-dlp-web-ui', endpoint='yt_dlp_web_ui')
+    @app.route('/yt-dlp-web-ui', endpoint='ytdlp_web_ui')
+    def yt_dlp_web_ui():
+        return render_template('ytdlp_web_ui.html')
+
+    @app.route('/supported-sites')
+    def supported_sites():
+        return render_template('supported_sites.html')
+
+    @app.route('/changelog')
+    def changelog():
+        return render_template('changelog.html')
 
     @app.route('/how-it-works')
     def how_it_works():
         return render_template('how_it_works.html')
 
-    @app.route('/faq')
-    def faq():
-        return render_template('faq.html')
-
-    @app.route('/self-host')
-    def self_host():
-        return render_template('self_host.html')
-
     # ---------------------------------------------------------------
-    # Trust & Legal pages
+    # Trust, Legal & Supporting Pages (Section 3D)
     # ---------------------------------------------------------------
 
     @app.route('/about')
@@ -295,8 +371,25 @@ def create_app(test_config: dict = None) -> Flask:
     def dmca():
         return render_template('dmca.html')
 
+    @app.route('/fair-use')
+    def fair_use():
+        return render_template('fair_use.html')
+
+    @app.route('/site-map.html')
+    def site_map():
+        return render_template('site_map.html')
+
+    @app.route('/faq')
+    def faq():
+        return render_template('faq.html')
+
+    @app.route('/favicon.ico')
+    def favicon():
+        """Handle browser favicon request cleanly."""
+        return '', 204
+
     # ---------------------------------------------------------------
-    # Blog hub & individual posts
+    # Blog Hub & Individual Posts
     # ---------------------------------------------------------------
 
     @app.route('/blog')
@@ -315,35 +408,49 @@ def create_app(test_config: dict = None) -> Flask:
         return render_template('blog/post.html', post=post, related_posts=related)
 
     # ---------------------------------------------------------------
-    # SEO technical: sitemap.xml & robots.txt
+    # SEO Technical: sitemap.xml & robots.txt (Section 6 & 8)
     # ---------------------------------------------------------------
 
     @app.route('/sitemap.xml')
     def sitemap():
-        """Generate XML sitemap for all public pages."""
+        """Generate XML sitemap containing only canonical URLs."""
         from blog_posts import get_all_posts
-        base = request.url_root.rstrip('/')
+        base = 'https://YOURDOMAIN.COM'
         today = datetime.utcnow().strftime('%Y-%m-%d')
 
-        static_pages = [
+        canonical_pages = [
             ('/', '1.0', 'daily'),
             ('/youtube-to-mp3', '0.9', 'weekly'),
+            ('/youtube-video-downloader', '0.9', 'weekly'),
+            ('/bulk-youtube-to-mp3', '0.9', 'weekly'),
+            ('/bulk-youtube-video-downloader', '0.9', 'weekly'),
             ('/youtube-playlist-downloader', '0.9', 'weekly'),
-            ('/bulk-youtube-downloader', '0.9', 'weekly'),
             ('/youtube-video-info', '0.8', 'weekly'),
+            ('/youtube-to-mp4', '0.8', 'weekly'),
+            ('/youtube-to-wav', '0.8', 'weekly'),
+            ('/youtube-to-m4a', '0.8', 'weekly'),
+            ('/youtube-to-flac', '0.8', 'weekly'),
+            ('/youtube-4k-downloader', '0.8', 'weekly'),
+            ('/ad-free-youtube-downloader', '0.8', 'weekly'),
+            ('/safe-youtube-downloader', '0.8', 'weekly'),
+            ('/self-hosted-youtube-downloader', '0.8', 'monthly'),
+            ('/yt-dlp-web-ui', '0.8', 'monthly'),
+            ('/supported-sites', '0.7', 'monthly'),
             ('/how-it-works', '0.8', 'monthly'),
+            ('/changelog', '0.6', 'weekly'),
+            ('/about', '0.6', 'monthly'),
             ('/faq', '0.8', 'monthly'),
-            ('/self-host', '0.8', 'monthly'),
-            ('/about', '0.5', 'monthly'),
+            ('/fair-use', '0.7', 'monthly'),
             ('/contact', '0.5', 'monthly'),
-            ('/privacy', '0.3', 'yearly'),
-            ('/terms', '0.3', 'yearly'),
-            ('/dmca', '0.3', 'yearly'),
+            ('/privacy', '0.4', 'yearly'),
+            ('/terms', '0.4', 'yearly'),
+            ('/dmca', '0.4', 'yearly'),
+            ('/site-map.html', '0.5', 'weekly'),
             ('/blog', '0.8', 'weekly'),
         ]
 
         urls_xml = []
-        for path, priority, changefreq in static_pages:
+        for path, priority, changefreq in canonical_pages:
             urls_xml.append(
                 f'  <url>\n'
                 f'    <loc>{base}{path}</loc>\n'
@@ -373,13 +480,33 @@ def create_app(test_config: dict = None) -> Flask:
 
     @app.route('/robots.txt')
     def robots():
-        """Serve robots.txt — allow content pages, disallow API endpoints."""
-        base = request.url_root.rstrip('/')
+        """Serve robots.txt allowing public content and AI search bots while shielding API/temp folders."""
+        base = 'https://YOURDOMAIN.COM'
         content = (
             'User-agent: *\n'
             'Allow: /\n'
             'Disallow: /api/\n'
             'Disallow: /downloads/\n'
+            'Disallow: /jobs/\n'
+            'Disallow: /tmp/\n'
+            'Disallow: /files/\n'
+            '\n'
+            '# AI and Search Bot specific rules\n'
+            'User-agent: Googlebot\n'
+            'Allow: /\n'
+            '\n'
+            'User-agent: Bingbot\n'
+            'Allow: /\n'
+            '\n'
+            'User-agent: OAI-SearchBot\n'
+            'Allow: /\n'
+            '\n'
+            'User-agent: PerplexityBot\n'
+            'Allow: /\n'
+            '\n'
+            'User-agent: Claude-SearchBot\n'
+            'Allow: /\n'
+            '\n'
             f'Sitemap: {base}/sitemap.xml\n'
         )
         return Response(content, mimetype='text/plain')

@@ -80,12 +80,25 @@ BLOG_POSTS = {
     "install-ffmpeg-windows-mac-linux": {
         "slug": "install-ffmpeg-windows-mac-linux",
         "title": "How to Install FFmpeg on Windows, Mac & Linux (2026 Guide)",
-        "meta_description": "Step-by-step instructions to install and verify FFmpeg on Windows 10/11, macOS (Homebrew), Ubuntu, Debian, and Arch Linux. Includes PATH setup and troubleshooting tips.",
+        "meta_description": "Install FFmpeg for yt-dlp video merging and audio conversion. Complete setup guide for Windows 10/11, macOS Homebrew, and Linux with PATH verification.",
         "category": "Setup",
         "read_time": "10 min",
         "date": "October 14, 2026",
         "intro": "FFmpeg is the open-source multimedia framework that powers video merging, audio transcoding, and format conversion behind yt-dlp and the YT Downloader application. Without it, high-quality 1080p+ downloads are impossible and MP3 audio extraction will fail. This step-by-step guide covers FFmpeg installation on every major platform.",
         "body_html": """
+
+<div class="aeo-box">
+  <div class="aeo-box__header">⚡ Direct Answer / Key Takeaway</div>
+  <p class="aeo-box__content">
+    <strong>How do you install FFmpeg for yt-dlp?</strong> On Windows, run <code>winget install Gyan.FFmpeg</code> in PowerShell. On macOS, run <code>brew install ffmpeg</code> via Homebrew. On Ubuntu/Debian, execute <code>sudo apt update &amp;&amp; sudo apt install ffmpeg</code>. FFmpeg is mandatory because YouTube serves 1080p+ video and audio as separate DASH tracks; FFmpeg multiplexes them into a single playable MP4 container without re-encoding.
+  </p>
+  <ul class="aeo-box__list">
+    <li><strong>Windows:</strong> <code>winget install Gyan.FFmpeg</code> (automatic PATH registration).</li>
+    <li><strong>macOS:</strong> <code>brew install ffmpeg</code> (includes all open codecs).</li>
+    <li><strong>Linux:</strong> <code>sudo apt install ffmpeg</code> (standard repository package).</li>
+  </ul>
+</div>
+
 <h2>Why FFmpeg Is Required for High-Quality Downloads</h2>
 <p>
   YouTube streams its high-definition video (1080p and above) as two separate files: a <strong>video-only DASH stream</strong> and an <strong>audio-only DASH stream</strong>. FFmpeg is the tool that merges these two streams into a single playable MP4 or MKV file. Without FFmpeg, yt-dlp falls back to downloading combined "progressive" streams, which YouTube caps at 720p for most content. Additionally, converting audio to MP3 requires FFmpeg's codec library (libmp3lame).
@@ -190,18 +203,80 @@ ffmpeg -codecs 2>/dev/null | grep -E "mp3|aac|opus|vp9|h264"</code></pre>
   <li>If you installed FFmpeg manually, set the <code>FFMPEG_PATH</code> environment variable in your <code>.env</code> file to the full path of the FFmpeg binary (e.g., <code>C:\\ffmpeg\\bin\\ffmpeg.exe</code>).</li>
   <li>Restart the YT Downloader Flask server after any PATH changes.</li>
 </ol>
+
+
+<h2>Comprehensive Troubleshooting: Common FFmpeg Installation Pitfalls</h2>
+<p>
+  Even experienced developers occasionally encounter environmental snags when configuring FFmpeg. Below is a checklist of verified solutions for the three most common installation issues:
+</p>
+<div class="table-wrap">
+  <table class="format-table">
+    <thead>
+      <tr>
+        <th>Error Message / Symptom</th>
+        <th>Root Cause</th>
+        <th>Resolution Step</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="highlight-col">'ffmpeg' is not recognized</td>
+        <td>Binary folder missing from PATH environment variable</td>
+        <td>Add <code>C:\ffmpeg\bin</code> to System Variables and restart your terminal.</td>
+      </tr>
+      <tr>
+        <td class="highlight-col">Unidentified developer alert (macOS)</td>
+        <td>macOS Gatekeeper blocks manually extracted binaries</td>
+        <td>Run <code>xattr -d com.apple.quarantine /path/to/ffmpeg</code> or install via Homebrew.</td>
+      </tr>
+      <tr>
+        <td class="highlight-col">Unknown encoder 'libmp3lame'</td>
+        <td>FFmpeg was compiled without MP3 encoding libraries</td>
+        <td>Install <code>ffmpeg-extra</code> (Ubuntu) or full builds from Gyan.dev or Homebrew.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<h3>Advanced Verification: Checking Codec Capabilities</h3>
+<p>
+  To ensure your FFmpeg binary supports the full range of codecs needed for modern web media multiplexing, execute the following commands in your shell:
+</p>
+<div class="code-block">
+  <div class="code-block__header"><span class="code-block__lang">bash</span></div>
+  <pre><code># Check for H.264, VP9, and AV1 video decoders
+ffmpeg -decoders | grep -E "h264|vp9|av1"
+
+# Check for AAC, MP3, and Opus audio encoders
+ffmpeg -encoders | grep -E "aac|libmp3lame|libopus"</code></pre>
+</div>
+<p>
+  When both encoder lists output corresponding rows with the <code>V.....</code> or <code>A.....</code> capability flags, your workstation or server is 100% prepared to execute high-throughput media conversions with yt-dlp.
+</p>
 """,
     },
 
     "best-video-quality-for-downloads": {
         "slug": "best-video-quality-for-downloads",
         "title": "1080p vs 720p vs 480p: Which Quality to Download?",
-        "meta_description": "Compare video quality options for YouTube downloads. We break down resolution, file size, codec differences (H.264 vs VP9 vs AV1), and when each quality setting makes practical sense.",
+        "meta_description": "Compare YouTube video download qualities: 1080p, 720p, 480p, and 4K. Bitrate analysis, codecs (H.264, VP9, AV1), file sizes, and storage recommendations.",
         "category": "Quality",
         "read_time": "9 min",
         "date": "October 13, 2026",
         "intro": "Choosing the right video quality when downloading isn't just about picking the highest number. Resolution, codec, frame rate, bit rate, and your playback device all interact to determine whether a file looks stunning or wastes gigabytes of storage for no visible improvement. This guide breaks down every quality tier available through yt-dlp and YT Downloader.",
         "body_html": """
+
+<div class="aeo-box">
+  <div class="aeo-box__header">⚡ Direct Answer / Key Takeaway</div>
+  <p class="aeo-box__content">
+    <strong>Which resolution is best for YouTube downloads?</strong> For desktop monitors, laptops, and TVs, <strong>1080p (Full HD)</strong> is the sweet spot between crisp visual detail and manageable file size (~150–250MB for 10 minutes). Choose <strong>4K (2160p)</strong> for large 4K displays and cinematic archiving. Choose <strong>720p</strong> for mobile viewing or saving cellular data storage.
+  </p>
+  <ul class="aeo-box__list">
+    <li><strong>1080p Full HD:</strong> Standard choice with universal hardware acceleration.</li>
+    <li><strong>4K Ultra HD:</strong> Maximum bitstream detail (VP9/AV1) for large screens.</li>
+    <li><strong>720p HD:</strong> Fast download and compact storage on mobile phones.</li>
+  </ul>
+</div>
+
 <h2>Understanding Resolution, Codec, and Bit Rate Together</h2>
 <p>
   Resolution (e.g., 1080p) describes the pixel dimensions of the video frame—1920×1080 for 1080p. But resolution alone does not determine perceptual quality. Two 1080p videos can look dramatically different based on their <strong>codec</strong> (the algorithm used to compress the pixel data) and <strong>bit rate</strong> (the amount of data allocated per second of video).
@@ -296,18 +371,84 @@ ffmpeg -codecs 2>/dev/null | grep -E "mp3|aac|opus|vp9|h264"</code></pre>
   <li><strong>Archiving tutorial videos or lectures</strong>: 480p or 720p is often sufficient since the primary value is the spoken content, not pixel-level image quality.</li>
   <li><strong>Long-form content (1+ hour)</strong>: 720p significantly reduces file sizes and download times without meaningful perceptual loss for most content types.</li>
 </ul>
+
+
+<h2>Detailed Codec Architecture: AV1 vs. VP9 vs. H.264 (AVC)</h2>
+<p>
+  When downloading from YouTube, resolution is only half the visual quality equation. The underlying video compression codec dictates sharpness, artifacting, and processor requirements:
+</p>
+<div class="table-wrap">
+  <table class="format-table">
+    <thead>
+      <tr>
+        <th>Video Codec</th>
+        <th>Efficiency Score</th>
+        <th>Hardware Decoding</th>
+        <th>Typical Quality Allocation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="highlight-col">AV1 (AOMedia Video 1)</td>
+        <td>Highest (40% better than VP9)</td>
+        <td>Modern GPUs (RTX 30+, Apple M3+, Intel 11th+)</td>
+        <td>Default on YouTube for 4K and trending 1080p clips</td>
+      </tr>
+      <tr>
+        <td class="highlight-col">VP9 (Google Profile 0/2)</td>
+        <td>High (30% better than H.264)</td>
+        <td>Virtually all modern laptops and smartphones</td>
+        <td>Universal on YouTube for 1080p, 1440p, and 4K</td>
+      </tr>
+      <tr>
+        <td class="highlight-col">H.264 / AVC (MPEG-4 Part 10)</td>
+        <td>Standard (Legacy Baseline)</td>
+        <td>100% universal hardware support</td>
+        <td>Capped at 1080p (progressive 720p streams)</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<h3>yt-dlp Format Sorting Power User Guide</h3>
+<p>
+  If you download from the terminal using yt-dlp directly, you can command the exact codec and container using the format sorting flag:
+</p>
+<div class="code-block">
+  <div class="code-block__header"><span class="code-block__lang">bash</span></div>
+  <pre><code># Always prefer 1080p MP4 with AAC audio (Universal Device Compatibility)
+yt-dlp -S "res:1080,codec:h264:m4a" URL
+
+# Always prefer highest possible resolution and AV1/VP9 fidelity
+yt-dlp -f "bv*+ba/b" -S "vcodec:av01,res" URL</code></pre>
+</div>
+<p>
+  Our web application automatically incorporates these format sorting preferences into intuitive quality buttons so you never need to remember command-line arguments.
+</p>
 """,
     },
 
     "mp3-vs-m4a-vs-opus": {
         "slug": "mp3-vs-m4a-vs-opus",
         "title": "MP3 vs M4A vs Opus: Which Audio Format Should You Download?",
-        "meta_description": "Understand the difference between MP3, M4A (AAC), and Opus audio formats for YouTube downloads. Covers quality, file size, compatibility, and when to use each format.",
+        "meta_description": "Compare MP3, M4A (AAC), and Opus audio formats for YouTube downloads. Learn bitrate equivalence, acoustic fidelity, device compatibility, and file sizes.",
         "category": "Audio",
         "read_time": "8 min",
         "date": "October 12, 2026",
         "intro": "When downloading audio from YouTube, you're faced with a choice between three main codec formats: MP3, M4A (AAC), and Opus. Each has distinct technical characteristics, compatibility profiles, and quality trade-offs. This guide explains the differences clearly so you can choose the best format for your specific use case.",
         "body_html": """
+
+<div class="aeo-box">
+  <div class="aeo-box__header">⚡ Direct Answer / Key Takeaway</div>
+  <p class="aeo-box__content">
+    <strong>Should you choose MP3, M4A, or Opus for YouTube audio?</strong> Choose <strong>M4A (AAC)</strong> for the best fidelity without transcoding, because YouTube natively stores audio in 128kbps AAC. Choose <strong>MP3 (320kbps)</strong> if you require legacy compatibility with older car stereos, MP3 players, or CD burners. Choose <strong>Opus</strong> for the highest compression efficiency if your media player supports it.
+  </p>
+  <ul class="aeo-box__list">
+    <li><strong>M4A (Native AAC):</strong> Zero transcoding loss, native on iPhone, iPad, and Mac.</li>
+    <li><strong>MP3:</strong> 100% universal compatibility across every hardware player.</li>
+    <li><strong>Opus:</strong> Superior modern codec used in YouTube's WebM stream.</li>
+  </ul>
+</div>
+
 <h2>YouTube's Native Audio Formats</h2>
 <p>
   Before diving into codec comparisons, it's important to understand what YouTube actually uses internally. When you upload a video to YouTube, the platform re-encodes the audio track into two delivery formats:
@@ -403,18 +544,79 @@ ffmpeg -codecs 2>/dev/null | grep -E "mp3|aac|opus|vp9|h264"</code></pre>
 <p>
   The standard audio quality from regular YouTube videos caps at 128kbps Opus (~160kbps AAC equivalent quality). This is perfectly acceptable for speech, podcasts, and casual music listening, but discerning audiophiles will notice the ceiling.
 </p>
+
+
+<h2>Acoustic Spectral Analysis: Where Audio Data Is Lost</h2>
+<p>
+  To understand why native M4A preserves higher acoustic fidelity than re-encoded MP3, we have to examine frequency cutoffs across different audio formats:
+</p>
+<div class="table-wrap">
+  <table class="format-table">
+    <thead>
+      <tr>
+        <th>Audio Stream Profile</th>
+        <th>High-Frequency Cutoff</th>
+        <th>Dynamic Range Compression</th>
+        <th>Re-Encoding Loss</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="highlight-col">YouTube Native AAC (M4A)</td>
+        <td>~18.5 kHz</td>
+        <td>Exact original YouTube broadcast</td>
+        <td>0% (Direct stream copy)</td>
+      </tr>
+      <tr>
+        <td class="highlight-col">YouTube Native Opus</td>
+        <td>~20.0 kHz (Full spectrum)</td>
+        <td>Exact original YouTube broadcast</td>
+        <td>0% (Direct stream copy)</td>
+      </tr>
+      <tr>
+        <td class="highlight-col">Transcoded MP3 (320k)</td>
+        <td>~19.5 kHz</td>
+        <td>Re-analyzed by LAME psychoacoustic model</td>
+        <td>Generational loss introduced</td>
+      </tr>
+      <tr>
+        <td class="highlight-col">Transcoded MP3 (128k)</td>
+        <td>~16.0 kHz (Noticeable high-end roll-off)</td>
+        <td>Heavy frequency truncation</td>
+        <td>Noticeable loss in cymbals &amp; vocals</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<h3>Practical Takeaway for Your Music Library</h3>
+<p>
+  Unless you are transferring files to a legacy car infotainment system manufactured prior to 2012 that specifically mandates MP3 files, <strong>always download in M4A format</strong>. You will receive faster conversions, smaller files, and superior acoustic transparency.
+</p>
 """,
     },
 
     "download-youtube-playlist-step-by-step": {
         "slug": "download-youtube-playlist-step-by-step",
         "title": "How to Download a Full YouTube Playlist – Step-by-Step Guide",
-        "meta_description": "Learn how to download an entire YouTube playlist using YT Downloader. Covers public playlist setup, batch queuing, tracking progress, handling errors, and retrying failed items.",
+        "meta_description": "Step-by-step tutorial on downloading entire YouTube playlists using yt-dlp and the YT Downloader web app. Covers batching, format selection, and indexing.",
         "category": "Tutorial",
         "read_time": "7 min",
         "date": "October 11, 2026",
         "intro": "Downloading an entire YouTube playlist for offline archival, travel viewing, or educational study is one of the most common use cases for yt-dlp. YT Downloader's playlist mode handles the entire process—extraction, queuing, progress tracking, and file delivery—through a clean web interface. Here's how to do it from start to finish.",
         "body_html": """
+
+<div class="aeo-box">
+  <div class="aeo-box__header">⚡ Direct Answer / Key Takeaway</div>
+  <p class="aeo-box__content">
+    <strong>How do you download an entire YouTube playlist?</strong> Copy the playlist URL from YouTube, paste it into our dedicated Playlist Downloader, and select your preferred output format (MP3, M4A, or MP4). The engine automatically expands all video IDs (up to 50 items) and queues them across background worker threads with live progress bars and automatic duplicate filtering.
+  </p>
+  <ul class="aeo-box__list">
+    <li><strong>Single Click Expansion:</strong> Expands up to 50 videos from one playlist link.</li>
+    <li><strong>Deduplication:</strong> Prevents redundant downloads of duplicate tracks.</li>
+    <li><strong>ZIP Packaging:</strong> Download individual files or save everything in one ZIP archive.</li>
+  </ul>
+</div>
+
 <h2>Before You Begin: Playlist Requirements</h2>
 <p>YT Downloader's playlist mode works exclusively with <strong>public YouTube playlists</strong>. Private playlists, unlisted playlists, and YouTube Music playlists require authentication credentials that our tool does not accept. Here's what you need to confirm:</p>
 <ul>
@@ -467,18 +669,69 @@ ffmpeg -codecs 2>/dev/null | grep -E "mp3|aac|opus|vp9|h264"</code></pre>
   <li><strong>"Private video"</strong>: Some videos in the playlist were set to private by the uploader after being added.</li>
   <li><strong>HTTP 429 (Too Many Requests)</strong>: YouTube rate-limited our extraction. Wait 2–5 minutes before retrying.</li>
 </ul>
+
+
+<h2>Advanced Batch Management: Numbering, Indexing &amp; Archival Organization</h2>
+<p>
+  When downloading a 30-video album or educational tutorial series, file organization is paramount. YT Downloader incorporates smart file naming protocols to maintain your collection:
+</p>
+<div class="table-wrap">
+  <table class="format-table">
+    <thead>
+      <tr>
+        <th>Naming Strategy</th>
+        <th>Filename Pattern</th>
+        <th>Archival Benefit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="highlight-col">Sequential Indexing</td>
+        <td><code>01 - Title.mp4</code>, <code>02 - Title.mp4</code></td>
+        <td>Maintains correct lesson and track order in media players</td>
+      </tr>
+      <tr>
+        <td class="highlight-col">Sanitized ASCII Naming</td>
+        <td>Strips symbols: <code>/ \\ : * ? " &lt; &gt; |</code></td>
+        <td>Prevents filesystem corruption on Windows, Mac, and Linux</td>
+      </tr>
+      <tr>
+        <td class="highlight-col">ZIP Archive Packaging</td>
+        <td><code>Playlist_Title_Batch.zip</code></td>
+        <td>Single-click download without managing multiple browser save prompts</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<h3>Handling Private or Deleted Playlist Items</h3>
+<p>
+  Public YouTube playlists frequently contain videos that have been made private or deleted by their original uploaders. The YT Downloader batch queue features automated fault isolation: if item #4 is unavailable, the worker logs a clean error for that item and immediately proceeds to item #5 without stalling the remaining queue.
+</p>
 """,
     },
 
     "yt-dlp-common-errors-and-fixes": {
         "slug": "yt-dlp-common-errors-and-fixes",
         "title": "yt-dlp Common Errors & Fixes – Complete Troubleshooting Guide",
-        "meta_description": "Fix the most common yt-dlp errors: HTTP 403, Sign in to confirm age, format not available, FFmpeg merge failed, network timeout, and more. Complete troubleshooting guide.",
+        "meta_description": "Fix common yt-dlp errors: HTTP 403 Forbidden, Sign in to confirm you are not a bot, format not available, and FFmpeg merge failure. Troubleshooting guide.",
         "category": "Troubleshooting",
         "read_time": "12 min",
         "date": "October 10, 2026",
         "intro": "yt-dlp is a powerful and robust tool, but its interactions with YouTube's continuously evolving platform architecture mean errors do occur. This comprehensive troubleshooting guide covers the most frequently encountered errors, explains why each one happens, and provides practical step-by-step solutions.",
         "body_html": """
+
+<div class="aeo-box">
+  <div class="aeo-box__header">⚡ Direct Answer / Key Takeaway</div>
+  <p class="aeo-box__content">
+    <strong>How do you resolve common yt-dlp download errors?</strong> The most frequent failure—<code>HTTP Error 403: Forbidden</code>—is fixed by upgrading to the latest yt-dlp release (<code>yt-dlp -U</code>) or using <code>--extractor-args "youtube:player_client=android"</code>. The "Sign in to confirm you're not a bot" error is resolved by passing exported browser session cookies using <code>--cookies cookies.txt</code>.
+  </p>
+  <ul class="aeo-box__list">
+    <li><strong>Fix 403 Forbidden:</strong> Upgrade yt-dlp to patch YouTube signature cipher changes.</li>
+    <li><strong>Fix Bot Verification:</strong> Export browser cookies to <code>cookies.txt</code>.</li>
+    <li><strong>Fix Missing FFmpeg:</strong> Add FFmpeg executable folder to system PATH.</li>
+  </ul>
+</div>
+
 <h2>Error: HTTP Error 403: Forbidden</h2>
 <p><strong>What it means:</strong> YouTube's server rejected the stream URL request. This typically happens because YouTube's signature cipher has changed and the current yt-dlp version has not yet been updated to handle it.</p>
 <p><strong>Fixes:</strong></p>
@@ -544,18 +797,79 @@ ffmpeg -codecs 2>/dev/null | grep -E "mp3|aac|opus|vp9|h264"</code></pre>
   <li>Check that the URL doesn't contain any extra parameters that might confuse the parser.</li>
   <li>Update yt-dlp to the latest version.</li>
 </ol>
+
+
+<h2>Comprehensive Troubleshooting Matrix for Upstream Video Extraction</h2>
+<p>
+  Below is a diagnostic reference table mapping frequent error strings to exact remediation procedures:
+</p>
+<div class="table-wrap">
+  <table class="format-table">
+    <thead>
+      <tr>
+        <th>Raw Error Output</th>
+        <th>Underlying Mechanism</th>
+        <th>Recommended Solution</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="highlight-col">ERROR: [youtube] Unable to extract uploader id</td>
+        <td>YouTube modified its player JavaScript data schema</td>
+        <td>Update yt-dlp to latest release: <code>pip install -U yt-dlp</code></td>
+      </tr>
+      <tr>
+        <td class="highlight-col">HTTP Error 429: Too Many Requests</td>
+        <td>Server IP has exceeded YouTube's temporary request limits</td>
+        <td>Implement rate-limiting delays or configure proxy rotation</td>
+      </tr>
+      <tr>
+        <td class="highlight-col">Requested format is not available</td>
+        <td>Requested video height/codec not provided for this upload</td>
+        <td>Use format fallback string: <code>bestvideo+bestaudio/best</code></td>
+      </tr>
+      <tr>
+        <td class="highlight-col">Postprocessing: FFmpeg not found</td>
+        <td>yt-dlp cannot locate ffmpeg binary in executable search path</td>
+        <td>Add FFmpeg installation folder to system PATH variable</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<h3>Automating Upstream Updates in Production</h3>
+<p>
+  Because YouTube pushes player updates multiple times per month, self-hosted instances should establish an automated cron job or scheduled task to keep yt-dlp current:
+</p>
+<div class="code-block">
+  <div class="code-block__header"><span class="code-block__lang">bash</span></div>
+  <pre><code># Nightly crontab entry to refresh yt-dlp
+0 3 * * * /opt/ytdl/.venv/bin/pip install --upgrade yt-dlp &gt; /dev/null 2&gt;&amp;1</code></pre>
+</div>
 """,
     },
 
     "is-it-legal-to-download-youtube-videos": {
         "slug": "is-it-legal-to-download-youtube-videos",
         "title": "Is It Legal to Download YouTube Videos? A Fair-Use Overview",
-        "meta_description": "An informational overview of the legal considerations around downloading YouTube videos, including YouTube's Terms of Service, fair use doctrine, DMCA, and personal archiving rights. Not legal advice.",
+        "meta_description": "Is downloading YouTube videos legal? Legal analysis covering copyright law, YouTube ToS, fair use doctrine, personal archiving, and Creative Commons media.",
         "category": "Legal",
         "read_time": "11 min",
         "date": "October 9, 2026",
         "intro": "The legality of downloading YouTube videos is a nuanced topic that sits at the intersection of copyright law, platform Terms of Service, and fair use doctrine. This article provides an informational overview of the key considerations—it is not legal advice, and your specific situation may require consultation with a qualified attorney.",
         "body_html": """
+
+<div class="aeo-box">
+  <div class="aeo-box__header">⚡ Direct Answer / Key Takeaway</div>
+  <p class="aeo-box__content">
+    <strong>Is downloading YouTube videos legal?</strong> It depends on the content and jurisdiction. Downloading your own uploads, public domain media, and videos licensed under Creative Commons is completely legal. Downloading copyrighted videos without permission violates YouTube's Terms of Service and may infringe statutory copyright laws unless protected by Fair Use (17 U.S.C. &sect; 107) for non-commercial education, critique, parody, or news reporting.
+  </p>
+  <ul class="aeo-box__list">
+    <li><strong>Lawful:</strong> Your own content, Creative Commons (CC-BY/CC0), and Public Domain archives.</li>
+    <li><strong>Fair Use Exemptions:</strong> Academic commentary, teaching, news reporting, and research.</li>
+    <li><strong>Unlawful:</strong> Commercial distribution, piracy, and bypassing DRM encryption.</li>
+  </ul>
+</div>
+
 <div class="callout callout--warning">
   <div class="callout__title">Disclaimer: Not Legal Advice</div>
   <p>This article is provided for general informational purposes only. It does not constitute legal advice and should not be relied upon as such. Copyright law varies significantly by jurisdiction. Consult a qualified attorney for specific legal guidance related to your situation.</p>
@@ -612,18 +926,78 @@ ffmpeg -codecs 2>/dev/null | grep -E "mp3|aac|opus|vp9|h264"</code></pre>
 <p>
   That said, this is not a license to infringe on others' intellectual property. Always respect copyright holders, support creators through official channels where possible, and use YT Downloader only for content you have a legitimate reason to access.
 </p>
+
+
+<h2>Legal Jurisdictions &amp; Statutory Comparison: US, UK, and EU Law</h2>
+<p>
+  Digital copyright doctrines regarding format-shifting and stream copying vary substantially across international borders:
+</p>
+<div class="table-wrap">
+  <table class="format-table">
+    <thead>
+      <tr>
+        <th>Jurisdiction</th>
+        <th>Governing Copyright Law</th>
+        <th>Private Archiving Stance</th>
+        <th>Court Precedents</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="highlight-col">United States</td>
+        <td>17 U.S.C. &sect; 107 (Fair Use)</td>
+        <td>Four-factor balancing test; personal study often protected</td>
+        <td>Sony Corp. v. Universal City Studios (Betamax doctrine)</td>
+      </tr>
+      <tr>
+        <td class="highlight-col">European Union</td>
+        <td>InfoSoc Directive (2001/29/EC)</td>
+        <td>Private copying exception allowed with fair compensation levy</td>
+        <td>German Federal Court of Justice (BGH) YouTube ripping rulings</td>
+      </tr>
+      <tr>
+        <td class="highlight-col">United Kingdom</td>
+        <td>CDPA 1988 (Fair Dealing)</td>
+        <td>Narrow exceptions for research, private study, criticism, news</td>
+        <td>High Court format shifting judicial review decisions</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<h3>Best Practices for Content Creators &amp; Researchers</h3>
+<p>
+  To maintain unimpeachable ethical standards when archiving media from the internet:
+</p>
+<ul>
+  <li>Always prioritize videos published under Creative Commons Attribution (CC-BY) or released by open educational institutions.</li>
+  <li>Never redistribute, upload, or commercially exploit media created by third parties without their explicit written permission.</li>
+  <li>Utilize downloaded footage exclusively for non-commercial research, fair use critique, historical archiving, or offline personal review.</li>
+</ul>
 """,
     },
 
     "self-host-flask-yt-dlp-tutorial": {
         "slug": "self-host-flask-yt-dlp-tutorial",
-        "title": "Self-Host a YouTube Downloader with Flask & yt-dlp – Developer Tutorial",
-        "meta_description": "Developer walkthrough for building and deploying your own YouTube downloader web app using Python Flask, yt-dlp, FFmpeg, SQLite, and background thread workers.",
+        "title": "Self-Host a yt-dlp Web UI with Python & Flask",
+        "meta_description": "Build and self-host a private YouTube downloader web service using Flask, yt-dlp, and SQLite. Complete tutorial with systemd and Docker deployment.",
         "category": "Developer",
         "read_time": "15 min",
         "date": "October 8, 2026",
         "intro": "This tutorial walks through the complete architecture and implementation of a production-grade YouTube downloading web service using Python Flask, yt-dlp, FFmpeg, and SQLite. Whether you're studying the codebase behind YT Downloader or building your own private media archiving system, this guide explains every major design decision.",
         "body_html": """
+
+<div class="aeo-box">
+  <div class="aeo-box__header">⚡ Direct Answer / Key Takeaway</div>
+  <p class="aeo-box__content">
+    <strong>How do you self-host a private yt-dlp web downloader?</strong> Clone the open-source repository, install dependencies in a Python virtual environment (<code>pip install -r requirements.txt</code>), ensure FFmpeg is in your system PATH, and start the Flask server via Gunicorn or the built-in development runner. The app utilizes SQLite WAL mode for job queue persistence and ThreadPoolExecutor for concurrent media multiplexing.
+  </p>
+  <ul class="aeo-box__list">
+    <li><strong>Stack:</strong> Python 3.10+, Flask, SQLite WAL, yt-dlp, FFmpeg.</li>
+    <li><strong>Concurrency:</strong> ThreadPoolExecutor with bounded worker limits.</li>
+    <li><strong>Auto Maintenance:</strong> 24-hour background file cleanup janitor.</li>
+  </ul>
+</div>
+
 <h2>Architecture Overview</h2>
 <p>
   A media downloader web service has fundamentally different performance requirements than a typical CRUD web application. Download operations are long-running (seconds to minutes), CPU-intensive (FFmpeg transcoding), and I/O bound (reading from network streams and writing to disk). The system must handle these without blocking the Flask request-response cycle.
@@ -734,18 +1108,76 @@ PRAGMA synchronous=NORMAL;</code></pre>
   <li>Configure log rotation for Flask and Gunicorn access logs</li>
   <li>Add HTTP Basic Auth or Tailscale VPN if deploying for personal use only</li>
 </ul>
+
+
+<h2>Production Deployment: Systemd Service &amp; Nginx Reverse Proxy</h2>
+<p>
+  To run your self-hosted Flask media downloader as a resilient Linux background service that automatically restarts after system reboots, configure a systemd service unit:
+</p>
+<div class="code-block">
+  <div class="code-block__header"><span class="code-block__lang">ini</span></div>
+  <pre><code>[Unit]
+Description=YT Downloader Flask Application
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/yt-downloader
+Environment="PATH=/var/www/yt-downloader/.venv/bin:/usr/bin"
+ExecStart=/var/www/yt-downloader/.venv/bin/gunicorn --workers 3 --bind 127.0.0.1:5000 app:app
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+</div>
+<h3>Nginx Reverse Proxy with Large Request Support</h3>
+<p>
+  Pair your Gunicorn backend with an Nginx reverse proxy configured to handle media buffering and large download payloads:
+</p>
+<div class="code-block">
+  <div class="code-block__header"><span class="code-block__lang">nginx</span></div>
+  <pre><code>server {
+    listen 80;
+    server_name yourdomain.com;
+
+    client_max_body_size 64M;
+
+    location / {
+        proxy_pass http://127.0.0.1:5000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}</code></pre>
+</div>
 """,
     },
 
     "ssrf-protection-in-flask-apps": {
         "slug": "ssrf-protection-in-flask-apps",
         "title": "SSRF Protection in Flask Media Downloader Apps",
-        "meta_description": "Technical deep dive into Server-Side Request Forgery (SSRF) attack vectors in media downloader applications and how to defend against them with URL allowlisting, IP validation, and DNS rebinding protection in Flask.",
+        "meta_description": "Learn how to protect Python web applications from Server-Side Request Forgery (SSRF) when accepting user URLs. Practical DNS validation and IP filtering code.",
         "category": "Security",
         "read_time": "13 min",
         "date": "October 7, 2026",
         "intro": "Server-Side Request Forgery (SSRF) is a critical class of security vulnerability that becomes especially dangerous in media downloading applications. When a web app accepts a URL and fetches it server-side, attackers can submit internal network addresses to probe cloud metadata services, internal APIs, or database management panels. This is a technical walkthrough of how YT Downloader defends against SSRF.",
         "body_html": """
+
+<div class="aeo-box">
+  <div class="aeo-box__header">⚡ Direct Answer / Key Takeaway</div>
+  <p class="aeo-box__content">
+    <strong>How do you prevent Server-Side Request Forgery (SSRF) in media downloader web apps?</strong> Never pass user-supplied URLs directly to backend network fetchers. Implement strict URL parsing, enforce an allowlist of permitted domain hosts (e.g., youtube.com, youtu.be), resolve destination hostnames to IP addresses using <code>socket.getaddrinfo()</code>, and block all private, loopback (127.0.0.1), link-local (169.254.0.0/16), and cloud metadata IP ranges (169.254.169.254).
+  </p>
+  <ul class="aeo-box__list">
+    <li><strong>Domain Allowlisting:</strong> Strict regex checking of hostname suffixes.</li>
+    <li><strong>DNS Resolution Check:</strong> Validating resolved IPs against RFC 1918 private ranges.</li>
+    <li><strong>Cloud Metadata Shield:</strong> Blocking AWS/GCP/Azure instance metadata endpoints.</li>
+  </ul>
+</div>
+
 <h2>What Is SSRF and Why Do Media Downloaders Get It?</h2>
 <p>
   SSRF occurs when an attacker can cause a server to make HTTP requests to an arbitrary URL of the attacker's choosing. In a typical SSRF attack chain:
@@ -855,18 +1287,78 @@ curl -X POST /api/metadata -d '{"url": "http://192.168.1.1/"}' -H "Content-Type:
 curl -X POST /api/metadata -d '{"url": "file:///etc/passwd"}' -H "Content-Type: application/json"
 curl -X POST /api/metadata -d '{"url": "https://evil.example.com/"}' -H "Content-Type: application/json"</code></pre>
 </div>
+
+
+<h2>Practical Python Defense: Complete SSRF Validator Implementation</h2>
+<p>
+  Below is a hardened Python utility module illustrating robust URL validation against SSRF vulnerabilities:
+</p>
+<div class="code-block">
+  <div class="code-block__header"><span class="code-block__lang">python</span></div>
+  <pre><code>import ipaddress
+import socket
+from urllib.parse import urlparse
+
+ALLOWED_DOMAINS = {'youtube.com', 'youtu.be', 'vimeo.com', 'soundcloud.com'}
+
+def is_safe_url(target_url: str) -> bool:
+    try:
+        parsed = urlparse(target_url)
+        if parsed.scheme not in ('http', 'https'):
+            return False
+            
+        hostname = parsed.hostname
+        if not hostname:
+            return False
+            
+        # Verify domain suffix
+        if not any(hostname == d or hostname.endswith('.' + d) for d in ALLOWED_DOMAINS):
+            return False
+            
+        # Resolve all associated IP addresses
+        addr_info = socket.getaddrinfo(hostname, None)
+        for _, _, _, _, sockaddr in addr_info:
+            ip_str = sockaddr[0]
+            ip_obj = ipaddress.ip_address(ip_str)
+            
+            # Reject loopback, private, link-local, and reserved addresses
+            if (ip_obj.is_private or ip_obj.is_loopback or 
+                ip_obj.is_link_local or ip_obj.is_reserved or
+                ip_str == '169.254.169.254'):
+                return False
+                
+        return True
+    except Exception:
+        return False</code></pre>
+</div>
+<p>
+  By invoking this check before initiating any yt-dlp metadata extraction or download workflow, your server guarantees that malicious actors cannot weaponize your application to probe your internal network topology or cloud metadata services.
+</p>
 """,
     },
 
     "downloading-for-offline-travel-study": {
         "slug": "downloading-for-offline-travel-study",
         "title": "Downloading YouTube Videos for Offline Travel & Study",
-        "meta_description": "Practical guide to downloading YouTube videos for offline use during travel, flights, remote study, or low-connectivity environments. Covers format selection, storage planning, and best practices.",
+        "meta_description": "Guide to downloading educational videos and media for offline viewing during flights, commutes, and travel with limited connectivity. Formats and storage tips.",
         "category": "Use Cases",
         "read_time": "8 min",
         "date": "October 6, 2026",
         "intro": "Whether you're boarding a trans-oceanic flight, studying in a rural area with spotty internet, or preparing for a remote wilderness expedition, having key educational videos available offline is increasingly essential. This practical guide covers everything you need to plan and execute an effective offline video library.",
         "body_html": """
+
+<div class="aeo-box">
+  <div class="aeo-box__header">⚡ Direct Answer / Key Takeaway</div>
+  <p class="aeo-box__content">
+    <strong>What are the best practices for downloading offline videos for travel and study?</strong> For air travel, train commutes, and off-grid field trips, download videos in <strong>1080p MP4</strong> with AAC audio or <strong>M4A audio</strong> for spoken lectures. Organize downloaded files into categorized folders, verify that playback functions in airplane mode before departing, and calculate storage requirements (~1GB per hour of 1080p video, or ~50MB per hour of audio).
+  </p>
+  <ul class="aeo-box__list">
+    <li><strong>Video Preset:</strong> 720p or 1080p MP4 for universal phone and tablet playback.</li>
+    <li><strong>Audio Preset:</strong> Native M4A for language lessons, audiobooks, and lectures.</li>
+    <li><strong>Storage Planning:</strong> Estimate ~15–20MB per minute of 1080p video footage.</li>
+  </ul>
+</div>
+
 <h2>Common Offline Viewing Scenarios</h2>
 <p>Legitimate offline media archiving covers a wide range of real-world use cases:</p>
 <ul>
@@ -963,6 +1455,56 @@ curl -X POST /api/metadata -d '{"url": "https://evil.example.com/"}' -H "Content
 <p>
   Remember that downloaded files are automatically deleted from the YT Downloader server after 24 hours, so always transfer your files to your local storage immediately after downloading.
 </p>
+
+
+<h2>Comprehensive Travel Device Storage &amp; Codec Reference Guide</h2>
+<p>
+  When planning media storage across different portable hardware platforms, consult the following hardware matrix:
+</p>
+<div class="table-wrap">
+  <table class="format-table">
+    <thead>
+      <tr>
+        <th>Device Category</th>
+        <th>Recommended Video Preset</th>
+        <th>Recommended Audio Preset</th>
+        <th>Native Player App</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="highlight-col">Apple iPhone &amp; iPad</td>
+        <td>1080p MP4 (H.264 / AAC)</td>
+        <td>M4A (AAC)</td>
+        <td>Apple Files / QuickTime Player</td>
+      </tr>
+      <tr>
+        <td class="highlight-col">Android Phone &amp; Tablet</td>
+        <td>1080p MP4 or WebM (VP9)</td>
+        <td>MP3 or M4A</td>
+        <td>VLC for Android / Google Files</td>
+      </tr>
+      <tr>
+        <td class="highlight-col">Windows Laptop / Surface</td>
+        <td>1080p or 4K MP4</td>
+        <td>MP3 or WAV</td>
+        <td>Windows Media Player / Media Player Classic</td>
+      </tr>
+      <tr>
+        <td class="highlight-col">MacBook (Apple Silicon)</td>
+        <td>1080p or 4K MP4</td>
+        <td>M4A or FLAC</td>
+        <td>QuickTime / IINA Media Player</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<h3>Offline Field Trip Checklist</h3>
+<ol>
+  <li><strong>Verify Offline Playback:</strong> Turn on Airplane Mode before departure and open two test files to confirm video and audio play seamlessly without requesting cloud licenses.</li>
+  <li><strong>Carry Backup Storage:</strong> For trips longer than a week, copy your media library to an external USB-C thumb drive with dual connectors compatible with both laptops and phones.</li>
+  <li><strong>Subtitle Extraction:</strong> If watching educational lectures in noisy environments, download accompanying <code>.vtt</code> or <code>.srt</code> subtitle tracks.</li>
+</ol>
 """,
     },
 }
