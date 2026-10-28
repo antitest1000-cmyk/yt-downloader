@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Supported Sites & Platforms – Tested with yt-dlp</title>
+    <meta name="description" content="Comprehensive list of streaming platforms verified and supported by YT Downloader, including YouTube, Vimeo, SoundCloud, Bandcamp, and Twitch.">
+    
+    <link rel="canonical" href="https://YOURDOMAIN.COM/supported-sites">
+    
+    
+    <!-- OpenGraph / Social -->
+    <meta property="og:site_name" content="YT Downloader">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Supported Sites & Platforms – Tested with yt-dlp">
+    <meta property="og:description" content="Comprehensive list of streaming platforms verified and supported by YT Downloader, including YouTube, Vimeo, SoundCloud, Bandcamp, and Twitch.">
+    <meta property="og:url" content="https://YOURDOMAIN.COM/supported-sites">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Supported Sites & Platforms – Tested with yt-dlp">
+    <meta name="twitter:description" content="Comprehensive list of streaming platforms verified and supported by YT Downloader, including YouTube, Vimeo, SoundCloud, Bandcamp, and Twitch.">
+
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Design System Stylesheets -->
+    <link rel="stylesheet" href="./static/css/style.css">
+    <link rel="stylesheet" href="./static/css/content.css">
+
+    <!-- Structured Data (JSON-LD) -->
+    
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "YT Downloader Supported Platforms",
+      "url": "https://YOURDOMAIN.COM/supported-sites",
+      "description": "List of video and audio streaming services supported for extraction via yt-dlp and FFmpeg.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://YOURDOMAIN.COM/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Supported Sites",
+          "item": "https://YOURDOMAIN.COM/supported-sites"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does this tool support DRM-protected content (like Netflix or Spotify)?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. DRM-protected, encrypted, or paywalled streaming platforms are strictly unsupported. The tool works only with publicly accessible or Creative Commons media."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I download private or unlisted YouTube videos?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Unlisted videos with a direct share URL are supported. Private videos requiring Google account authentication are not accessible by our public instance."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+    <script>
+        (function() {
+            var savedTheme = localStorage.getItem('ytdl_theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+</head>
+<body class="theme-light">
+    <!-- Aurora Mesh Background Canvas -->
+    <canvas id="aurora-canvas" aria-hidden="true"></canvas>
+    <!-- Header & Navigation -->
+    <header class="header" role="banner">
+        <div class="header__inner">
+            <div class="header__brand">
+                <a href="./" class="header__brand-link" aria-label="YT Downloader Home">
+                    <span class="brand-logo-text"><span class="brand-logo-badge" style="margin-left:0; margin-right:4px;">YT</span> Downloader</span>
+                </a>
+            </div>
+
+            <!-- Global Nav Links (Desktop) -->
+            <nav class="nav-links" id="main-nav" aria-label="Main Navigation">
+                <a href="./youtube-video-downloader.html" class="nav-link ">Video</a>
+                <a href="./youtube-to-mp3.html" class="nav-link ">MP3 Audio</a>
+                <a href="./youtube-4k-downloader.html" class="nav-link ">4K UHD</a>
+                <a href="./bulk-youtube-to-mp3.html" class="nav-link ">Bulk Audio</a>
+                <a href="./bulk-youtube-video-downloader.html" class="nav-link ">Bulk Video</a>
+                <a href="./blog.html" class="nav-link ">Guides</a>
+                <a href="./self-hosted-youtube-downloader.html" class="nav-link nav-link--highlight ">💻 Self-Host</a>
+            </nav>
+
+            <div class="header__actions">
+                <button type="button" class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Toggle dark/light mode" title="Toggle Dark/Light Mode">
+                    <span id="theme-toggle-icon">🌙</span>
+                </button>
+                <div class="header__status" id="health-status" title="System Status">
+                    <span class="status-dot" id="status-dot"></span>
+                    <span class="status-text" id="status-text">Checking...</span>
+                </div>
+                <!-- Mobile Navigation Toggle Button -->
+                <button type="button" class="header__menu-btn" id="mobile-menu-btn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-nav-drawer">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Drawer -->
+        <nav class="mobile-nav-drawer" id="mobile-nav-drawer" aria-label="Mobile Navigation" hidden>
+            <div class="mobile-nav-links">
+                <a href="./" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">🏠</span>
+                    <span>Home Overview</span>
+                </a>
+                <a href="./youtube-to-mp3.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">🎵</span>
+                    <span>YouTube to MP3</span>
+                </a>
+                <a href="./youtube-video-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">🎬</span>
+                    <span>YouTube Video Downloader (4K/1080p)</span>
+                </a>
+                <a href="./bulk-youtube-to-mp3.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">⚡</span>
+                    <span>Bulk MP3 Downloader</span>
+                </a>
+                <a href="./bulk-youtube-video-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📦</span>
+                    <span>Bulk Video Downloader</span>
+                </a>
+                <a href="./youtube-playlist-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📋</span>
+                    <span>Playlist Downloader</span>
+                </a>
+                <a href="./blog.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📚</span>
+                    <span>Tech Guides &amp; Tutorials</span>
+                </a>
+                <a href="./self-hosted-youtube-downloader.html" class="mobile-nav-link mobile-nav-link--highlight ">
+                    <span class="mobile-nav-icon">💻</span>
+                    <span>Self-Host Guide (Docker/Python)</span>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main" role="main">
+        <div class="container">
+            
+<div class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="./">Home</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span class="breadcrumbs__current">Supported Sites</span>
+</div>
+
+<article class="content-article">
+    <header class="content-article__hero content-article__hero--center">
+        <span class="content-badge">🌐 Platform Compatibility</span>
+        <h1 class="content-title">Supported Sites &amp; Streaming Platforms</h1>
+        <p class="content-subtitle" style="margin:0 auto; max-width:680px;">
+            An honest, tested breakdown of platforms supported by our media extraction engine. We support only publicly available content without DRM circumvention.
+        </p>
+    </header>
+
+    <div class="trust-strip">
+        <span class="trust-item"><span class="trust-item__icon">✅</span> <strong>Public Videos</strong> Full Support</span>
+        <span class="trust-item"><span class="trust-item__icon">🚫</span> <strong>No DRM Bypass</strong> Honest Compliance</span>
+        <span class="trust-item"><span class="trust-item__icon">🎧</span> <strong>Audio &amp; Video</strong> MP3, M4A, MP4</span>
+        <span class="trust-item"><span class="trust-item__icon">🔒</span> <strong>Privacy First</strong> 24h Purge</span>
+    </div>
+
+    <div class="prose">
+        <div class="aeo-box">
+            <div class="aeo-box__header">⚡ Quick Answer / Key Takeaway</div>
+            <p class="aeo-box__content">
+                <strong>What sites are supported by this web tool?</strong> This web deployment of YT Downloader is strictly dedicated to <strong>YouTube</strong> content (including Standard Videos, YouTube Shorts, YouTube Music, and YouTube Playlists). While the underlying open-source <strong>yt-dlp</strong> engine contains extractors for over 1,000 domains, our public web server enforces a strict YouTube-only allowlist to ensure bulletproof SSRF (Server-Side Request Forgery) security, prevent server abuse, and maximize transcoding performance.
+            </p>
+            <ul class="aeo-box__list">
+                <li><strong>Strict YouTube Allowlist:</strong> Validates domains against youtube.com, youtu.be, and music.youtube.com.</li>
+                <li><strong>Full Format Support:</strong> Single videos, Shorts, mobile links, and playlists up to 50 items.</li>
+                <li><strong>Self-Host for 1000+ Sites:</strong> Run our open-source codebase locally to unlock generic extractor support for other platforms.</li>
+            </ul>
+        </div>
+
+        <h2>Tested &amp; Verified YouTube URL Formats</h2>
+        <p>
+            Our backend security parser validates every submitted link against the official YouTube hostname allowlist and resolves public DNS records before any extraction command is issued. Below are all the YouTube link formats actively supported:
+        </p>
+
+        <div class="table-wrap">
+            <table class="format-table">
+                <thead>
+                    <tr>
+                        <th>YouTube URL Format</th>
+                        <th>Example Structure</th>
+                        <th>Max Resolution</th>
+                        <th>Audio Extraction</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="highlight-col">Standard Desktop Video</td>
+                        <td><code>youtube.com/watch?v=...</code></td>
+                        <td>Up to 4K UHD (2160p)</td>
+                        <td>MP3, M4A, FLAC, WAV</td>
+                        <td>✅ Fully Supported</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Shortened Share Link</td>
+                        <td><code>youtu.be/ID</code></td>
+                        <td>Up to 4K UHD (2160p)</td>
+                        <td>MP3, M4A, FLAC, WAV</td>
+                        <td>✅ Fully Supported</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">YouTube Shorts</td>
+                        <td><code>youtube.com/shorts/ID</code></td>
+                        <td>1080p Vertical HD</td>
+                        <td>MP3, M4A</td>
+                        <td>✅ Fully Supported</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">YouTube Music</td>
+                        <td><code>music.youtube.com/watch?v=...</code></td>
+                        <td>1080p Video / Audio</td>
+                        <td>Lossless M4A / 320k MP3</td>
+                        <td>✅ Fully Supported</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Public Playlists</td>
+                        <td><code>youtube.com/playlist?list=...</code></td>
+                        <td>Batch queue</td>
+                        <td>Bulk ZIP Packaging</td>
+                        <td>✅ Up to 50 Videos</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Mobile Web Links</td>
+                        <td><code>m.youtube.com/watch?v=...</code></td>
+                        <td>Up to 4K UHD</td>
+                        <td>MP3, M4A, FLAC, WAV</td>
+                        <td>✅ Auto-Normalized</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Why We Enforce a Dedicated YouTube Allowlist</h2>
+        <p>
+            Many generic video converters claim to download from hundreds of platforms indiscriminately. However, in production web engineering, accepting unconstrained arbitrary URLs creates grave security risks:
+        </p>
+        <ul style="color:var(--text-secondary); line-height:1.7; margin-left:1.5rem; margin-bottom:1.5rem;">
+            <li><strong>SSRF Defense:</strong> Restricting network traffic to certified Google/YouTube CDN hostnames guarantees that attackers cannot exploit stream extractors to probe local host ports (e.g. 127.0.0.1, AWS/cloud metadata services, or intranet microservices).</li>
+            <li><strong>Dedicated Codec Pipelines:</strong> By focusing our transcoding workers exclusively on YouTube's DASH stream formats (VP9, AV1, and Opus), we ensure deterministic FFmpeg conversion times and predictable server load.</li>
+            <li><strong>Zero Broken Extraction Guarantees:</strong> Third-party sites frequently change their HTML layouts and obfuscate tokens. By focusing our testing on YouTube, we maintain a 99%+ extraction success rate.</li>
+        </ul>
+
+        <h2>Strict Limitations &amp; What We Do NOT Support</h2>
+        <p>
+            In adherence to ethical software engineering and copyright protection laws:
+        </p>
+        <ul>
+            <li><strong>DRM-Protected Services:</strong> We do NOT support and will never attempt to decrypt services protected by Widevine, FairPlay, or PlayReady DRM (e.g. Netflix, Amazon Prime, Spotify, Disney+, Hulu).</li>
+            <li><strong>Paywalled or Private Content:</strong> Videos requiring paid subscription tiers, patron access, or account login credentials are not accessible.</li>
+            <li><strong>Non-YouTube Domains:</strong> Other domains (e.g. Vimeo, TikTok, SoundCloud) are blocked on this public instance. If you need multi-platform extraction, deploy your own instance using our <a href="./self-hosted-youtube-downloader.html">Self-Hosting Guide</a>.</li>
+            <li><strong>Region-Blocked Content:</strong> We do not operate circumvention proxies or automated IP hopping to bypass platform geolocation restrictions.</li>
+        </ul>
+
+        <h2>Step-by-Step: Testing a Link from Any Supported Site</h2>
+        <div class="step-cards">
+            <div class="step-card">
+                <div class="step-card__number">1</div>
+                <div class="step-card__title">Copy Public Link</div>
+                <p class="step-card__text">Copy the URL of any public video or audio track from YouTube, Vimeo, or SoundCloud.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">2</div>
+                <div class="step-card__title">Inspect Codecs</div>
+                <p class="step-card__text">Use our Video Info Inspector to analyze the available resolutions and stream bitrate presets.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">3</div>
+                <div class="step-card__title">Download Media</div>
+                <p class="step-card__text">Queue your download into our thread pool and download the completed file with one click.</p>
+            </div>
+        </div>
+
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-list">
+            <div class="faq-item">
+                <h3 class="faq-question">What should I do if a link from a supported site fails?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Streaming platforms occasionally update their video player cipher or API format. Our yt-dlp upstream dependency publishes regular updates to accommodate these changes. You can also inspect the URL in our <a href="./youtube-video-info.html" style="color:var(--accent-secondary);">Video Info Checker</a> to see if metadata is readable.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Can I test multiple links at once?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Yes. Use our <a href="./bulk-youtube-to-mp3.html" style="color:var(--accent-secondary);">Bulk Audio</a> or <a href="./bulk-youtube-video-downloader.html" style="color:var(--accent-secondary);">Bulk Video</a> tools to paste batches of up to 20 URLs.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Why does YT Downloader reject links to private videos?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Private and unlisted videos requiring user account authentication cannot and should not be accessed without the creator's authorization. We do not accept user passwords or session cookies to access restricted content.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Can I suggest a new streaming site for testing?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Yes. You can contact our team through the <a href="./contact.html" style="color:var(--accent-secondary);">Contact &amp; Support</a> page or submit extractor pull requests directly to the open-source yt-dlp project.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>
+
+        </div>
+    </main>
+
+    <!-- Comprehensive Global Footer -->
+    <footer class="site-footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Col 1: Brand & Philosophy -->
+                <div class="footer-brand">
+                    <div class="footer-brand__name">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent-secondary);">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        YT Downloader
+                    </div>
+                    <p class="footer-brand__desc">
+                        A private, ad-free web utility for archiving public educational and Creative Commons media via yt-dlp and FFmpeg. Fast conversion, zero trackers, no account needed.
+                    </p>
+                    <div class="footer-brand__badge">
+                        <span>🔒</span> 24h Auto-Purge &amp; Transient Storage
+                    </div>
+                </div>
+
+                <!-- Col 2: Core Tools -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Core Tools</h4>
+                    <ul class="footer-links">
+                        <li><a href="./" class="footer-link">Home (Overview)</a></li>
+                        <li><a href="./youtube-to-mp3.html" class="footer-link">YouTube to MP3</a></li>
+                        <li><a href="./youtube-video-downloader.html" class="footer-link">Video Downloader (4K)</a></li>
+                        <li><a href="./bulk-youtube-to-mp3.html" class="footer-link">Bulk MP3 Downloader</a></li>
+                        <li><a href="./bulk-youtube-video-downloader.html" class="footer-link">Bulk Video Downloader</a></li>
+                        <li><a href="./youtube-playlist-downloader.html" class="footer-link">Playlist Downloader</a></li>
+                        <li><a href="./youtube-video-info.html" class="footer-link">Video Info &amp; Codecs</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Format Converters -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Formats &amp; Features</h4>
+                    <ul class="footer-links">
+                        <li><a href="./youtube-to-mp4.html" class="footer-link">YouTube to MP4</a></li>
+                        <li><a href="./youtube-to-wav.html" class="footer-link">YouTube to WAV</a></li>
+                        <li><a href="./youtube-to-m4a.html" class="footer-link">YouTube to M4A</a></li>
+                        <li><a href="./youtube-to-flac.html" class="footer-link">YouTube to FLAC</a></li>
+                        <li><a href="./youtube-4k-downloader.html" class="footer-link">4K Video Downloader</a></li>
+                        <li><a href="./ad-free-youtube-downloader.html" class="footer-link">Ad-Free Downloader</a></li>
+                        <li><a href="./safe-youtube-downloader.html" class="footer-link">Safe Downloader Guide</a></li>
+                        <li><a href="./supported-sites.html" class="footer-link">Supported Sites</a></li>
+                        <li><a href="./yt-dlp-web-ui.html" class="footer-link">yt-dlp Web UI</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Guides & Articles -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Guides &amp; Articles</h4>
+                    <ul class="footer-links">
+                        <li><a href="/blog/what-is-yt-dlp" class="footer-link">What is yt-dlp?</a></li>
+                        <li><a href="/blog/install-ffmpeg-windows-mac-linux" class="footer-link">Install FFmpeg (Win/Mac/Linux)</a></li>
+                        <li><a href="/blog/best-video-quality-for-downloads" class="footer-link">4K vs 1080p vs 720p Guide</a></li>
+                        <li><a href="/blog/mp3-vs-m4a-vs-opus" class="footer-link">MP3 vs M4A vs Opus Audio</a></li>
+                        <li><a href="/blog/yt-dlp-common-errors-and-fixes" class="footer-link">Common yt-dlp Errors &amp; Fixes</a></li>
+                        <li><a href="./blog.html" class="footer-link" style="color:var(--accent-secondary); font-weight:600;">Browse All Guides &rarr;</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 5: Trust, Legal & Sitemap -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Trust &amp; Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="./about.html" class="footer-link">About Project</a></li>
+                        <li><a href="./how-it-works.html" class="footer-link">How It Works</a></li>
+                        <li><a href="./fair-use.html" class="footer-link">Fair Use &amp; Policy</a></li>
+                        <li><a href="./faq.html" class="footer-link">FAQ</a></li>
+                        <li><a href="./contact.html" class="footer-link">Contact &amp; Support</a></li>
+                        <li><a href="./privacy.html" class="footer-link">Privacy Policy</a></li>
+                        <li><a href="./terms.html" class="footer-link">Terms of Service</a></li>
+                        <li><a href="./dmca.html" class="footer-link">DMCA Takedown</a></li>
+                        <li><a href="./changelog.html" class="footer-link">Changelog</a></li>
+                        <li><a href="/site-map.html" class="footer-link" style="color:var(--accent-secondary);">HTML Site Map</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom Note with Legal Disclaimers -->
+            <div class="footer-bottom" style="flex-direction:column; gap:8px; text-align:center;">
+                <div>
+                    <strong>Disclaimer:</strong> YT Downloader is an independent utility and is not affiliated with or endorsed by YouTube or Google.
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); max-width:820px; margin:0 auto; line-height:1.5;">
+                    Usage Notice: Only download content you own, that is licensed for reuse (e.g. Creative Commons), or for which you have explicit rights holder permission. Converted files are automatically and permanently purged from server storage after 24 hours.
+                </div>
+                <div style="margin-top:6px; font-size:11px; color:var(--text-muted);">
+                    &copy; 2026 YT Downloader &bull; Built with Python, Flask, <a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener noreferrer" style="color:var(--text-secondary)">yt-dlp</a> &amp; <a href="https://ffmpeg.org" target="_blank" rel="noopener noreferrer" style="color:var(--text-secondary)">FFmpeg</a>.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Client Scripts -->
+    <script src="./static/js/ui-effects.js"></script>
+    
+    <script src="./static/js/app.js"></script>
+    
+</body>
+</html>

@@ -305,6 +305,38 @@
     initTabUnderline();
     initPasteAction();
     initMobileMenu();
+    initThemeToggle();
+  }
+
+  // =========================================================================
+  // Theme Toggle (Light / Dark Mode)
+  // =========================================================================
+  function initThemeToggle() {
+    const btn = document.getElementById('theme-toggle-btn');
+    const icon = document.getElementById('theme-toggle-icon');
+    if (!btn) return;
+
+    function updateThemeUI(theme) {
+      if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.body.classList.remove('theme-light');
+        if (icon) icon.textContent = '☀️';
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.body.classList.add('theme-light');
+        if (icon) icon.textContent = '🌙';
+      }
+    }
+
+    const currentTheme = localStorage.getItem('ytdl_theme') || 'light';
+    updateThemeUI(currentTheme);
+
+    btn.addEventListener('click', () => {
+      const active = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+      const nextTheme = active === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('ytdl_theme', nextTheme);
+      updateThemeUI(nextTheme);
+    });
   }
 
   // =========================================================================
@@ -338,6 +370,16 @@
         btn.setAttribute('aria-expanded', 'false');
         btn.classList.toggle('active', false);
       });
+    });
+
+    // Close drawer on Escape key (WCAG keyboard accessibility)
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !drawer.hidden) {
+        drawer.hidden = true;
+        btn.setAttribute('aria-expanded', 'false');
+        btn.classList.remove('active');
+        btn.focus();
+      }
     });
   }
 

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Blog – YouTube Downloader Guides & Tutorials{% endblock %}
+{% block title %}Blog – YouTube Downloader Guides, Tutorials &amp; yt-dlp Tips{% endblock %}
 {% block meta_description %}In-depth articles on yt-dlp, FFmpeg, video quality, audio formats, self-hosting, security, and legal considerations for YouTube media archiving.{% endblock %}
 
 {% block content %}
@@ -23,6 +23,25 @@
     <p>
         Whether you are setting up FFmpeg on a local workstation, configuring a private headless download server on a Raspberry Pi, or choosing between lossy MP3 and native AAC audio streams, our guides provide verified, ad-free documentation.
     </p>
+    <h2>Core Archival &amp; Technical Topics Covered</h2>
+    <div class="grid-2" style="margin-top:1.5rem; margin-bottom:2rem;">
+        <div class="step-card">
+            <h3 class="step-card__title">🎧 Audio Extraction &amp; Codecs</h3>
+            <p class="step-card__text">Understand the differences between lossy MP3 compression, YouTube's native 160kbps Opus DASH streams, and pristine AAC in M4A containers for maximum acoustic fidelity.</p>
+        </div>
+        <div class="step-card">
+            <h3 class="step-card__title">📹 Video Quality &amp; Transcoding</h3>
+            <p class="step-card__text">Learn how FFmpeg multiplexes independent video and audio DASH channels to deliver silky 1080p, 1440p, and 4K Ultra HD video files without generational quality loss.</p>
+        </div>
+        <div class="step-card">
+            <h3 class="step-card__title">💻 Self-Hosting &amp; Private Deployments</h3>
+            <p class="step-card__text">Step-by-step instructions for running your own private Python &amp; Flask media downloader on Linux, Windows, macOS, or lightweight containerized VPS setups.</p>
+        </div>
+        <div class="step-card">
+            <h3 class="step-card__title">⚖️ Legal, Fair-Use &amp; Security</h3>
+            <p class="step-card__text">Explaining the boundary between lawful personal archival and commercial copyright infringement, plus engineering protections like Server-Side Request Forgery (SSRF) filters.</p>
+        </div>
+    </div>
 </div>
 
 <section aria-label="Blog Post Grid">

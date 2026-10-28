@@ -26,17 +26,24 @@ def build():
     routes = [
         ('/', 'index.html'),
         ('/youtube-to-mp3', 'youtube_to_mp3.html'),
+        ('/youtube-video-downloader', 'youtube_video_downloader.html'),
+        ('/bulk-youtube-to-mp3', 'bulk_youtube_to_mp3.html'),
+        ('/bulk-youtube-video-downloader', 'bulk_youtube_video_downloader.html'),
         ('/youtube-playlist-downloader', 'youtube_playlist_downloader.html'),
-        ('/bulk-youtube-downloader', 'bulk_youtube_downloader.html'),
         ('/youtube-video-info', 'youtube_video_info.html'),
+        ('/self-hosted-youtube-downloader', 'self_hosted_youtube_downloader.html'),
+        ('/supported-sites', 'supported_sites.html'),
         ('/how-it-works', 'how_it_works.html'),
         ('/faq', 'faq.html'),
-        ('/self-host', 'self_host.html'),
         ('/about', 'about.html'),
         ('/contact', 'contact.html'),
         ('/privacy', 'privacy.html'),
         ('/terms', 'terms.html'),
         ('/dmca', 'dmca.html'),
+        ('/fair-use', 'fair_use.html'),
+        ('/changelog', 'changelog.html'),
+        ('/site-map.html', 'site_map.html'),
+        ('/blog', 'blog.html'),
     ]
     
     with app.app_context(), app.test_request_context():

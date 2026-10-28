@@ -91,70 +91,87 @@
         <div class="aeo-box">
             <div class="aeo-box__header">⚡ Quick Answer / Key Takeaway</div>
             <p class="aeo-box__content">
-                <strong>What streaming websites are supported?</strong> Powered by the open-source <strong>yt-dlp</strong> core, YT Downloader supports public media extraction from YouTube (Standard videos, Shorts, and Playlists), Vimeo, SoundCloud, Bandcamp, Twitter/X, and Twitch Clips. We strictly do NOT support DRM-encrypted services (such as Netflix, Spotify, or Disney+) or paywalled content.
+                <strong>What sites are supported by this web tool?</strong> This web deployment of YT Downloader is strictly dedicated to <strong>YouTube</strong> content (including Standard Videos, YouTube Shorts, YouTube Music, and YouTube Playlists). While the underlying open-source <strong>yt-dlp</strong> engine contains extractors for over 1,000 domains, our public web server enforces a strict YouTube-only allowlist to ensure bulletproof SSRF (Server-Side Request Forgery) security, prevent server abuse, and maximize transcoding performance.
             </p>
             <ul class="aeo-box__list">
-                <li><strong>Public Streams Only:</strong> No login or password bypass required.</li>
-                <li><strong>Zero DRM Circumvention:</strong> Pure adherence to open web media standards.</li>
-                <li><strong>Batch Compatible:</strong> Queue URLs from any verified platform simultaneously.</li>
+                <li><strong>Strict YouTube Allowlist:</strong> Validates domains against youtube.com, youtu.be, and music.youtube.com.</li>
+                <li><strong>Full Format Support:</strong> Single videos, Shorts, mobile links, and playlists up to 50 items.</li>
+                <li><strong>Self-Host for 1000+ Sites:</strong> Run our open-source codebase locally to unlock generic extractor support for other platforms.</li>
             </ul>
         </div>
 
-        <h2>Tested &amp; Verified Platforms</h2>
+        <h2>Tested &amp; Verified YouTube URL Formats</h2>
         <p>
-            Because our service is powered by the open-source <strong>yt-dlp</strong> extractor engine, our application can extract streams from numerous major media hosts. Below are the platforms our engineering team actively verifies:
+            Our backend security parser validates every submitted link against the official YouTube hostname allowlist and resolves public DNS records before any extraction command is issued. Below are all the YouTube link formats actively supported:
         </p>
 
         <div class="table-wrap">
             <table class="format-table">
                 <thead>
                     <tr>
-                        <th>Platform</th>
-                        <th>Video Support</th>
-                        <th>Audio (MP3/M4A)</th>
-                        <th>Playlist Support</th>
-                        <th>Notes</th>
+                        <th>YouTube URL Format</th>
+                        <th>Example Structure</th>
+                        <th>Max Resolution</th>
+                        <th>Audio Extraction</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="highlight-col">YouTube</td>
-                        <td>Up to 4K / 8K</td>
-                        <td>Yes (320k / AAC)</td>
-                        <td>Up to 50 items</td>
-                        <td>Supports Standard, Shorts, &amp; Music links</td>
+                        <td class="highlight-col">Standard Desktop Video</td>
+                        <td><code>youtube.com/watch?v=...</code></td>
+                        <td>Up to 4K UHD (2160p)</td>
+                        <td>MP3, M4A, FLAC, WAV</td>
+                        <td>✅ Fully Supported</td>
                     </tr>
                     <tr>
-                        <td class="highlight-col">Vimeo</td>
-                        <td>Up to 1080p / 4K</td>
-                        <td>Yes</td>
-                        <td>Single items</td>
-                        <td>Public, non-password protected videos only</td>
+                        <td class="highlight-col">Shortened Share Link</td>
+                        <td><code>youtu.be/ID</code></td>
+                        <td>Up to 4K UHD (2160p)</td>
+                        <td>MP3, M4A, FLAC, WAV</td>
+                        <td>✅ Fully Supported</td>
                     </tr>
                     <tr>
-                        <td class="highlight-col">SoundCloud</td>
-                        <td>N/A</td>
-                        <td>Yes (MP3)</td>
-                        <td>Public sets</td>
-                        <td>High-quality audio streaming tracks</td>
+                        <td class="highlight-col">YouTube Shorts</td>
+                        <td><code>youtube.com/shorts/ID</code></td>
+                        <td>1080p Vertical HD</td>
+                        <td>MP3, M4A</td>
+                        <td>✅ Fully Supported</td>
                     </tr>
                     <tr>
-                        <td class="highlight-col">Bandcamp</td>
-                        <td>N/A</td>
-                        <td>Yes (128&ndash;320k)</td>
-                        <td>Single tracks</td>
-                        <td>Public streaming previews &amp; free tracks</td>
+                        <td class="highlight-col">YouTube Music</td>
+                        <td><code>music.youtube.com/watch?v=...</code></td>
+                        <td>1080p Video / Audio</td>
+                        <td>Lossless M4A / 320k MP3</td>
+                        <td>✅ Fully Supported</td>
                     </tr>
                     <tr>
-                        <td class="highlight-col">Twitch</td>
-                        <td>Up to 1080p60</td>
-                        <td>Yes</td>
-                        <td>Clips &amp; VODs</td>
-                        <td>Public broadcast highlights and clips</td>
+                        <td class="highlight-col">Public Playlists</td>
+                        <td><code>youtube.com/playlist?list=...</code></td>
+                        <td>Batch queue</td>
+                        <td>Bulk ZIP Packaging</td>
+                        <td>✅ Up to 50 Videos</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Mobile Web Links</td>
+                        <td><code>m.youtube.com/watch?v=...</code></td>
+                        <td>Up to 4K UHD</td>
+                        <td>MP3, M4A, FLAC, WAV</td>
+                        <td>✅ Auto-Normalized</td>
                     </tr>
                 </tbody>
             </table>
         </div>
+
+        <h2>Why We Enforce a Dedicated YouTube Allowlist</h2>
+        <p>
+            Many generic video converters claim to download from hundreds of platforms indiscriminately. However, in production web engineering, accepting unconstrained arbitrary URLs creates grave security risks:
+        </p>
+        <ul style="color:var(--text-secondary); line-height:1.7; margin-left:1.5rem; margin-bottom:1.5rem;">
+            <li><strong>SSRF Defense:</strong> Restricting network traffic to certified Google/YouTube CDN hostnames guarantees that attackers cannot exploit stream extractors to probe local host ports (e.g. 127.0.0.1, AWS/cloud metadata services, or intranet microservices).</li>
+            <li><strong>Dedicated Codec Pipelines:</strong> By focusing our transcoding workers exclusively on YouTube's DASH stream formats (VP9, AV1, and Opus), we ensure deterministic FFmpeg conversion times and predictable server load.</li>
+            <li><strong>Zero Broken Extraction Guarantees:</strong> Third-party sites frequently change their HTML layouts and obfuscate tokens. By focusing our testing on YouTube, we maintain a 99%+ extraction success rate.</li>
+        </ul>
 
         <h2>Strict Limitations &amp; What We Do NOT Support</h2>
         <p>
@@ -163,6 +180,7 @@
         <ul>
             <li><strong>DRM-Protected Services:</strong> We do NOT support and will never attempt to decrypt services protected by Widevine, FairPlay, or PlayReady DRM (e.g. Netflix, Amazon Prime, Spotify, Disney+, Hulu).</li>
             <li><strong>Paywalled or Private Content:</strong> Videos requiring paid subscription tiers, patron access, or account login credentials are not accessible.</li>
+            <li><strong>Non-YouTube Domains:</strong> Other domains (e.g. Vimeo, TikTok, SoundCloud) are blocked on this public instance. If you need multi-platform extraction, deploy your own instance using our <a href="{{ url_for('self_host') }}">Self-Hosting Guide</a>.</li>
             <li><strong>Region-Blocked Content:</strong> We do not operate circumvention proxies or automated IP hopping to bypass platform geolocation restrictions.</li>
         </ul>
 

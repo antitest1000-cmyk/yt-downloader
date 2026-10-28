@@ -256,6 +256,16 @@ with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             This returns a lightweight JSON dictionary containing metadata parsed directly from YouTube's initial page payload. The entire response completes in under 800 milliseconds and consumes less than 50 kilobytes of network data.
         </p>
 
+        <h2>Understanding YouTube Adaptive Audio &amp; Video Streams</h2>
+        <p>
+            Modern YouTube serves media using adaptive DASH (Dynamic Adaptive Streaming over HTTP) architecture. Rather than offering a single combined file, YouTube separates video and audio into distinct tracks. Metadata inspection reveals these stream structures before downloading:
+        </p>
+        <ul style="color:var(--text-secondary); line-height:1.7; margin-left:1.5rem; margin-bottom:1.5rem;">
+            <li><strong>Video Codec Ladders (AV1, VP9, AVC1):</strong> Ultra HD 4K (2160p) and Quad HD (1440p) streams are encoded in VP9 or AV1 for superior compression efficiency, while 1080p and 720p retain universal H.264/AVC1 streams for broad hardware compatibility.</li>
+            <li><strong>Audio Streams (Opus vs. AAC):</strong> YouTube's highest quality audio track is typically Opus encoded at up to ~160 kbps within a WebM container, alongside standard ~128 kbps AAC in M4A containers. Inspecting stream types helps you select the native format without quality-degrading re-encoding.</li>
+            <li><strong>Chapter Markers &amp; Metadata Tags:</strong> Inspecting metadata verifies creator-defined timestamps, chapter titles, upload dates, and category tags, ensuring accurate tagging when archiving media collections.</li>
+        </ul>
+
         <div class="callout callout--tip">
             <span class="callout__icon">💡</span>
             <div class="callout__content">

@@ -378,7 +378,27 @@
                     </p>
                 </div>
             </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Does this tool support 60 frames per second (60fps) videos?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Yes. When a YouTube creator uploads in high frame rate (such as 1080p60 or 4K60 for gaming, tutorials, or wildlife footage), our extractor retrieves the native 60fps video stream rather than downsampling to 30fps.
+                    </p>
+                </div>
+            </div>
         </div>
+    </section>
+
+    <section>
+        <h2>⚡ High Frame Rate &amp; Audio Transcoding Integrity</h2>
+        <p>
+            Unlike basic browser extensions that capture the lower-resolution screen recording buffer, YT Downloader interfaces directly with the source DASH media streams:
+        </p>
+        <ul style="color:var(--text-secondary); line-height:1.7; margin-left:1.5rem; margin-bottom:1.5rem;">
+            <li><strong>Native 60fps Preservation:</strong> Fluid action sequences, game replays, and technical demonstrations retain their native 60 frames per second refresh rate.</li>
+            <li><strong>Bitrate Matching:</strong> We pair the highest available video stream with YouTube's pristine audio track, synchronizing video frames and audio packets precisely via FFmpeg timestamps.</li>
+            <li><strong>No Watermarks or Compression Artifacts:</strong> The output MP4 file is completely unmodified by promotional overlays or visual watermarks.</li>
+        </ul>
     </section>
 </article>
 {% endblock %}

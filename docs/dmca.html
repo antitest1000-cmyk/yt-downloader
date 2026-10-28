@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>DMCA Policy & Copyright Takedown – YT Downloader</title>
     <meta name="description" content="YT Downloader DMCA policy and copyright takedown procedure. Submit a formal DMCA notice or counter-notification here. We respond to valid notices promptly.">
     
-    <link rel="canonical" href="http://localhost/dmca">
+    <link rel="canonical" href="https://YOURDOMAIN.COM/dmca">
     
     
     <!-- OpenGraph / Social -->
@@ -14,7 +14,7 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="DMCA Policy & Copyright Takedown – YT Downloader">
     <meta property="og:description" content="YT Downloader DMCA policy and copyright takedown procedure. Submit a formal DMCA notice or counter-notification here. We respond to valid notices promptly.">
-    <meta property="og:url" content="http://localhost/dmca">
+    <meta property="og:url" content="https://YOURDOMAIN.COM/dmca">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="DMCA Policy & Copyright Takedown – YT Downloader">
     <meta name="twitter:description" content="YT Downloader DMCA policy and copyright takedown procedure. Submit a formal DMCA notice or counter-notification here. We respond to valid notices promptly.">
@@ -35,7 +35,7 @@
       "@context": "https://schema.org",
       "@type": "WebApplication",
       "name": "YT Downloader",
-      "url": "http://localhost/",
+      "url": "https://YOURDOMAIN.COM/",
       "description": "High-speed local YouTube video and audio downloader powered by yt-dlp and FFmpeg.",
       "applicationCategory": "MultimediaApplication",
       "operatingSystem": "All",
@@ -43,12 +43,31 @@
         "@type": "Offer",
         "price": "0",
         "priceCurrency": "USD"
-      }
+      },
+      "featureList": [
+        "1080p, 1440p, and 4K Ultra HD video downloads",
+        "Lossless audio extraction to MP3, M4A, FLAC, and WAV",
+        "Bulk URL queue processing with ZIP archive packaging",
+        "Playlist batch downloads up to 50 videos",
+        "Zero third-party trackers, no popups, no account required",
+        "Automated 24-hour file cleanup"
+      ]
     }
     </script>
     
+    
+    <script>
+        (function() {
+            var savedTheme = localStorage.getItem('ytdl_theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
 </head>
-<body>
+<body class="theme-light">
     <!-- Aurora Mesh Background Canvas -->
     <canvas id="aurora-canvas" aria-hidden="true"></canvas>
     <!-- Header & Navigation -->
@@ -56,24 +75,25 @@
         <div class="header__inner">
             <div class="header__brand">
                 <a href="./" class="header__brand-link" aria-label="YT Downloader Home">
-                    <span class="header__icon" aria-hidden="true">▶</span>
-                    <span class="shiny-text header__brand-title" data-text="YT Downloader">YT Downloader</span>
+                    <span class="brand-logo-text"><span class="brand-logo-badge" style="margin-left:0; margin-right:4px;">YT</span> Downloader</span>
                 </a>
-                <span class="header__subtitle">Local Media Toolkit</span>
             </div>
 
             <!-- Global Nav Links (Desktop) -->
             <nav class="nav-links" id="main-nav" aria-label="Main Navigation">
-                <a href="./" class="nav-link ">Downloader</a>
-                <a href="./youtube-to-mp3.html" class="nav-link ">MP3</a>
-                <a href="./youtube-playlist-downloader.html" class="nav-link ">Playlists</a>
-                <a href="./bulk-youtube-downloader.html" class="nav-link ">Bulk</a>
-                <a href="./faq.html" class="nav-link ">FAQ</a>
-                <a href="./blog.html" class="nav-link ">Blog</a>
-                <a href="./self-host.html" class="nav-link nav-link--highlight ">Self-Host</a>
+                <a href="./youtube-video-downloader.html" class="nav-link ">Video</a>
+                <a href="./youtube-to-mp3.html" class="nav-link ">MP3 Audio</a>
+                <a href="./youtube-4k-downloader.html" class="nav-link ">4K UHD</a>
+                <a href="./bulk-youtube-to-mp3.html" class="nav-link ">Bulk Audio</a>
+                <a href="./bulk-youtube-video-downloader.html" class="nav-link ">Bulk Video</a>
+                <a href="./blog.html" class="nav-link ">Guides</a>
+                <a href="./self-hosted-youtube-downloader.html" class="nav-link nav-link--highlight ">💻 Self-Host</a>
             </nav>
 
             <div class="header__actions">
+                <button type="button" class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Toggle dark/light mode" title="Toggle Dark/Light Mode">
+                    <span id="theme-toggle-icon">🌙</span>
+                </button>
                 <div class="header__status" id="health-status" title="System Status">
                     <span class="status-dot" id="status-dot"></span>
                     <span class="status-text" id="status-text">Checking...</span>
@@ -93,32 +113,36 @@
         <nav class="mobile-nav-drawer" id="mobile-nav-drawer" aria-label="Mobile Navigation" hidden>
             <div class="mobile-nav-links">
                 <a href="./" class="mobile-nav-link ">
-                    <span class="mobile-nav-icon">📥</span>
-                    <span>Downloader</span>
+                    <span class="mobile-nav-icon">🏠</span>
+                    <span>Home Overview</span>
                 </a>
                 <a href="./youtube-to-mp3.html" class="mobile-nav-link ">
                     <span class="mobile-nav-icon">🎵</span>
-                    <span>MP3 Converter</span>
+                    <span>YouTube to MP3</span>
+                </a>
+                <a href="./youtube-video-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">🎬</span>
+                    <span>YouTube Video Downloader (4K/1080p)</span>
+                </a>
+                <a href="./bulk-youtube-to-mp3.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">⚡</span>
+                    <span>Bulk MP3 Downloader</span>
+                </a>
+                <a href="./bulk-youtube-video-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📦</span>
+                    <span>Bulk Video Downloader</span>
                 </a>
                 <a href="./youtube-playlist-downloader.html" class="mobile-nav-link ">
                     <span class="mobile-nav-icon">📋</span>
-                    <span>Playlists</span>
-                </a>
-                <a href="./bulk-youtube-downloader.html" class="mobile-nav-link ">
-                    <span class="mobile-nav-icon">📦</span>
-                    <span>Bulk URLs</span>
-                </a>
-                <a href="./faq.html" class="mobile-nav-link ">
-                    <span class="mobile-nav-icon">❓</span>
-                    <span>FAQ</span>
+                    <span>Playlist Downloader</span>
                 </a>
                 <a href="./blog.html" class="mobile-nav-link ">
-                    <span class="mobile-nav-icon">📖</span>
-                    <span>Blog &amp; Guides</span>
+                    <span class="mobile-nav-icon">📚</span>
+                    <span>Tech Guides &amp; Tutorials</span>
                 </a>
-                <a href="./self-host.html" class="mobile-nav-link mobile-nav-link--highlight ">
+                <a href="./self-hosted-youtube-downloader.html" class="mobile-nav-link mobile-nav-link--highlight ">
                     <span class="mobile-nav-icon">💻</span>
-                    <span>Self-Host Guide</span>
+                    <span>Self-Host Guide (Docker/Python)</span>
                 </a>
             </div>
         </nav>
@@ -226,13 +250,18 @@
                 <!-- Col 1: Brand & Philosophy -->
                 <div class="footer-brand">
                     <div class="footer-brand__name">
-                        <span style="color:var(--accent-primary)">▶</span> YT Downloader
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent-secondary);">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        YT Downloader
                     </div>
                     <p class="footer-brand__desc">
-                        A private, local-first web utility for downloading publicly accessible media via yt-dlp and FFmpeg. Fast conversion, no signup, zero third-party ads.
+                        A private, ad-free web utility for archiving public educational and Creative Commons media via yt-dlp and FFmpeg. Fast conversion, zero trackers, no account needed.
                     </p>
                     <div class="footer-brand__badge">
-                        <span>🔒</span> 100% Local &amp; Private Storage
+                        <span>🔒</span> 24h Auto-Purge &amp; Transient Storage
                     </div>
                 </div>
 
@@ -240,51 +269,73 @@
                 <div class="footer-col">
                     <h4 class="footer-col__title">Core Tools</h4>
                     <ul class="footer-links">
-                        <li><a href="./" class="footer-link">Video &amp; Audio Downloader</a></li>
-                        <li><a href="./youtube-to-mp3.html" class="footer-link">YouTube to MP3 Converter</a></li>
+                        <li><a href="./" class="footer-link">Home (Overview)</a></li>
+                        <li><a href="./youtube-to-mp3.html" class="footer-link">YouTube to MP3</a></li>
+                        <li><a href="./youtube-video-downloader.html" class="footer-link">Video Downloader (4K)</a></li>
+                        <li><a href="./bulk-youtube-to-mp3.html" class="footer-link">Bulk MP3 Downloader</a></li>
+                        <li><a href="./bulk-youtube-video-downloader.html" class="footer-link">Bulk Video Downloader</a></li>
                         <li><a href="./youtube-playlist-downloader.html" class="footer-link">Playlist Downloader</a></li>
-                        <li><a href="./bulk-youtube-downloader.html" class="footer-link">Bulk Queue Downloader</a></li>
-                        <li><a href="./youtube-video-info.html" class="footer-link">Video Info &amp; Thumbnail Checker</a></li>
-                        <li><a href="./how-it-works.html" class="footer-link">How Downloader Works</a></li>
+                        <li><a href="./youtube-video-info.html" class="footer-link">Video Info &amp; Codecs</a></li>
                     </ul>
                 </div>
 
-                <!-- Col 3: Guides & Articles -->
+                <!-- Col 3: Format Converters -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Formats &amp; Features</h4>
+                    <ul class="footer-links">
+                        <li><a href="./youtube-to-mp4.html" class="footer-link">YouTube to MP4</a></li>
+                        <li><a href="./youtube-to-wav.html" class="footer-link">YouTube to WAV</a></li>
+                        <li><a href="./youtube-to-m4a.html" class="footer-link">YouTube to M4A</a></li>
+                        <li><a href="./youtube-to-flac.html" class="footer-link">YouTube to FLAC</a></li>
+                        <li><a href="./youtube-4k-downloader.html" class="footer-link">4K Video Downloader</a></li>
+                        <li><a href="./ad-free-youtube-downloader.html" class="footer-link">Ad-Free Downloader</a></li>
+                        <li><a href="./safe-youtube-downloader.html" class="footer-link">Safe Downloader Guide</a></li>
+                        <li><a href="./supported-sites.html" class="footer-link">Supported Sites</a></li>
+                        <li><a href="./yt-dlp-web-ui.html" class="footer-link">yt-dlp Web UI</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Guides & Articles -->
                 <div class="footer-col">
                     <h4 class="footer-col__title">Guides &amp; Articles</h4>
                     <ul class="footer-links">
                         <li><a href="/blog/what-is-yt-dlp" class="footer-link">What is yt-dlp?</a></li>
                         <li><a href="/blog/install-ffmpeg-windows-mac-linux" class="footer-link">Install FFmpeg (Win/Mac/Linux)</a></li>
-                        <li><a href="/blog/best-video-quality-for-downloads" class="footer-link">Quality Guide: 4K vs 1080p vs 720p</a></li>
-                        <li><a href="/blog/mp3-vs-m4a-vs-opus" class="footer-link">Audio Guide: MP3 vs M4A vs Opus</a></li>
+                        <li><a href="/blog/best-video-quality-for-downloads" class="footer-link">4K vs 1080p vs 720p Guide</a></li>
+                        <li><a href="/blog/mp3-vs-m4a-vs-opus" class="footer-link">MP3 vs M4A vs Opus Audio</a></li>
                         <li><a href="/blog/yt-dlp-common-errors-and-fixes" class="footer-link">Common yt-dlp Errors &amp; Fixes</a></li>
-                        <li><a href="/blog/ssrf-protection-in-flask-apps" class="footer-link">SSRF Protection in Web Apps</a></li>
-                        <li><a href="./blog.html" class="footer-link" style="color:var(--accent-secondary); font-weight:600;">Browse All 10 Guides &rarr;</a></li>
+                        <li><a href="./blog.html" class="footer-link" style="color:var(--accent-secondary); font-weight:600;">Browse All Guides &rarr;</a></li>
                     </ul>
                 </div>
 
-                <!-- Col 4: Trust & Developers -->
+                <!-- Col 5: Trust, Legal & Sitemap -->
                 <div class="footer-col">
                     <h4 class="footer-col__title">Trust &amp; Legal</h4>
                     <ul class="footer-links">
-                        <li><a href="./faq.html" class="footer-link">Frequently Asked Questions</a></li>
-                        <li><a href="./about.html" class="footer-link">About the Project</a></li>
+                        <li><a href="./about.html" class="footer-link">About Project</a></li>
+                        <li><a href="./how-it-works.html" class="footer-link">How It Works</a></li>
+                        <li><a href="./fair-use.html" class="footer-link">Fair Use &amp; Policy</a></li>
+                        <li><a href="./faq.html" class="footer-link">FAQ</a></li>
                         <li><a href="./contact.html" class="footer-link">Contact &amp; Support</a></li>
                         <li><a href="./privacy.html" class="footer-link">Privacy Policy</a></li>
                         <li><a href="./terms.html" class="footer-link">Terms of Service</a></li>
-                        <li><a href="./dmca.html" class="footer-link">DMCA &amp; Takedown Policy</a></li>
-                        <li><a href="./self-host.html" class="footer-link" style="color:#a285fd; font-weight:600;">💻 Self-Host Guide</a></li>
+                        <li><a href="./dmca.html" class="footer-link">DMCA Takedown</a></li>
+                        <li><a href="./changelog.html" class="footer-link">Changelog</a></li>
+                        <li><a href="/site-map.html" class="footer-link" style="color:var(--accent-secondary);">HTML Site Map</a></li>
                     </ul>
                 </div>
             </div>
 
-            <!-- Footer Bottom Note -->
-            <div class="footer-bottom">
+            <!-- Footer Bottom Note with Legal Disclaimers -->
+            <div class="footer-bottom" style="flex-direction:column; gap:8px; text-align:center;">
                 <div>
-                    &copy; 2026 YT Downloader. Powered by <a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener noreferrer" style="color:var(--accent-secondary)">yt-dlp</a> &amp; <a href="https://ffmpeg.org" target="_blank" rel="noopener noreferrer" style="color:var(--accent-secondary)">FFmpeg</a>. For personal, educational, and archival use.
+                    <strong>Disclaimer:</strong> YT Downloader is an independent utility and is not affiliated with or endorsed by YouTube or Google.
                 </div>
-                <div>
-                    Retention Policy: Downloaded media purged automatically after 24 hours.
+                <div style="font-size:11px; color:var(--text-muted); max-width:820px; margin:0 auto; line-height:1.5;">
+                    Usage Notice: Only download content you own, that is licensed for reuse (e.g. Creative Commons), or for which you have explicit rights holder permission. Converted files are automatically and permanently purged from server storage after 24 hours.
+                </div>
+                <div style="margin-top:6px; font-size:11px; color:var(--text-muted);">
+                    &copy; 2026 YT Downloader &bull; Built with Python, Flask, <a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener noreferrer" style="color:var(--text-secondary)">yt-dlp</a> &amp; <a href="https://ffmpeg.org" target="_blank" rel="noopener noreferrer" style="color:var(--text-secondary)">FFmpeg</a>.
                 </div>
             </div>
         </div>

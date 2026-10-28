@@ -8,7 +8,7 @@ Each post is a dict with keys:
 BLOG_POSTS = {
     "what-is-yt-dlp": {
         "slug": "what-is-yt-dlp",
-        "title": "What Is yt-dlp? A Beginner's Complete Guide",
+        "title": "What Is yt-dlp? Complete Beginner's Guide to Video Downloading",
         "meta_description": "Learn what yt-dlp is, how it differs from youtube-dl, its history, key features, and why it's the gold standard for command-line video downloading in 2026.",
         "category": "Beginners",
         "read_time": "8 min",

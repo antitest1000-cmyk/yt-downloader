@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Bulk YouTube to MP3 – Download Multiple Videos to MP3</title>
+    <meta name="description" content="Download multiple YouTube videos as MP3 or M4A at once. Free, fast multi-threaded queue supporting up to 20 URLs with automatic ZIP packaging and progress tracking.">
+    
+    <link rel="canonical" href="https://YOURDOMAIN.COM/bulk-youtube-to-mp3">
+    
+    
+    <!-- OpenGraph / Social -->
+    <meta property="og:site_name" content="YT Downloader">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Bulk YouTube to MP3 – Download Multiple Videos to MP3">
+    <meta property="og:description" content="Download multiple YouTube videos as MP3 or M4A at once. Free, fast multi-threaded queue supporting up to 20 URLs with automatic ZIP packaging and progress tracking.">
+    <meta property="og:url" content="https://YOURDOMAIN.COM/bulk-youtube-to-mp3">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Bulk YouTube to MP3 – Download Multiple Videos to MP3">
+    <meta name="twitter:description" content="Download multiple YouTube videos as MP3 or M4A at once. Free, fast multi-threaded queue supporting up to 20 URLs with automatic ZIP packaging and progress tracking.">
+
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Design System Stylesheets -->
+    <link rel="stylesheet" href="./static/css/style.css">
+    <link rel="stylesheet" href="./static/css/content.css">
+
+    <!-- Structured Data (JSON-LD) -->
+    
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "Bulk YouTube to MP3 Downloader",
+      "url": "https://YOURDOMAIN.COM/bulk-youtube-to-mp3",
+      "description": "Batch convert and download multiple YouTube audio tracks into MP3 or M4A with ZIP archive export.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://YOURDOMAIN.COM/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Bulk YouTube to MP3",
+          "item": "https://YOURDOMAIN.COM/bulk-youtube-to-mp3"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How many YouTube links can I download at once?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You can paste up to 20 individual YouTube URLs per batch. Our server manages them concurrently in a background queue."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I download all audio files as a single ZIP archive?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. When the batch download completes, you can download tracks individually or export all files in a single organized ZIP package."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What happens if a link in the batch is duplicate or broken?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Our input validator automatically deduplicates identical URLs and flags invalid links before processing, ensuring only valid tracks enter the queue."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+    <script>
+        (function() {
+            var savedTheme = localStorage.getItem('ytdl_theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+</head>
+<body class="theme-light">
+    <!-- Aurora Mesh Background Canvas -->
+    <canvas id="aurora-canvas" aria-hidden="true"></canvas>
+    <!-- Header & Navigation -->
+    <header class="header" role="banner">
+        <div class="header__inner">
+            <div class="header__brand">
+                <a href="./" class="header__brand-link" aria-label="YT Downloader Home">
+                    <span class="brand-logo-text"><span class="brand-logo-badge" style="margin-left:0; margin-right:4px;">YT</span> Downloader</span>
+                </a>
+            </div>
+
+            <!-- Global Nav Links (Desktop) -->
+            <nav class="nav-links" id="main-nav" aria-label="Main Navigation">
+                <a href="./youtube-video-downloader.html" class="nav-link ">Video</a>
+                <a href="./youtube-to-mp3.html" class="nav-link ">MP3 Audio</a>
+                <a href="./youtube-4k-downloader.html" class="nav-link ">4K UHD</a>
+                <a href="./bulk-youtube-to-mp3.html" class="nav-link active">Bulk Audio</a>
+                <a href="./bulk-youtube-video-downloader.html" class="nav-link ">Bulk Video</a>
+                <a href="./blog.html" class="nav-link ">Guides</a>
+                <a href="./self-hosted-youtube-downloader.html" class="nav-link nav-link--highlight ">💻 Self-Host</a>
+            </nav>
+
+            <div class="header__actions">
+                <button type="button" class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Toggle dark/light mode" title="Toggle Dark/Light Mode">
+                    <span id="theme-toggle-icon">🌙</span>
+                </button>
+                <div class="header__status" id="health-status" title="System Status">
+                    <span class="status-dot" id="status-dot"></span>
+                    <span class="status-text" id="status-text">Checking...</span>
+                </div>
+                <!-- Mobile Navigation Toggle Button -->
+                <button type="button" class="header__menu-btn" id="mobile-menu-btn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-nav-drawer">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Drawer -->
+        <nav class="mobile-nav-drawer" id="mobile-nav-drawer" aria-label="Mobile Navigation" hidden>
+            <div class="mobile-nav-links">
+                <a href="./" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">🏠</span>
+                    <span>Home Overview</span>
+                </a>
+                <a href="./youtube-to-mp3.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">🎵</span>
+                    <span>YouTube to MP3</span>
+                </a>
+                <a href="./youtube-video-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">🎬</span>
+                    <span>YouTube Video Downloader (4K/1080p)</span>
+                </a>
+                <a href="./bulk-youtube-to-mp3.html" class="mobile-nav-link active">
+                    <span class="mobile-nav-icon">⚡</span>
+                    <span>Bulk MP3 Downloader</span>
+                </a>
+                <a href="./bulk-youtube-video-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📦</span>
+                    <span>Bulk Video Downloader</span>
+                </a>
+                <a href="./youtube-playlist-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📋</span>
+                    <span>Playlist Downloader</span>
+                </a>
+                <a href="./blog.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📚</span>
+                    <span>Tech Guides &amp; Tutorials</span>
+                </a>
+                <a href="./self-hosted-youtube-downloader.html" class="mobile-nav-link mobile-nav-link--highlight ">
+                    <span class="mobile-nav-icon">💻</span>
+                    <span>Self-Host Guide (Docker/Python)</span>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main" role="main">
+        <div class="container">
+            
+<div class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="./">Home</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span class="breadcrumbs__current">Bulk YouTube to MP3</span>
+</div>
+
+<!-- Tool Header Hero -->
+<div class="content-article__hero content-article__hero--center" style="margin-bottom:var(--space-4);">
+    <span class="content-badge">⚡ Multi-Track Batch Extractor</span>
+    <h1 class="content-title" style="margin-bottom:var(--space-2);">Bulk YouTube to MP3 Downloader</h1>
+    <p class="content-subtitle" style="margin: 0 auto; font-size: 1.05rem; max-width: 640px;">
+        Paste multiple YouTube URLs to extract audio simultaneously. Multi-threaded audio extraction up to 20 tracks with automatic duplicate filtering and ZIP export.
+    </p>
+</div>
+
+<!-- Trust Strip -->
+<div class="trust-strip">
+    <span class="trust-item"><span class="trust-item__icon">📦</span> <strong>Up to 20 URLs</strong> Concurrent Queue</span>
+    <span class="trust-item"><span class="trust-item__icon">🗜️</span> <strong>ZIP Package</strong> 1-Click Save</span>
+    <span class="trust-item"><span class="trust-item__icon">🚫</span> <strong>No Ads</strong> Zero Popups</span>
+    <span class="trust-item"><span class="trust-item__icon">🔒</span> <strong>24h Auto-Purge</strong> Private Cache</span>
+</div>
+
+<!-- Usage Notice -->
+<div class="usage-notice">
+    <span class="usage-notice__icon">⚖️</span>
+    <div>
+        <strong>Batch Notice:</strong> Ensure you have the rights or permission to download each item in your batch (e.g. open courseware, Creative Commons tracks, or your own archives).
+    </div>
+</div>
+
+<!-- 4-Tool Mode Navigation Tabs -->
+<nav class="tabs" role="navigation" aria-label="Tool mode">
+    <a href="./" class="tab">
+        <span class="tab__icon" aria-hidden="true">🏠</span>
+        Overview
+    </a>
+    <a href="./youtube-to-mp3.html" class="tab">
+        <span class="tab__icon" aria-hidden="true">🎵</span>
+        Single MP3
+    </a>
+    <a href="./youtube-video-downloader.html" class="tab">
+        <span class="tab__icon" aria-hidden="true">🎬</span>
+        Single Video
+    </a>
+    <a href="./bulk-youtube-to-mp3.html" class="tab active" aria-current="page">
+        <span class="tab__icon" aria-hidden="true">⚡</span>
+        Bulk MP3
+    </a>
+    <a href="./bulk-youtube-video-downloader.html" class="tab">
+        <span class="tab__icon" aria-hidden="true">📦</span>
+        Bulk Video
+    </a>
+</nav>
+
+<!-- Bulk Audio Panel -->
+<section class="panel active" id="panel-bulk" role="region" aria-label="Bulk Audio Input">
+    <div class="card">
+        <div class="form-group">
+            <div class="form-label-row">
+                <label for="bulk-input" class="form-label">
+                    <span class="form-label__icon" aria-hidden="true">⚡</span>
+                    YouTube URLs to Extract (one per line)
+                </label>
+                <span class="form-label__hint" id="bulk-limit-hint">Up to 20 URLs per batch &bull; Concurrent audio extraction</span>
+            </div>
+            <textarea id="bulk-input" class="form-textarea" rows="6"
+                      placeholder="https://www.youtube.com/watch?v=EXAMPLE_1&#10;https://www.youtube.com/watch?v=EXAMPLE_2&#10;https://youtu.be/EXAMPLE_3"
+                      spellcheck="false" autocomplete="off"
+                      aria-describedby="bulk-feedback"></textarea>
+            <div id="bulk-feedback" class="form-feedback" role="alert" aria-live="polite"></div>
+        </div>
+
+        <div class="bulk-stats" id="bulk-stats" style="margin-bottom:var(--space-4);">
+            <span class="bulk-stat">
+                <span class="bulk-stat__num" id="bulk-total-count">0</span>
+                <span class="bulk-stat__label">URLs Found</span>
+            </span>
+            <span class="bulk-stat">
+                <span class="bulk-stat__num" id="bulk-valid-count">0</span>
+                <span class="bulk-stat__label">Valid</span>
+            </span>
+            <span class="bulk-stat">
+                <span class="bulk-stat__num" id="bulk-dup-count">0</span>
+                <span class="bulk-stat__label">Duplicates</span>
+            </span>
+            <span class="bulk-stat">
+                <span class="bulk-stat__num" id="bulk-invalid-count">0</span>
+                <span class="bulk-stat__label">Invalid</span>
+            </span>
+        </div>
+
+        <!-- Audio Output Options -->
+        <div class="options-row">
+            <div class="form-group form-group--half">
+                <label class="form-label">Target Format</label>
+                <div class="pill-group" role="radiogroup" aria-label="Bulk output format">
+                    <button type="button" class="pill active" id="bulk-fmt-audio"
+                            role="radio" aria-checked="true" data-format="audio">
+                        🎵 Audio Only (MP3 / M4A)
+                    </button>
+                </div>
+            </div>
+            <div class="form-group form-group--half">
+                <label for="bulk-quality-select" class="form-label">Audio Quality Profile</label>
+                <select id="bulk-quality-select" class="form-select">
+                    <option value="audio_mp3" selected>🎧 MP3 Audio (Universal &bull; Up to 320 kbps)</option>
+                    <option value="audio_best">🎵 Best Quality (M4A / WebM &bull; Native Source)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Terms of Service Agreement -->
+        <div class="tos-agree-bar accepted" id="tos-bar-bulk" style="margin-top:var(--space-4);">
+            <label class="tos-agree-label" for="tos-check-bulk">
+                <input type="checkbox" id="tos-check-bulk" class="tos-check" checked>
+                <span class="tos-agree-text">
+                    I agree to the <a href="./terms.html" target="_blank" class="tos-link">Terms of Service</a>. Personal and educational media only.
+                </span>
+            </label>
+        </div>
+
+        <button type="button" id="btn-bulk-download" class="btn btn--primary btn--full" style="margin-top:var(--space-4);">
+            <span class="btn__text" id="btn-bulk-download-text">⬇ Download All Audio (Batch)</span>
+            <span class="btn__spinner hidden" aria-hidden="true"></span>
+        </button>
+    </div>
+</section>
+
+<!-- Job Queue & History Section -->
+<section class="section" id="jobs-section" aria-labelledby="jobs-heading" style="margin-top:var(--space-8);">
+    <div class="history-header">
+        <h2 class="section__title" id="jobs-heading">
+            <span class="section__icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+            </span>
+            Batch Downloads Queue
+            <span class="badge" id="active-count" title="Active downloads">0</span>
+        </h2>
+        <div class="history-controls">
+            <div class="storage-toggle-wrap" title="Toggle saving downloaded media records in your browser storage">
+                <label class="toggle-switch" for="toggle-history-storage">
+                    <input type="checkbox" id="toggle-history-storage" aria-describedby="storage-info-text">
+                    <span class="toggle-switch__slider"></span>
+                </label>
+                <label for="toggle-history-storage" class="storage-toggle-label">
+                    <span class="storage-toggle-label-text">Save History</span>
+                    <span class="storage-toggle-badge" id="storage-status-badge">Off</span>
+                </label>
+            </div>
+            <button type="button" id="btn-clear-history" class="btn btn--secondary btn--small" title="Clear saved history">
+                <span aria-hidden="true">🗑</span> Clear
+            </button>
+        </div>
+    </div>
+
+    <div id="jobs-list" class="jobs-list" aria-live="polite">
+        <div class="empty-state" id="empty-state">
+            <div class="empty-state__icon-wrap">
+                <div class="empty-state__icon" aria-hidden="true">
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                </div>
+            </div>
+            <h3 class="empty-state__heading" id="empty-state-text">Ready to Batch Download</h3>
+            <p class="empty-state__hint" id="empty-state-hint">Paste your list of YouTube links above and click <strong>Download All Audio</strong>.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Rich Supporting SEO Guide -->
+<hr style="border:none; border-top:1px solid rgba(255,255,255,0.07); margin:var(--space-12) 0 var(--space-8);">
+
+<article class="prose content-article" style="max-width:100%;">
+    <div class="aeo-box">
+        <div class="aeo-box__header">⚡ Quick Answer / Key Takeaway</div>
+        <p class="aeo-box__content">
+            <strong>How do you download multiple YouTube videos as MP3?</strong> Paste up to 20 YouTube URLs into the batch input area above. The server-side queue deduplicates links and processes them asynchronously across multi-threaded workers using yt-dlp and FFmpeg. You can track progress in real-time and download files individually or as a single packaged ZIP archive.
+        </p>
+        <ul class="aeo-box__list">
+            <li><strong>Batch Limit:</strong> Up to 20 URLs per queue submission.</li>
+            <li><strong>Format Options:</strong> 320kbps MP3 (universal) or native M4A (lossless AAC copy).</li>
+            <li><strong>Deduplication:</strong> Automatically detects and removes duplicate links.</li>
+        </ul>
+    </div>
+
+    <h2>Step-by-Step Batch Audio Workflow</h2>
+    <div class="step-cards">
+        <div class="step-card">
+            <div class="step-card__number">1</div>
+            <div class="step-card__title">Paste URLs</div>
+            <p class="step-card__text">Paste up to 20 YouTube links, one per line. The live validator highlights valid links and removes duplicates.</p>
+        </div>
+        <div class="step-card">
+            <div class="step-card__number">2</div>
+            <div class="step-card__title">Concurrent Queue</div>
+            <p class="step-card__text">Workers download audio tracks in parallel. Live progress bars show percentage, speed, and ETA for each item.</p>
+        </div>
+        <div class="step-card">
+            <div class="step-card__number">3</div>
+            <div class="step-card__title">Save Media</div>
+            <p class="step-card__text">Download tracks as they finish, or save all tracks in a single organized ZIP package.</p>
+        </div>
+    </div>
+
+    <section>
+        <h2>⚡ How Bulk YouTube Audio Extraction Works</h2>
+        <p>
+            Manually opening twenty different tabs and clicking "Convert" on each one is tedious and prone to rate limits. Our <strong>bulk audio tool</strong> uses a managed background thread pool to orchestrate batch downloads gracefully without overloading your connection or the server.
+        </p>
+        <ol>
+            <li><strong>Batch Validation:</strong> When you paste up to 20 URLs, our client-side parser checks URL structure, removes duplicate links, and checks for valid YouTube identifiers before a single request is sent.</li>
+            <li><strong>Queue Ingestion:</strong> The server assigns a unique <code>batch_id</code> and schedules individual audio jobs across a pool of concurrent worker threads. Each URL becomes an independent <code>job_id</code>.</li>
+            <li><strong>Stream Selection:</strong> yt-dlp selects the best native audio stream from YouTube's adaptive streaming formats. For MP3 output, FFmpeg re-encodes the AAC source to MPEG Layer III. For M4A output, the native AAC stream is remuxed into an M4A container without re-encoding, preserving the original quality.</li>
+            <li><strong>ZIP Archiving:</strong> Once all tracks finish, you can grab individual audio tracks or download the entire batch packaged as a single ZIP archive for convenience.</li>
+        </ol>
+    </section>
+
+    <section>
+        <h2>🎧 Audio Format Comparison</h2>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr><th>Format</th><th>Bitrate</th><th>Codec</th><th>Re-encoded?</th><th>Typical File Size (5 min)</th><th>Best For</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>MP3</td><td>128–320 kbps</td><td>MPEG Layer III</td><td>Yes (from AAC)</td><td>5–12 MB</td><td>Universal compatibility, podcasts, music</td></tr>
+                    <tr><td>M4A (AAC)</td><td>128–192 kbps</td><td>AAC (native)</td><td>No (remux only)</td><td>4–10 MB</td><td>iOS/Apple ecosystem, lossless quality retention</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <p><em>M4A is extracted without re-encoding, meaning it retains the exact quality YouTube uses for its original audio stream. MP3 involves one transcode step from AAC, which introduces negligible quality change at 320 kbps.</em></p>
+    </section>
+
+    <section>
+        <h2>📦 Concurrency and Rate Management</h2>
+        <p>Processing multiple audio streams simultaneously requires careful resource management. Here’s how the batch queue protects quality and speed:</p>
+        <ul>
+            <li><strong>Concurrent Workers:</strong> Up to 3 audio jobs run in parallel at any time. Additional jobs wait in an ordered in-memory queue and start automatically when a slot opens.</li>
+            <li><strong>Progress Tracking:</strong> Each job reports status (queued → running → completed → failed) and download progress via live Server-Sent Events (SSE) on the page.</li>
+            <li><strong>Retry Logic:</strong> Transient YouTube CDN throttling or network hiccups trigger up to 3 automatic retries per job without affecting the rest of the batch.</li>
+            <li><strong>Deduplication:</strong> If you paste the same YouTube URL twice, only one audio job is created for it. Duplicates are filtered silently before submission.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>❓ Frequently Asked Questions</h2>
+        <div class="faq-list">
+            <details class="faq-item">
+                <summary class="faq-question">What is the maximum number of URLs per batch?</summary>
+                <div class="faq-answer">
+                    <p>
+                        The default limit is <strong>20 URLs per batch</strong> on our public instance to maintain service reliability for everyone. If you self-host the application, you can configure <code>MAX_BATCH_SIZE</code> in your <code>.env</code> file to any number you wish.
+                    </p>
+                </div>
+            </details>
+            <details class="faq-item">
+                <summary class="faq-question">Are entire playlists supported in bulk mode?</summary>
+                <div class="faq-answer">
+                    <p>
+                        For complete playlists, we recommend using our specialized <a href="./youtube-playlist-downloader.html" style="color:var(--accent-secondary);">Playlist Downloader</a>, which automatically expands up to 50 tracks from a single playlist URL without manually copying individual links.
+                    </p>
+                </div>
+            </details>
+            <details class="faq-item">
+                <summary class="faq-question">How long are my audio files stored?</summary>
+                <div class="faq-answer">
+                    <p>All converted audio files are automatically and permanently deleted from server storage <strong>24 hours after completion</strong>. Download your files promptly.</p>
+                </div>
+            </details>
+            <details class="faq-item">
+                <summary class="faq-question">Can I choose MP3 quality (bitrate) in batch mode?</summary>
+                <div class="faq-answer">
+                    <p>Yes. The format/quality selector applies to the entire batch. Common MP3 bitrate options include 128 kbps (smaller files), 192 kbps (balanced), and 320 kbps (highest quality). M4A always uses the native YouTube bitrate (typically 128–192 kbps).</p>
+                </div>
+            </details>
+        </div>
+    </section>
+
+    <section>
+        <h2>🔗 Related Tools</h2>
+        <ul>
+            <li><a href="./youtube-to-mp3.html" style="color:var(--accent-secondary);">YouTube to MP3 Converter</a> — single video audio extraction</li>
+            <li><a href="./youtube-playlist-downloader.html" style="color:var(--accent-secondary);">Playlist Downloader</a> — batch an entire playlist from one URL</li>
+            <li><a href="./youtube-to-m4a.html" style="color:var(--accent-secondary);">YouTube to M4A</a> — native AAC extraction without re-encoding</li>
+            <li><a href="./bulk-youtube-video-downloader.html" style="color:var(--accent-secondary);">Bulk Video Downloader</a> — batch download videos in MP4 instead of audio</li>
+        </ul>
+    </section>
+</article>
+
+        </div>
+    </main>
+
+    <!-- Comprehensive Global Footer -->
+    <footer class="site-footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Col 1: Brand & Philosophy -->
+                <div class="footer-brand">
+                    <div class="footer-brand__name">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent-secondary);">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        YT Downloader
+                    </div>
+                    <p class="footer-brand__desc">
+                        A private, ad-free web utility for archiving public educational and Creative Commons media via yt-dlp and FFmpeg. Fast conversion, zero trackers, no account needed.
+                    </p>
+                    <div class="footer-brand__badge">
+                        <span>🔒</span> 24h Auto-Purge &amp; Transient Storage
+                    </div>
+                </div>
+
+                <!-- Col 2: Core Tools -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Core Tools</h4>
+                    <ul class="footer-links">
+                        <li><a href="./" class="footer-link">Home (Overview)</a></li>
+                        <li><a href="./youtube-to-mp3.html" class="footer-link">YouTube to MP3</a></li>
+                        <li><a href="./youtube-video-downloader.html" class="footer-link">Video Downloader (4K)</a></li>
+                        <li><a href="./bulk-youtube-to-mp3.html" class="footer-link">Bulk MP3 Downloader</a></li>
+                        <li><a href="./bulk-youtube-video-downloader.html" class="footer-link">Bulk Video Downloader</a></li>
+                        <li><a href="./youtube-playlist-downloader.html" class="footer-link">Playlist Downloader</a></li>
+                        <li><a href="./youtube-video-info.html" class="footer-link">Video Info &amp; Codecs</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Format Converters -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Formats &amp; Features</h4>
+                    <ul class="footer-links">
+                        <li><a href="./youtube-to-mp4.html" class="footer-link">YouTube to MP4</a></li>
+                        <li><a href="./youtube-to-wav.html" class="footer-link">YouTube to WAV</a></li>
+                        <li><a href="./youtube-to-m4a.html" class="footer-link">YouTube to M4A</a></li>
+                        <li><a href="./youtube-to-flac.html" class="footer-link">YouTube to FLAC</a></li>
+                        <li><a href="./youtube-4k-downloader.html" class="footer-link">4K Video Downloader</a></li>
+                        <li><a href="./ad-free-youtube-downloader.html" class="footer-link">Ad-Free Downloader</a></li>
+                        <li><a href="./safe-youtube-downloader.html" class="footer-link">Safe Downloader Guide</a></li>
+                        <li><a href="./supported-sites.html" class="footer-link">Supported Sites</a></li>
+                        <li><a href="./yt-dlp-web-ui.html" class="footer-link">yt-dlp Web UI</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Guides & Articles -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Guides &amp; Articles</h4>
+                    <ul class="footer-links">
+                        <li><a href="/blog/what-is-yt-dlp" class="footer-link">What is yt-dlp?</a></li>
+                        <li><a href="/blog/install-ffmpeg-windows-mac-linux" class="footer-link">Install FFmpeg (Win/Mac/Linux)</a></li>
+                        <li><a href="/blog/best-video-quality-for-downloads" class="footer-link">4K vs 1080p vs 720p Guide</a></li>
+                        <li><a href="/blog/mp3-vs-m4a-vs-opus" class="footer-link">MP3 vs M4A vs Opus Audio</a></li>
+                        <li><a href="/blog/yt-dlp-common-errors-and-fixes" class="footer-link">Common yt-dlp Errors &amp; Fixes</a></li>
+                        <li><a href="./blog.html" class="footer-link" style="color:var(--accent-secondary); font-weight:600;">Browse All Guides &rarr;</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 5: Trust, Legal & Sitemap -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Trust &amp; Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="./about.html" class="footer-link">About Project</a></li>
+                        <li><a href="./how-it-works.html" class="footer-link">How It Works</a></li>
+                        <li><a href="./fair-use.html" class="footer-link">Fair Use &amp; Policy</a></li>
+                        <li><a href="./faq.html" class="footer-link">FAQ</a></li>
+                        <li><a href="./contact.html" class="footer-link">Contact &amp; Support</a></li>
+                        <li><a href="./privacy.html" class="footer-link">Privacy Policy</a></li>
+                        <li><a href="./terms.html" class="footer-link">Terms of Service</a></li>
+                        <li><a href="./dmca.html" class="footer-link">DMCA Takedown</a></li>
+                        <li><a href="./changelog.html" class="footer-link">Changelog</a></li>
+                        <li><a href="/site-map.html" class="footer-link" style="color:var(--accent-secondary);">HTML Site Map</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom Note with Legal Disclaimers -->
+            <div class="footer-bottom" style="flex-direction:column; gap:8px; text-align:center;">
+                <div>
+                    <strong>Disclaimer:</strong> YT Downloader is an independent utility and is not affiliated with or endorsed by YouTube or Google.
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); max-width:820px; margin:0 auto; line-height:1.5;">
+                    Usage Notice: Only download content you own, that is licensed for reuse (e.g. Creative Commons), or for which you have explicit rights holder permission. Converted files are automatically and permanently purged from server storage after 24 hours.
+                </div>
+                <div style="margin-top:6px; font-size:11px; color:var(--text-muted);">
+                    &copy; 2026 YT Downloader &bull; Built with Python, Flask, <a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener noreferrer" style="color:var(--text-secondary)">yt-dlp</a> &amp; <a href="https://ffmpeg.org" target="_blank" rel="noopener noreferrer" style="color:var(--text-secondary)">FFmpeg</a>.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Client Scripts -->
+    <script src="./static/js/ui-effects.js"></script>
+    
+    <script src="./static/js/app.js"></script>
+    
+</body>
+</html>

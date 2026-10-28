@@ -80,6 +80,16 @@
             YT Downloader is developed by independent software engineers and digital preservation enthusiasts who believe that access to personal media archives should be open, secure, and respectful of user autonomy. Whether you need to archive public educational lectures before traveling offline or convert your personal creative projects into high-fidelity audio stems, our software provides the tools you need.
         </p>
 
+        <h2>Our Stance on User Privacy &amp; Data Minimization</h2>
+        <p>
+            Most video converter websites profit by collecting IP logs, injecting tracking cookies, and selling audience profiles to third-party ad networks. We reject this monetization model entirely:
+        </p>
+        <ul style="color:var(--text-secondary); line-height:1.8; margin-left:1.5rem; margin-bottom:1.5rem;">
+            <li><strong>Zero Activity Logs:</strong> We do not log submitted URLs, IP addresses, or client user agents in persistent storage.</li>
+            <li><strong>Automated Disk Sanitization:</strong> Any temporary audio/video files created during FFmpeg multiplexing are automatically and irreversibly deleted after 24 hours by our background garbage collector.</li>
+            <li><strong>Direct CDN Streams When Possible:</strong> Where native audio formats can be downloaded directly by your browser, our fast-path routes the stream directly from YouTube's edge cache, bypassing intermediate server storage entirely.</li>
+        </ul>
+
         <h2>Get in Touch</h2>
         <p>
             Have feedback, noticed a bug with stream extraction, or want to contribute to our self-hosting documentation? Visit our <a href="{{ url_for('contact') }}" style="color:var(--accent-secondary); font-weight:600;">Contact &amp; Support page</a> or check our comprehensive <a href="{{ url_for('faq') }}" style="color:var(--accent-secondary); font-weight:600;">Frequently Asked Questions</a>.
