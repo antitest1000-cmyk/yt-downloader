@@ -415,7 +415,7 @@ def create_app(test_config: dict = None) -> Flask:
     def sitemap():
         """Generate XML sitemap containing only canonical URLs."""
         from blog_posts import get_all_posts
-        base = 'https://YOURDOMAIN.COM'
+        base = os.environ.get('BASE_URL', 'https://yt-downlooader.netlify.app').rstrip('/')
         today = datetime.utcnow().strftime('%Y-%m-%d')
 
         canonical_pages = [
@@ -481,7 +481,7 @@ def create_app(test_config: dict = None) -> Flask:
     @app.route('/robots.txt')
     def robots():
         """Serve robots.txt allowing public content and AI search bots while shielding API/temp folders."""
-        base = 'https://YOURDOMAIN.COM'
+        base = os.environ.get('BASE_URL', 'https://yt-downlooader.netlify.app').rstrip('/')
         content = (
             'User-agent: *\n'
             'Allow: /\n'
@@ -501,10 +501,22 @@ def create_app(test_config: dict = None) -> Flask:
             'User-agent: OAI-SearchBot\n'
             'Allow: /\n'
             '\n'
+            'User-agent: GPTBot\n'
+            'Allow: /\n'
+            '\n'
+            'User-agent: ChatGPT-User\n'
+            'Allow: /\n'
+            '\n'
             'User-agent: PerplexityBot\n'
             'Allow: /\n'
             '\n'
             'User-agent: Claude-SearchBot\n'
+            'Allow: /\n'
+            '\n'
+            'User-agent: Applebot\n'
+            'Allow: /\n'
+            '\n'
+            'User-agent: Amazonbot\n'
             'Allow: /\n'
             '\n'
             f'Sitemap: {base}/sitemap.xml\n'

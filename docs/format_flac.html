@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="google-site-verification" content="zfj3279xwPGfTYqn3RM0vjZRusYhT8THLKJrceS2E3Q">
+    <title>YouTube to FLAC Converter – Lossless Audio Compression (yt-dlp)</title>
+    <meta name="description" content="Convert YouTube videos to FLAC lossless audio. Learn the acoustic limits of YouTube audio streams, stop generational transcoding loss, and download ad-free.">
+    
+    <link rel="canonical" href="https://yt-downlooader.netlify.app/youtube-to-flac">
+    
+    
+    <!-- OpenGraph / Social -->
+    <meta property="og:site_name" content="YT Downloader">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="YouTube to FLAC Converter – Lossless Audio Compression (yt-dlp)">
+    <meta property="og:description" content="Convert YouTube videos to FLAC lossless audio. Learn the acoustic limits of YouTube audio streams, stop generational transcoding loss, and download ad-free.">
+    <meta property="og:url" content="https://yt-downlooader.netlify.app/youtube-to-flac">
+    <meta property="og:image" content="https://yt-downlooader.netlify.app/static/favicon.svg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="YouTube to FLAC Converter – Lossless Audio Compression (yt-dlp)">
+    <meta name="twitter:description" content="Convert YouTube videos to FLAC lossless audio. Learn the acoustic limits of YouTube audio streams, stop generational transcoding loss, and download ad-free.">
+    <meta name="twitter:image" content="https://yt-downlooader.netlify.app/static/favicon.svg">
+
+    <!-- GEO & AEO Search Engine Direct Answer Signals -->
+    <meta name="geo.region" content="US">
+    <meta name="geo.placename" content="Global">
+    <meta name="distribution" content="Global">
+    <meta name="coverage" content="Worldwide">
+    <meta name="rating" content="General">
+    <link rel="alternate" hreflang="x-default" href="https://yt-downlooader.netlify.app/youtube-to-flac">
+    <link rel="alternate" hreflang="en" href="https://yt-downlooader.netlify.app/youtube-to-flac">
+    <link rel="icon" type="image/svg+xml" href="./static/favicon.svg">
+    <link rel="apple-touch-icon" href="./static/favicon.svg">
+
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Design System Stylesheets -->
+    <link rel="stylesheet" href="./static/css/style.css">
+    <link rel="stylesheet" href="./static/css/content.css">
+
+    <!-- Structured Data (JSON-LD) -->
+    
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "YouTube to FLAC Converter",
+      "url": "https://yt-downlooader.netlify.app/youtube-to-flac",
+      "description": "Convert YouTube audio tracks to Free Lossless Audio Codec (FLAC) with metadata preservation.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://yt-downlooader.netlify.app/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "YouTube to FLAC",
+          "item": "https://yt-downlooader.netlify.app/youtube-to-flac"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does converting YouTube to FLAC produce true studio-master audio?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. YouTube compresses all uploaded audio to ~160 kbps Opus or 128 kbps AAC. Converting to FLAC compresses the audio losslessly from that point forward, preventing additional degradation, but it cannot recreate high frequencies discarded during YouTube's initial upload compression."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why use FLAC instead of MP3?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "FLAC uses lossless Huffman coding rather than psychoacoustic lossy discard. For archivists and editors who plan to re-edit or process the sound, FLAC prevents generational compression artifacts."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+    <script>
+        (function() {
+            var savedTheme = localStorage.getItem('ytdl_theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+</head>
+<body class="theme-light">
+    <!-- Aurora Mesh Background Canvas -->
+    <canvas id="aurora-canvas" aria-hidden="true"></canvas>
+    <!-- Header & Navigation -->
+    <header class="header" role="banner">
+        <div class="header__inner">
+            <div class="header__brand">
+                <a href="./" class="header__brand-link" aria-label="YT Downloader Home">
+                    <span class="brand-logo-text"><span class="brand-logo-badge" style="margin-left:0; margin-right:4px;">YT</span> Downloader</span>
+                </a>
+            </div>
+
+            <!-- Global Nav Links (Desktop) -->
+            <nav class="nav-links" id="main-nav" aria-label="Main Navigation">
+                <a href="./youtube-video-downloader.html" class="nav-link ">Video</a>
+                <a href="./youtube-to-mp3.html" class="nav-link ">MP3 Audio</a>
+                <a href="./youtube-4k-downloader.html" class="nav-link ">4K UHD</a>
+                <a href="./bulk-youtube-to-mp3.html" class="nav-link ">Bulk Audio</a>
+                <a href="./bulk-youtube-video-downloader.html" class="nav-link ">Bulk Video</a>
+                <a href="./blog.html" class="nav-link ">Guides</a>
+                <a href="./self-hosted-youtube-downloader.html" class="nav-link nav-link--highlight ">💻 Self-Host</a>
+            </nav>
+
+            <div class="header__actions">
+                <button type="button" class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Toggle dark/light mode" title="Toggle Dark/Light Mode">
+                    <span id="theme-toggle-icon">🌙</span>
+                </button>
+                <div class="header__status" id="health-status" title="System Status">
+                    <span class="status-dot" id="status-dot"></span>
+                    <span class="status-text" id="status-text">Checking...</span>
+                </div>
+                <!-- Mobile Navigation Toggle Button -->
+                <button type="button" class="header__menu-btn" id="mobile-menu-btn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-nav-drawer">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Drawer -->
+        <nav class="mobile-nav-drawer" id="mobile-nav-drawer" aria-label="Mobile Navigation" hidden>
+            <div class="mobile-nav-links">
+                <a href="./" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">🏠</span>
+                    <span>Home Overview</span>
+                </a>
+                <a href="./youtube-to-mp3.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">🎵</span>
+                    <span>YouTube to MP3</span>
+                </a>
+                <a href="./youtube-video-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">🎬</span>
+                    <span>YouTube Video Downloader (4K/1080p)</span>
+                </a>
+                <a href="./bulk-youtube-to-mp3.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">⚡</span>
+                    <span>Bulk MP3 Downloader</span>
+                </a>
+                <a href="./bulk-youtube-video-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📦</span>
+                    <span>Bulk Video Downloader</span>
+                </a>
+                <a href="./youtube-playlist-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📋</span>
+                    <span>Playlist Downloader</span>
+                </a>
+                <a href="./blog.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📚</span>
+                    <span>Tech Guides &amp; Tutorials</span>
+                </a>
+                <a href="./self-hosted-youtube-downloader.html" class="mobile-nav-link mobile-nav-link--highlight ">
+                    <span class="mobile-nav-icon">💻</span>
+                    <span>Self-Host Guide (Docker/Python)</span>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main" role="main">
+        <div class="container">
+            
+<div class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="./">Home</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span class="breadcrumbs__current">YouTube to FLAC</span>
+</div>
+
+<article class="content-article">
+    <header class="content-article__hero content-article__hero--center">
+        <span class="content-badge">🎼 Lossless Compression</span>
+        <h1 class="content-title">Convert YouTube Videos to FLAC Audio</h1>
+        <p class="content-subtitle" style="margin:0 auto; max-width:680px;">
+            Extract audio tracks into <strong>Free Lossless Audio Codec (FLAC)</strong> format. Stop generational compression loss for music archiving and podcast editing.
+        </p>
+    </header>
+
+    <div class="trust-strip">
+        <span class="trust-item"><span class="trust-item__icon">🎼</span> <strong>Lossless Coding</strong> Bit-Perfect FLAC</span>
+        <span class="trust-item"><span class="trust-item__icon">🛡️</span> <strong>No Generational Loss</strong> Zero Extra Discard</span>
+        <span class="trust-item"><span class="trust-item__icon">🚫</span> <strong>No Ads</strong> Zero Popups</span>
+        <span class="trust-item"><span class="trust-item__icon">🔒</span> <strong>24h Auto-Purge</strong> Private Cache</span>
+    </div>
+
+    <div class="usage-notice">
+        <span class="usage-notice__icon">⚖️</span>
+        <div>
+            <strong>Archival Notice:</strong> Only convert audio you have permission to download, such as educational materials, creative commons compositions, or your own video backups.
+        </div>
+    </div>
+
+    <!-- Quick Tool Card for FLAC -->
+    <div class="card" style="margin-bottom:var(--space-10);">
+        <h2 style="font-size:1.25rem; font-family:'Outfit',sans-serif; margin-top:0; margin-bottom:var(--space-3); color:var(--text-primary);">
+            🎼 Convert Audio to FLAC
+        </h2>
+        <div class="form-group">
+            <label for="url-input" class="form-label">YouTube Video URL</label>
+            <div class="input-row">
+                <div class="input-field-wrap">
+                    <span class="input-field-icon" aria-hidden="true">🎵</span>
+                    <input type="url" id="url-input" class="form-input form-input--has-actions"
+                           placeholder="https://www.youtube.com/watch?v=..." autocomplete="off">
+                    <button type="button" id="btn-paste-url" class="btn-input-action" title="Paste link from clipboard">
+                        <span>📋</span> Paste
+                    </button>
+                </div>
+                <button type="button" id="btn-fetch-meta" class="btn btn--fetch" title="Inspect video details">
+                    <span>✨</span> Inspect
+                </button>
+            </div>
+            <div id="url-feedback" class="form-feedback" role="alert" aria-live="polite"></div>
+        </div>
+
+        <div id="meta-preview" class="meta-preview hidden" aria-live="polite">
+            <div class="meta-preview__thumb" id="meta-thumb"></div>
+            <div class="meta-preview__info">
+                <span class="meta-preview__title" id="meta-title"></span>
+                <span class="meta-preview__detail" id="meta-detail"></span>
+            </div>
+        </div>
+
+        <input type="hidden" id="quality-select" value="audio_best">
+        <div class="options-row" style="margin-top:var(--space-4);">
+            <div class="form-group form-group--half">
+                <label for="audio-format-select" class="form-label">Audio Quality Profile</label>
+                <select id="audio-format-select" class="form-select">
+                    <option value="audio_best" selected>🎼 FLAC / Lossless Source (Highest Fidelity)</option>
+                    <option value="audio_mp3">🎧 MP3 Audio (Universal 320kbps)</option>
+                </select>
+            </div>
+            <div class="form-group form-group--half" style="display:flex; align-items:flex-end;">
+                <button type="button" id="btn-download" class="btn btn--primary btn--full">
+                    <span class="btn__text">Convert to FLAC</span>
+                    <span class="btn__spinner hidden" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <section class="section" id="jobs-section" style="margin-bottom:var(--space-10);">
+        <div class="history-header">
+            <h2 class="section__title" id="jobs-heading">
+                <span class="section__icon" aria-hidden="true">⬇</span>
+                Download Queue
+                <span class="badge" id="active-count">0</span>
+            </h2>
+            <div class="history-controls">
+                <button type="button" id="btn-clear-history" class="btn btn--secondary btn--small">🗑 Clear</button>
+            </div>
+        </div>
+        <div id="jobs-list" class="jobs-list">
+            <div class="empty-state" id="empty-state">
+                <h3 class="empty-state__heading" id="empty-state-text">No active FLAC conversions</h3>
+                <p class="empty-state__hint" id="empty-state-hint">Paste a link above and click <strong>Convert to FLAC</strong>.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="prose">
+        <div class="aeo-box">
+            <div class="aeo-box__header">⚡ Quick Answer / Key Takeaway</div>
+            <p class="aeo-box__content">
+                <strong>Why convert YouTube to FLAC?</strong> While YouTube audio is capped at ~160kbps Opus or ~128kbps AAC, converting to FLAC encapsulates the stream using lossless Linear Predictive Coding (LPC). This freezes audio degradation, ensuring zero secondary lossy artifacts during audio archiving or sound design work.
+            </p>
+            <ul class="aeo-box__list">
+                <li><strong>Lossless Archiving:</strong> Compresses file size ~50% compared to WAV with zero acoustic loss.</li>
+                <li><strong>No MP3 Smearing:</strong> Free of lossy psychoacoustic phase distortion.</li>
+                <li><strong>Audiophile &amp; Sound Design:</strong> Ideal intermediate format for remixing and sound libraries.</li>
+            </ul>
+        </div>
+
+        <h2>The Technical Limits of FLAC Audio on YouTube</h2>
+        <p>
+            FLAC (Free Lossless Audio Codec) is the gold standard format for preserving studio-master audio without discarding acoustic information. However, when converting internet video streams, it is crucial to recognize <strong>the source cap limit</strong>:
+        </p>
+        <p>
+            YouTube does not store uncompressed audio. Regardless of how pristine the creator's original file was, YouTube compresses all audio to <strong>~160 kbps Opus</strong> or <strong>128 kbps AAC</strong> upon upload.
+        </p>
+        <p>
+            Converting a 160 kbps Opus stream to FLAC cannot restore acoustic frequencies that YouTube discarded. What FLAC does achieve is <strong>perfect preservation of the remaining audio stream</strong>:
+        </p>
+        <ul>
+            <li><strong>No Secondary Psychoacoustic Compression:</strong> MP3 and AAC discard high-frequency data during encoding. FLAC compresses file size using variable-length linear predictive coding, meaning every bit decoded from the stream is 100% mathematically identical to what YouTube broadcast.</li>
+            <li><strong>Audio Archiving:</strong> If you collect audio stems for remixing, video editing, or analysis in sound software, FLAC guarantees your archive won't deteriorate with subsequent saves.</li>
+        </ul>
+
+        <div class="table-wrap">
+            <table class="format-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>FLAC</th>
+                        <th>WAV</th>
+                        <th>MP3 (320k)</th>
+                        <th>M4A (AAC)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="highlight-col">Algorithm</td>
+                        <td>Lossless (LPC)</td>
+                        <td>Uncompressed PCM</td>
+                        <td>Lossy (MDCT)</td>
+                        <td>Lossy (AAC)</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Acoustic Preservation</td>
+                        <td>100% bit-exact</td>
+                        <td>100% bit-exact</td>
+                        <td>Approximated psychoacoustic</td>
+                        <td>Native stream copy</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Average Size (4 min)</td>
+                        <td>~22 MB</td>
+                        <td>~42 MB</td>
+                        <td>~9.2 MB</td>
+                        <td>~3.8 MB</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Tagging Support</td>
+                        <td>Vorbis comment (rich)</td>
+                        <td>Limited RIFF chunks</td>
+                        <td>ID3v2 tags</td>
+                        <td>MPEG-4 atoms</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Step-by-Step: Converting to FLAC</h2>
+        <div class="step-cards">
+            <div class="step-card">
+                <div class="step-card__number">1</div>
+                <div class="step-card__title">Copy &amp; Paste</div>
+                <p class="step-card__text">Paste any public YouTube link in the URL box above and verify metadata with one click.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">2</div>
+                <div class="step-card__title">Lossless Transcode</div>
+                <p class="step-card__text">FFmpeg extracts the best audio stream and packages it into a lossless 16-bit FLAC container.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">3</div>
+                <div class="step-card__title">Local Archiving</div>
+                <p class="step-card__text">Save the resulting .flac file directly to your drive. Ready for foobar2000, VLC, or audio editing software.</p>
+            </div>
+        </div>
+
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-list">
+            <div class="faq-item">
+                <h3 class="faq-question">Will FLAC files play in Apple Music or iTunes?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Apple devices natively support Apple Lossless (ALAC) and AAC (M4A) rather than FLAC. To play FLAC on macOS or iOS, use VLC Media Player or choose our <a href="./youtube-to-m4a.html" style="color:var(--accent-secondary);">YouTube to M4A Converter</a> for native Apple compatibility.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">How does FLAC compare in file size to WAV?</h3>
+                <div class="faq-answer">
+                    <p>
+                        FLAC is typically 40% to 50% smaller than an uncompressed WAV file of the same audio while preserving identical sound quality.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Can I tag FLAC files with album covers and artist metadata?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Yes. FLAC uses Vorbis comments which fully support high-resolution embedded album art, artist credits, genre, and custom tagging without risk of audio corruption.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Does YT Downloader charge any subscription for FLAC downloads?</h3>
+                <div class="faq-answer">
+                    <p>
+                        No. All formats on YT Downloader are 100% free and open-source without ads, premium paywalls, or daily download quotas.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>
+
+        </div>
+    </main>
+
+    <!-- Comprehensive Global Footer -->
+    <footer class="site-footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Col 1: Brand & Philosophy -->
+                <div class="footer-brand">
+                    <div class="footer-brand__name">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent-secondary);">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        YT Downloader
+                    </div>
+                    <p class="footer-brand__desc">
+                        A private, ad-free web utility for archiving public educational and Creative Commons media via yt-dlp and FFmpeg. Fast conversion, zero trackers, no account needed.
+                    </p>
+                    <div class="footer-brand__badge">
+                        <span>🔒</span> 24h Auto-Purge &amp; Transient Storage
+                    </div>
+                </div>
+
+                <!-- Col 2: Core Tools -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Core Tools</h4>
+                    <ul class="footer-links">
+                        <li><a href="./" class="footer-link">Home (Overview)</a></li>
+                        <li><a href="./youtube-to-mp3.html" class="footer-link">YouTube to MP3</a></li>
+                        <li><a href="./youtube-video-downloader.html" class="footer-link">Video Downloader (4K)</a></li>
+                        <li><a href="./bulk-youtube-to-mp3.html" class="footer-link">Bulk MP3 Downloader</a></li>
+                        <li><a href="./bulk-youtube-video-downloader.html" class="footer-link">Bulk Video Downloader</a></li>
+                        <li><a href="./youtube-playlist-downloader.html" class="footer-link">Playlist Downloader</a></li>
+                        <li><a href="./youtube-video-info.html" class="footer-link">Video Info &amp; Codecs</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Format Converters -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Formats &amp; Features</h4>
+                    <ul class="footer-links">
+                        <li><a href="./youtube-to-mp4.html" class="footer-link">YouTube to MP4</a></li>
+                        <li><a href="./youtube-to-wav.html" class="footer-link">YouTube to WAV</a></li>
+                        <li><a href="./youtube-to-m4a.html" class="footer-link">YouTube to M4A</a></li>
+                        <li><a href="./youtube-to-flac.html" class="footer-link">YouTube to FLAC</a></li>
+                        <li><a href="./youtube-4k-downloader.html" class="footer-link">4K Video Downloader</a></li>
+                        <li><a href="./ad-free-youtube-downloader.html" class="footer-link">Ad-Free Downloader</a></li>
+                        <li><a href="./safe-youtube-downloader.html" class="footer-link">Safe Downloader Guide</a></li>
+                        <li><a href="./supported-sites.html" class="footer-link">Supported Sites</a></li>
+                        <li><a href="./yt-dlp-web-ui.html" class="footer-link">yt-dlp Web UI</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Guides & Articles -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Guides &amp; Articles</h4>
+                    <ul class="footer-links">
+                        <li><a href="/blog/what-is-yt-dlp" class="footer-link">What is yt-dlp?</a></li>
+                        <li><a href="/blog/install-ffmpeg-windows-mac-linux" class="footer-link">Install FFmpeg (Win/Mac/Linux)</a></li>
+                        <li><a href="/blog/best-video-quality-for-downloads" class="footer-link">4K vs 1080p vs 720p Guide</a></li>
+                        <li><a href="/blog/mp3-vs-m4a-vs-opus" class="footer-link">MP3 vs M4A vs Opus Audio</a></li>
+                        <li><a href="/blog/yt-dlp-common-errors-and-fixes" class="footer-link">Common yt-dlp Errors &amp; Fixes</a></li>
+                        <li><a href="./blog.html" class="footer-link" style="color:var(--accent-secondary); font-weight:600;">Browse All Guides &rarr;</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 5: Trust, Legal & Sitemap -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Trust &amp; Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="./about.html" class="footer-link">About Project</a></li>
+                        <li><a href="./how-it-works.html" class="footer-link">How It Works</a></li>
+                        <li><a href="./fair-use.html" class="footer-link">Fair Use &amp; Policy</a></li>
+                        <li><a href="./faq.html" class="footer-link">FAQ</a></li>
+                        <li><a href="./contact.html" class="footer-link">Contact &amp; Support</a></li>
+                        <li><a href="./privacy.html" class="footer-link">Privacy Policy</a></li>
+                        <li><a href="./terms.html" class="footer-link">Terms of Service</a></li>
+                        <li><a href="./dmca.html" class="footer-link">DMCA Takedown</a></li>
+                        <li><a href="./changelog.html" class="footer-link">Changelog</a></li>
+                        <li><a href="/site-map.html" class="footer-link" style="color:var(--accent-secondary);">HTML Site Map</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom Note with Legal Disclaimers -->
+            <div class="footer-bottom" style="flex-direction:column; gap:8px; text-align:center;">
+                <div>
+                    <strong>Disclaimer:</strong> YT Downloader is an independent utility and is not affiliated with or endorsed by YouTube or Google.
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); max-width:820px; margin:0 auto; line-height:1.5;">
+                    Usage Notice: Only download content you own, that is licensed for reuse (e.g. Creative Commons), or for which you have explicit rights holder permission. Converted files are automatically and permanently purged from server storage after 24 hours.
+                </div>
+                <div style="margin-top:6px; font-size:11px; color:var(--text-muted);">
+                    &copy; 2026 YT Downloader &bull; Built with Python, Flask, <a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener noreferrer" style="color:var(--text-secondary)">yt-dlp</a> &amp; <a href="https://ffmpeg.org" target="_blank" rel="noopener noreferrer" style="color:var(--text-secondary)">FFmpeg</a>.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Client Scripts -->
+    <script src="./static/js/ui-effects.js"></script>
+    
+    <script src="./static/js/app.js"></script>
+    
+</body>
+</html>

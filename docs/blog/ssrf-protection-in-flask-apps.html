@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="google-site-verification" content="zfj3279xwPGfTYqn3RM0vjZRusYhT8THLKJrceS2E3Q">
+    <title>SSRF Protection in Flask Media Downloader Apps</title>
+    <meta name="description" content="Learn how to protect Python web applications from Server-Side Request Forgery (SSRF) when accepting user URLs. Practical DNS validation and IP filtering code.">
+    
+<link rel="canonical" href="https://yt-downlooader.netlify.app/blog/ssrf-protection-in-flask-apps">
+
+    
+    <!-- OpenGraph / Social -->
+    <meta property="og:site_name" content="YT Downloader">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="SSRF Protection in Flask Media Downloader Apps">
+    <meta property="og:description" content="Learn how to protect Python web applications from Server-Side Request Forgery (SSRF) when accepting user URLs. Practical DNS validation and IP filtering code.">
+    <meta property="og:url" content="https://yt-downlooader.netlify.app/blog/ssrf-protection-in-flask-apps">
+    <meta property="og:image" content="https://yt-downlooader.netlify.app/static/favicon.svg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SSRF Protection in Flask Media Downloader Apps">
+    <meta name="twitter:description" content="Learn how to protect Python web applications from Server-Side Request Forgery (SSRF) when accepting user URLs. Practical DNS validation and IP filtering code.">
+    <meta name="twitter:image" content="https://yt-downlooader.netlify.app/static/favicon.svg">
+
+    <!-- GEO & AEO Search Engine Direct Answer Signals -->
+    <meta name="geo.region" content="US">
+    <meta name="geo.placename" content="Global">
+    <meta name="distribution" content="Global">
+    <meta name="coverage" content="Worldwide">
+    <meta name="rating" content="General">
+    <link rel="alternate" hreflang="x-default" href="https://yt-downlooader.netlify.app/blog/ssrf-protection-in-flask-apps">
+    <link rel="alternate" hreflang="en" href="https://yt-downlooader.netlify.app/blog/ssrf-protection-in-flask-apps">
+    <link rel="icon" type="image/svg+xml" href="../static/favicon.svg">
+    <link rel="apple-touch-icon" href="../static/favicon.svg">
+
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Design System Stylesheets -->
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/content.css">
+
+    <!-- Structured Data (JSON-LD) -->
+    
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "YT Downloader",
+      "url": "https://yt-downlooader.netlify.app/",
+      "description": "High-speed local YouTube video and audio downloader powered by yt-dlp and FFmpeg.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "1080p, 1440p, and 4K Ultra HD video downloads",
+        "Lossless audio extraction to MP3, M4A, FLAC, and WAV",
+        "Bulk URL queue processing with ZIP archive packaging",
+        "Playlist batch downloads up to 50 videos",
+        "Zero third-party trackers, no popups, no account required",
+        "Automated 24-hour file cleanup"
+      ]
+    }
+    </script>
+    
+    
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "SSRF Protection in Flask Media Downloader Apps",
+  "description": "Learn how to protect Python web applications from Server-Side Request Forgery (SSRF) when accepting user URLs. Practical DNS validation and IP filtering code.",
+  "datePublished": "2026-10-01",
+  "author": {
+    "@type": "Organization",
+    "name": "YT Downloader"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "YT Downloader"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://yt-downlooader.netlify.app/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blog",
+      "item": "https://yt-downlooader.netlify.app/blog"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "SSRF Protection in Flask Media Downloader Apps",
+      "item": "https://yt-downlooader.netlify.app/blog/ssrf-protection-in-flask-apps"
+    }
+  ]
+}
+</script>
+
+    <script>
+        (function() {
+            var savedTheme = localStorage.getItem('ytdl_theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+</head>
+<body class="theme-light">
+    <!-- Aurora Mesh Background Canvas -->
+    <canvas id="aurora-canvas" aria-hidden="true"></canvas>
+    <!-- Header & Navigation -->
+    <header class="header" role="banner">
+        <div class="header__inner">
+            <div class="header__brand">
+                <a href="../" class="header__brand-link" aria-label="YT Downloader Home">
+                    <span class="brand-logo-text"><span class="brand-logo-badge" style="margin-left:0; margin-right:4px;">YT</span> Downloader</span>
+                </a>
+            </div>
+
+            <!-- Global Nav Links (Desktop) -->
+            <nav class="nav-links" id="main-nav" aria-label="Main Navigation">
+                <a href="../youtube-video-downloader.html" class="nav-link ">Video</a>
+                <a href="../youtube-to-mp3.html" class="nav-link ">MP3 Audio</a>
+                <a href="../youtube-4k-downloader.html" class="nav-link ">4K UHD</a>
+                <a href="../bulk-youtube-to-mp3.html" class="nav-link ">Bulk Audio</a>
+                <a href="../bulk-youtube-video-downloader.html" class="nav-link ">Bulk Video</a>
+                <a href="../blog.html" class="nav-link active">Guides</a>
+                <a href="../self-hosted-youtube-downloader.html" class="nav-link nav-link--highlight ">💻 Self-Host</a>
+            </nav>
+
+            <div class="header__actions">
+                <button type="button" class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Toggle dark/light mode" title="Toggle Dark/Light Mode">
+                    <span id="theme-toggle-icon">🌙</span>
+                </button>
+                <div class="header__status" id="health-status" title="System Status">
+                    <span class="status-dot" id="status-dot"></span>
+                    <span class="status-text" id="status-text">Checking...</span>
+                </div>
+                <!-- Mobile Navigation Toggle Button -->
+                <button type="button" class="header__menu-btn" id="mobile-menu-btn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-nav-drawer">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Drawer -->
+        <nav class="mobile-nav-drawer" id="mobile-nav-drawer" aria-label="Mobile Navigation" hidden>
+            <div class="mobile-nav-links">
+                <a href="../" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">🏠</span>
+                    <span>Home Overview</span>
+                </a>
+                <a href="../youtube-to-mp3.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">🎵</span>
+                    <span>YouTube to MP3</span>
+                </a>
+                <a href="../youtube-video-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">🎬</span>
+                    <span>YouTube Video Downloader (4K/1080p)</span>
+                </a>
+                <a href="../bulk-youtube-to-mp3.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">⚡</span>
+                    <span>Bulk MP3 Downloader</span>
+                </a>
+                <a href="../bulk-youtube-video-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📦</span>
+                    <span>Bulk Video Downloader</span>
+                </a>
+                <a href="../youtube-playlist-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📋</span>
+                    <span>Playlist Downloader</span>
+                </a>
+                <a href="../blog.html" class="mobile-nav-link active">
+                    <span class="mobile-nav-icon">📚</span>
+                    <span>Tech Guides &amp; Tutorials</span>
+                </a>
+                <a href="../self-hosted-youtube-downloader.html" class="mobile-nav-link mobile-nav-link--highlight ">
+                    <span class="mobile-nav-icon">💻</span>
+                    <span>Self-Host Guide (Docker/Python)</span>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main" role="main">
+        <div class="container">
+            
+<!-- Breadcrumb Nav -->
+<nav aria-label="Breadcrumb" style="margin-bottom:2rem; font-size:0.875rem; color:var(--text-muted);">
+    <a href="../" style="color:var(--text-muted); text-decoration:none;">Home</a>
+    <span style="margin:0 0.5rem;">/</span>
+    <a href="../blog.html" style="color:var(--text-muted); text-decoration:none;">Blog</a>
+    <span style="margin:0 0.5rem;">/</span>
+    <span style="color:var(--text-secondary);">SSRF Protection in Flask Media Downloader Apps</span>
+</nav>
+
+<section class="content-header">
+    <div class="content-badge">
+        <span>📖</span> Security
+    </div>
+    <h1 class="content-title">SSRF Protection in Flask Media Downloader Apps</h1>
+    <div style="display:flex; align-items:center; gap:1.5rem; margin-top:1rem; flex-wrap:wrap;">
+        <span style="color:var(--text-muted); font-size:0.875rem;">📅 October 7, 2026</span>
+        <span style="color:var(--text-muted); font-size:0.875rem;">⏱️ 13 min read</span>
+        <span style="color:var(--text-muted); font-size:0.875rem; padding:0.25rem 0.75rem; background:rgba(124,58,237,0.15); border-radius:1rem; border:1px solid rgba(124,58,237,0.3);">Security</span>
+    </div>
+    <p class="content-lead">
+        Server-Side Request Forgery (SSRF) is a critical class of security vulnerability that becomes especially dangerous in media downloading applications. When a web app accepts a URL and fetches it server-side, attackers can submit internal network addresses to probe cloud metadata services, internal APIs, or database management panels. This is a technical walkthrough of how YT Downloader defends against SSRF.
+    </p>
+</section>
+
+<article class="content-article" itemscope itemtype="https://schema.org/Article">
+    <div class="content-prose" itemprop="articleBody">
+        
+
+<div class="aeo-box">
+  <div class="aeo-box__header">⚡ Direct Answer / Key Takeaway</div>
+  <p class="aeo-box__content">
+    <strong>How do you prevent Server-Side Request Forgery (SSRF) in media downloader web apps?</strong> Never pass user-supplied URLs directly to backend network fetchers. Implement strict URL parsing, enforce an allowlist of permitted domain hosts (e.g., youtube.com, youtu.be), resolve destination hostnames to IP addresses using <code>socket.getaddrinfo()</code>, and block all private, loopback (127.0.0.1), link-local (169.254.0.0/16), and cloud metadata IP ranges (169.254.169.254).
+  </p>
+  <ul class="aeo-box__list">
+    <li><strong>Domain Allowlisting:</strong> Strict regex checking of hostname suffixes.</li>
+    <li><strong>DNS Resolution Check:</strong> Validating resolved IPs against RFC 1918 private ranges.</li>
+    <li><strong>Cloud Metadata Shield:</strong> Blocking AWS/GCP/Azure instance metadata endpoints.</li>
+  </ul>
+</div>
+
+<h2>What Is SSRF and Why Do Media Downloaders Get It?</h2>
+<p>
+  SSRF occurs when an attacker can cause a server to make HTTP requests to an arbitrary URL of the attacker's choosing. In a typical SSRF attack chain:
+</p>
+<ol>
+  <li>Attacker submits a URL like <code>http://169.254.169.254/latest/meta-data/iam/security-credentials/</code></li>
+  <li>The server makes an HTTP request to that internal AWS metadata endpoint</li>
+  <li>The response is returned to the attacker, revealing AWS IAM credentials</li>
+  <li>Attacker uses those credentials to gain unauthorized access to cloud resources</li>
+</ol>
+<p>
+  Media downloaders are particularly vulnerable because their core functionality is "accept a URL, fetch content from it." Without careful validation, that functionality becomes an open SSRF vector.
+</p>
+
+<h2>Layer 1: URL Scheme and Host Allowlisting</h2>
+<p>The first and most important defense is strict allowlisting of permitted URL patterns:</p>
+<div class="code-block">
+  <div class="code-block__header"><span class="code-block__lang">python</span></div>
+  <pre><code>ALLOWED_HOSTS = {
+    'youtube.com', 'www.youtube.com', 'm.youtube.com',
+    'youtu.be', 'www.youtube-nocookie.com',
+    'music.youtube.com',
+}
+
+ALLOWED_SCHEMES = {'https', 'http'}
+
+def validate_url(url: str) -> dict:
+    try:
+        parsed = urlparse(url)
+    except Exception:
+        return {'valid': False, 'error': 'Malformed URL.'}
+
+    if parsed.scheme not in ALLOWED_SCHEMES:
+        return {'valid': False, 'error': f'Scheme "{parsed.scheme}" not allowed.'}
+
+    host = parsed.hostname.lower() if parsed.hostname else ''
+    # Check exact match and subdomains
+    allowed = any(
+        host == h or host.endswith(f'.{h}')
+        for h in ALLOWED_HOSTS
+    )
+    if not allowed:
+        return {'valid': False, 'error': f'Host "{host}" not in allowlist.'}
+
+    return {'valid': True, ...}</code></pre>
+</div>
+
+<h2>Layer 2: Post-DNS IP Range Blocking</h2>
+<p>
+  Host allowlisting alone is insufficient because of <strong>DNS rebinding attacks</strong>. An attacker could register a domain like <code>youtube-evil.com</code> that resolves to YouTube's hostname at first check, then switches to <code>192.168.1.1</code> when yt-dlp makes the actual download request. Or an attacker could register a custom domain that resolves to an internal IP address directly.
+</p>
+<p>
+  The solution is to perform a DNS resolution of the hostname and then validate that the resolved IP address does not fall within any private, loopback, or link-local IP ranges:
+</p>
+<div class="code-block">
+  <div class="code-block__header"><span class="code-block__lang">python</span></div>
+  <pre><code>import ipaddress, socket
+
+PRIVATE_RANGES = [
+    ipaddress.ip_network('10.0.0.0/8'),
+    ipaddress.ip_network('172.16.0.0/12'),
+    ipaddress.ip_network('192.168.0.0/16'),
+    ipaddress.ip_network('127.0.0.0/8'),
+    ipaddress.ip_network('169.254.0.0/16'),   # Link-local / AWS metadata
+    ipaddress.ip_network('::1/128'),            # IPv6 loopback
+    ipaddress.ip_network('fc00::/7'),           # IPv6 private
+]
+
+def is_safe_ip(hostname: str) -> bool:
+    try:
+        resolved_ip = socket.gethostbyname(hostname)
+        ip = ipaddress.ip_address(resolved_ip)
+        for private_range in PRIVATE_RANGES:
+            if ip in private_range:
+                return False
+        return True
+    except socket.gaierror:
+        return False  # DNS resolution failed, treat as unsafe</code></pre>
+</div>
+
+<h2>Layer 3: Error Message Sanitization</h2>
+<p>
+  SSRF vulnerabilities are often exacerbated by verbose error messages that leak internal network information. If your application returns the raw yt-dlp error string directly to users, it may reveal internal IP addresses, file paths, or service endpoint details that aid an attacker in mapping your internal network.
+</p>
+<p>
+  YT Downloader sanitizes all yt-dlp error messages before returning them to the client, replacing implementation-specific details with user-friendly categorized error codes.
+</p>
+
+<h2>Layer 4: Rate Limiting</h2>
+<p>
+  Even with URL allowlisting, an attacker could submit massive volumes of YouTube URL requests to probe YouTube's own infrastructure for SSRF-adjacent vulnerabilities or to cause downstream service disruption. Flask-Limiter's per-IP rate limiting (30 requests per minute by default) provides a first line of defense against bulk submission attacks.
+</p>
+
+<h2>Layer 5: X-Robots-Tag on API Endpoints</h2>
+<p>
+  API endpoints are set with <code>X-Robots-Tag: noindex, nofollow</code> response headers to prevent search engines from crawling and indexing them. This reduces the API's public exposure surface and avoids advertising endpoint patterns to automated vulnerability scanners.
+</p>
+
+<h2>Testing Your SSRF Defenses</h2>
+<p>To verify your validation is working correctly, test these payloads against your <code>/api/metadata</code> endpoint and confirm they are rejected:</p>
+<div class="code-block">
+  <div class="code-block__header"><span class="code-block__lang">bash</span></div>
+  <pre><code># Should all return validation errors, NOT fetch content:
+curl -X POST /api/metadata -d '{"url": "http://169.254.169.254/"}' -H "Content-Type: application/json"
+curl -X POST /api/metadata -d '{"url": "http://localhost:5432/"}' -H "Content-Type: application/json"
+curl -X POST /api/metadata -d '{"url": "http://192.168.1.1/"}' -H "Content-Type: application/json"
+curl -X POST /api/metadata -d '{"url": "file:///etc/passwd"}' -H "Content-Type: application/json"
+curl -X POST /api/metadata -d '{"url": "https://evil.example.com/"}' -H "Content-Type: application/json"</code></pre>
+</div>
+
+
+<h2>Practical Python Defense: Complete SSRF Validator Implementation</h2>
+<p>
+  Below is a hardened Python utility module illustrating robust URL validation against SSRF vulnerabilities:
+</p>
+<div class="code-block">
+  <div class="code-block__header"><span class="code-block__lang">python</span></div>
+  <pre><code>import ipaddress
+import socket
+from urllib.parse import urlparse
+
+ALLOWED_DOMAINS = {'youtube.com', 'youtu.be', 'vimeo.com', 'soundcloud.com'}
+
+def is_safe_url(target_url: str) -> bool:
+    try:
+        parsed = urlparse(target_url)
+        if parsed.scheme not in ('http', 'https'):
+            return False
+            
+        hostname = parsed.hostname
+        if not hostname:
+            return False
+            
+        # Verify domain suffix
+        if not any(hostname == d or hostname.endswith('.' + d) for d in ALLOWED_DOMAINS):
+            return False
+            
+        # Resolve all associated IP addresses
+        addr_info = socket.getaddrinfo(hostname, None)
+        for _, _, _, _, sockaddr in addr_info:
+            ip_str = sockaddr[0]
+            ip_obj = ipaddress.ip_address(ip_str)
+            
+            # Reject loopback, private, link-local, and reserved addresses
+            if (ip_obj.is_private or ip_obj.is_loopback or 
+                ip_obj.is_link_local or ip_obj.is_reserved or
+                ip_str == '169.254.169.254'):
+                return False
+                
+        return True
+    except Exception:
+        return False</code></pre>
+</div>
+<p>
+  By invoking this check before initiating any yt-dlp metadata extraction or download workflow, your server guarantees that malicious actors cannot weaponize your application to probe your internal network topology or cloud metadata services.
+</p>
+
+    </div>
+</article>
+
+<!-- Navigation Footer -->
+<div style="margin-top:3rem; padding:2rem; background:rgba(15,23,42,0.6); border-radius:1.5rem; border:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+    <div>
+        <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.5rem;">Browse All Articles</div>
+        <a href="../blog.html" style="color:var(--accent-secondary); font-weight:600; text-decoration:none;">&larr; Back to Blog</a>
+    </div>
+    <div style="text-align:right;">
+        <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.5rem;">Start Downloading</div>
+        <a href="../" class="btn btn--primary" style="text-decoration:none; font-size:0.875rem;">Use the Downloader &rarr;</a>
+    </div>
+</div>
+
+<!-- Related Posts -->
+
+<section style="margin-top:3rem;" aria-label="Related Articles">
+    <h2 style="font-size:1.5rem; margin-bottom:1.5rem;">Related Articles</h2>
+    <div class="blog-grid" style="grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));">
+        
+        <article class="blog-card">
+            <div class="blog-card__meta">
+                <span class="blog-card__category">Beginners</span>
+                <span class="blog-card__read-time">8 min</span>
+            </div>
+            <h3 class="blog-card__title" style="font-size:1.1rem;">
+                <a href="/blog/what-is-yt-dlp" class="blog-card__link">
+                    What Is yt-dlp? Complete Beginner&#39;s Guide to Video Downloading
+                </a>
+            </h3>
+            <div class="blog-card__footer">
+                <span class="blog-card__date">October 15, 2026</span>
+                <a href="/blog/what-is-yt-dlp" class="blog-card__cta">Read &rarr;</a>
+            </div>
+        </article>
+        
+        <article class="blog-card">
+            <div class="blog-card__meta">
+                <span class="blog-card__category">Setup</span>
+                <span class="blog-card__read-time">10 min</span>
+            </div>
+            <h3 class="blog-card__title" style="font-size:1.1rem;">
+                <a href="/blog/install-ffmpeg-windows-mac-linux" class="blog-card__link">
+                    How to Install FFmpeg on Windows, Mac &amp; Linux (2026 Guide)
+                </a>
+            </h3>
+            <div class="blog-card__footer">
+                <span class="blog-card__date">October 14, 2026</span>
+                <a href="/blog/install-ffmpeg-windows-mac-linux" class="blog-card__cta">Read &rarr;</a>
+            </div>
+        </article>
+        
+        <article class="blog-card">
+            <div class="blog-card__meta">
+                <span class="blog-card__category">Quality</span>
+                <span class="blog-card__read-time">9 min</span>
+            </div>
+            <h3 class="blog-card__title" style="font-size:1.1rem;">
+                <a href="/blog/best-video-quality-for-downloads" class="blog-card__link">
+                    1080p vs 720p vs 480p: Which Quality to Download?
+                </a>
+            </h3>
+            <div class="blog-card__footer">
+                <span class="blog-card__date">October 13, 2026</span>
+                <a href="/blog/best-video-quality-for-downloads" class="blog-card__cta">Read &rarr;</a>
+            </div>
+        </article>
+        
+    </div>
+</section>
+
+
+        </div>
+    </main>
+
+    <!-- Comprehensive Global Footer -->
+    <footer class="site-footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Col 1: Brand & Philosophy -->
+                <div class="footer-brand">
+                    <div class="footer-brand__name">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent-secondary);">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        YT Downloader
+                    </div>
+                    <p class="footer-brand__desc">
+                        A private, ad-free web utility for archiving public educational and Creative Commons media via yt-dlp and FFmpeg. Fast conversion, zero trackers, no account needed.
+                    </p>
+                    <div class="footer-brand__badge">
+                        <span>🔒</span> 24h Auto-Purge &amp; Transient Storage
+                    </div>
+                </div>
+
+                <!-- Col 2: Core Tools -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Core Tools</h4>
+                    <ul class="footer-links">
+                        <li><a href="../" class="footer-link">Home (Overview)</a></li>
+                        <li><a href="../youtube-to-mp3.html" class="footer-link">YouTube to MP3</a></li>
+                        <li><a href="../youtube-video-downloader.html" class="footer-link">Video Downloader (4K)</a></li>
+                        <li><a href="../bulk-youtube-to-mp3.html" class="footer-link">Bulk MP3 Downloader</a></li>
+                        <li><a href="../bulk-youtube-video-downloader.html" class="footer-link">Bulk Video Downloader</a></li>
+                        <li><a href="../youtube-playlist-downloader.html" class="footer-link">Playlist Downloader</a></li>
+                        <li><a href="../youtube-video-info.html" class="footer-link">Video Info &amp; Codecs</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Format Converters -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Formats &amp; Features</h4>
+                    <ul class="footer-links">
+                        <li><a href="../youtube-to-mp4.html" class="footer-link">YouTube to MP4</a></li>
+                        <li><a href="../youtube-to-wav.html" class="footer-link">YouTube to WAV</a></li>
+                        <li><a href="../youtube-to-m4a.html" class="footer-link">YouTube to M4A</a></li>
+                        <li><a href="../youtube-to-flac.html" class="footer-link">YouTube to FLAC</a></li>
+                        <li><a href="../youtube-4k-downloader.html" class="footer-link">4K Video Downloader</a></li>
+                        <li><a href="../ad-free-youtube-downloader.html" class="footer-link">Ad-Free Downloader</a></li>
+                        <li><a href="../safe-youtube-downloader.html" class="footer-link">Safe Downloader Guide</a></li>
+                        <li><a href="../supported-sites.html" class="footer-link">Supported Sites</a></li>
+                        <li><a href="../yt-dlp-web-ui.html" class="footer-link">yt-dlp Web UI</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Guides & Articles -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Guides &amp; Articles</h4>
+                    <ul class="footer-links">
+                        <li><a href="/blog/what-is-yt-dlp" class="footer-link">What is yt-dlp?</a></li>
+                        <li><a href="/blog/install-ffmpeg-windows-mac-linux" class="footer-link">Install FFmpeg (Win/Mac/Linux)</a></li>
+                        <li><a href="/blog/best-video-quality-for-downloads" class="footer-link">4K vs 1080p vs 720p Guide</a></li>
+                        <li><a href="/blog/mp3-vs-m4a-vs-opus" class="footer-link">MP3 vs M4A vs Opus Audio</a></li>
+                        <li><a href="/blog/yt-dlp-common-errors-and-fixes" class="footer-link">Common yt-dlp Errors &amp; Fixes</a></li>
+                        <li><a href="../blog.html" class="footer-link" style="color:var(--accent-secondary); font-weight:600;">Browse All Guides &rarr;</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 5: Trust, Legal & Sitemap -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Trust &amp; Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="../about.html" class="footer-link">About Project</a></li>
+                        <li><a href="../how-it-works.html" class="footer-link">How It Works</a></li>
+                        <li><a href="../fair-use.html" class="footer-link">Fair Use &amp; Policy</a></li>
+                        <li><a href="../faq.html" class="footer-link">FAQ</a></li>
+                        <li><a href="../contact.html" class="footer-link">Contact &amp; Support</a></li>
+                        <li><a href="../privacy.html" class="footer-link">Privacy Policy</a></li>
+                        <li><a href="../terms.html" class="footer-link">Terms of Service</a></li>
+                        <li><a href="../dmca.html" class="footer-link">DMCA Takedown</a></li>
+                        <li><a href="../changelog.html" class="footer-link">Changelog</a></li>
+                        <li><a href="/site-map.html" class="footer-link" style="color:var(--accent-secondary);">HTML Site Map</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom Note with Legal Disclaimers -->
+            <div class="footer-bottom" style="flex-direction:column; gap:8px; text-align:center;">
+                <div>
+                    <strong>Disclaimer:</strong> YT Downloader is an independent utility and is not affiliated with or endorsed by YouTube or Google.
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); max-width:820px; margin:0 auto; line-height:1.5;">
+                    Usage Notice: Only download content you own, that is licensed for reuse (e.g. Creative Commons), or for which you have explicit rights holder permission. Converted files are automatically and permanently purged from server storage after 24 hours.
+                </div>
+                <div style="margin-top:6px; font-size:11px; color:var(--text-muted);">
+                    &copy; 2026 YT Downloader &bull; Built with Python, Flask, <a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener noreferrer" style="color:var(--text-secondary)">yt-dlp</a> &amp; <a href="https://ffmpeg.org" target="_blank" rel="noopener noreferrer" style="color:var(--text-secondary)">FFmpeg</a>.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Client Scripts -->
+    <script src="../static/js/ui-effects.js"></script>
+    
+    <script src="../static/js/app.js"></script>
+    
+</body>
+</html>

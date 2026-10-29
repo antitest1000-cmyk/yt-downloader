@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="google-site-verification" content="zfj3279xwPGfTYqn3RM0vjZRusYhT8THLKJrceS2E3Q">
+    <title>Is YouTube Downloader Safe? Checklist & Security Guide</title>
+    <meta name="description" content="Is it safe to download YouTube videos? Learn how to identify fake download buttons, dangerous browser extensions, and malware risks on media converter sites.">
+    
+    <link rel="canonical" href="https://yt-downlooader.netlify.app/safe-youtube-downloader">
+    
+    
+    <!-- OpenGraph / Social -->
+    <meta property="og:site_name" content="YT Downloader">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Is YouTube Downloader Safe? Checklist & Security Guide">
+    <meta property="og:description" content="Is it safe to download YouTube videos? Learn how to identify fake download buttons, dangerous browser extensions, and malware risks on media converter sites.">
+    <meta property="og:url" content="https://yt-downlooader.netlify.app/safe-youtube-downloader">
+    <meta property="og:image" content="https://yt-downlooader.netlify.app/static/favicon.svg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Is YouTube Downloader Safe? Checklist & Security Guide">
+    <meta name="twitter:description" content="Is it safe to download YouTube videos? Learn how to identify fake download buttons, dangerous browser extensions, and malware risks on media converter sites.">
+    <meta name="twitter:image" content="https://yt-downlooader.netlify.app/static/favicon.svg">
+
+    <!-- GEO & AEO Search Engine Direct Answer Signals -->
+    <meta name="geo.region" content="US">
+    <meta name="geo.placename" content="Global">
+    <meta name="distribution" content="Global">
+    <meta name="coverage" content="Worldwide">
+    <meta name="rating" content="General">
+    <link rel="alternate" hreflang="x-default" href="https://yt-downlooader.netlify.app/safe-youtube-downloader">
+    <link rel="alternate" hreflang="en" href="https://yt-downlooader.netlify.app/safe-youtube-downloader">
+    <link rel="icon" type="image/svg+xml" href="./static/favicon.svg">
+    <link rel="apple-touch-icon" href="./static/favicon.svg">
+
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Design System Stylesheets -->
+    <link rel="stylesheet" href="./static/css/style.css">
+    <link rel="stylesheet" href="./static/css/content.css">
+
+    <!-- Structured Data (JSON-LD) -->
+    
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "Is YouTube Downloader Safe? How to Spot Fake Converters & Malware",
+      "description": "A comprehensive security checklist for safely archiving internet media without risking malware or adware.",
+      "author": {
+        "@type": "Organization",
+        "name": "YT Downloader Security Team"
+      },
+      "datePublished": "2026-10-15"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://yt-downlooader.netlify.app/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Safe Downloader Guide",
+          "item": "https://yt-downlooader.netlify.app/safe-youtube-downloader"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can downloading a video give your computer a virus?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A standard video file (.mp4) or audio file (.mp3) cannot execute malware on modern patched operating systems. The real security hazard on converter websites comes from fake download buttons that trick users into running executable files (.exe, .dmg) or installing browser extensions."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How can you tell if a download button is fake?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Hover your mouse over the button and check the link destination in your browser's bottom-left corner. If the URL points to an ad server, tracking redirect, or unknown domain rather than a direct file path, it is a deceptive ad."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+    <script>
+        (function() {
+            var savedTheme = localStorage.getItem('ytdl_theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+</head>
+<body class="theme-light">
+    <!-- Aurora Mesh Background Canvas -->
+    <canvas id="aurora-canvas" aria-hidden="true"></canvas>
+    <!-- Header & Navigation -->
+    <header class="header" role="banner">
+        <div class="header__inner">
+            <div class="header__brand">
+                <a href="./" class="header__brand-link" aria-label="YT Downloader Home">
+                    <span class="brand-logo-text"><span class="brand-logo-badge" style="margin-left:0; margin-right:4px;">YT</span> Downloader</span>
+                </a>
+            </div>
+
+            <!-- Global Nav Links (Desktop) -->
+            <nav class="nav-links" id="main-nav" aria-label="Main Navigation">
+                <a href="./youtube-video-downloader.html" class="nav-link ">Video</a>
+                <a href="./youtube-to-mp3.html" class="nav-link ">MP3 Audio</a>
+                <a href="./youtube-4k-downloader.html" class="nav-link ">4K UHD</a>
+                <a href="./bulk-youtube-to-mp3.html" class="nav-link ">Bulk Audio</a>
+                <a href="./bulk-youtube-video-downloader.html" class="nav-link ">Bulk Video</a>
+                <a href="./blog.html" class="nav-link ">Guides</a>
+                <a href="./self-hosted-youtube-downloader.html" class="nav-link nav-link--highlight ">💻 Self-Host</a>
+            </nav>
+
+            <div class="header__actions">
+                <button type="button" class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Toggle dark/light mode" title="Toggle Dark/Light Mode">
+                    <span id="theme-toggle-icon">🌙</span>
+                </button>
+                <div class="header__status" id="health-status" title="System Status">
+                    <span class="status-dot" id="status-dot"></span>
+                    <span class="status-text" id="status-text">Checking...</span>
+                </div>
+                <!-- Mobile Navigation Toggle Button -->
+                <button type="button" class="header__menu-btn" id="mobile-menu-btn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-nav-drawer">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Drawer -->
+        <nav class="mobile-nav-drawer" id="mobile-nav-drawer" aria-label="Mobile Navigation" hidden>
+            <div class="mobile-nav-links">
+                <a href="./" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">🏠</span>
+                    <span>Home Overview</span>
+                </a>
+                <a href="./youtube-to-mp3.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">🎵</span>
+                    <span>YouTube to MP3</span>
+                </a>
+                <a href="./youtube-video-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">🎬</span>
+                    <span>YouTube Video Downloader (4K/1080p)</span>
+                </a>
+                <a href="./bulk-youtube-to-mp3.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">⚡</span>
+                    <span>Bulk MP3 Downloader</span>
+                </a>
+                <a href="./bulk-youtube-video-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📦</span>
+                    <span>Bulk Video Downloader</span>
+                </a>
+                <a href="./youtube-playlist-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📋</span>
+                    <span>Playlist Downloader</span>
+                </a>
+                <a href="./blog.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📚</span>
+                    <span>Tech Guides &amp; Tutorials</span>
+                </a>
+                <a href="./self-hosted-youtube-downloader.html" class="mobile-nav-link mobile-nav-link--highlight ">
+                    <span class="mobile-nav-icon">💻</span>
+                    <span>Self-Host Guide (Docker/Python)</span>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main" role="main">
+        <div class="container">
+            
+<div class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="./">Home</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span class="breadcrumbs__current">Safe Downloader Guide</span>
+</div>
+
+<article class="content-article">
+    <header class="content-article__hero content-article__hero--center">
+        <span class="content-badge">🛡️ Web Security Checklist</span>
+        <h1 class="content-title">Is YouTube Downloader Safe? How to Spot Risks</h1>
+        <p class="content-subtitle" style="margin:0 auto; max-width:680px;">
+            A practical cybersecurity guide for identifying dangerous converter websites, deceptive download buttons, and malicious browser extensions.
+        </p>
+    </header>
+
+    <div class="trust-strip">
+        <span class="trust-item"><span class="trust-item__icon">🔒</span> <strong>Safe Files</strong> Only MP4 &amp; MP3</span>
+        <span class="trust-item"><span class="trust-item__icon">🚫</span> <strong>No Executables</strong> Never .exe or .dmg</span>
+        <span class="trust-item"><span class="trust-item__icon">🛡️</span> <strong>No Extension Prompts</strong> Zero Browser Plugins</span>
+        <span class="trust-item"><span class="trust-item__icon">💻</span> <strong>Auditable</strong> Open-Source Backend</span>
+    </div>
+
+    <div class="prose">
+        <h2>Are YouTube Downloaders Safe? The Short Answer</h2>
+        <p>
+            <strong>The process of extracting a media stream is inherently safe, but the websites offering the service often are not.</strong>
+        </p>
+        <p>
+            A genuine video or audio stream (.mp4, .m4a, .mp3) contains passive multimedia data. It does not contain executable machine code that can infect your computer. However, because commercial converter websites struggle to get approved by legitimate advertisers, they frequently deploy <strong>drive-by advertising tactics</strong> designed to mislead you.
+        </p>
+
+        <h2>5-Point Checklist: How to Identify Dangerous Converter Sites</h2>
+        <div class="spec-grid">
+            <div class="spec-box">
+                <div class="spec-box__title">Warning Sign #1</div>
+                <div class="spec-box__value" style="color:#ef4444;">Fake Download Banners</div>
+                <div class="spec-box__desc">Giant blinking "START DOWNLOAD" or "PLAY NOW" buttons placed directly above the input box. These are third-party advertisements designed to look like site navigation.</div>
+            </div>
+            <div class="spec-box">
+                <div class="spec-box__title">Warning Sign #2</div>
+                <div class="spec-box__value" style="color:#ef4444;">Executable File Downloads</div>
+                <div class="spec-box__desc">If a website serves you a file ending in <code>.exe</code>, <code>.dmg</code>, <code>.iso</code>, <code>.bat</code>, or <code>.apk</code> when you asked for a video, DO NOT open it. Immediately delete it.</div>
+            </div>
+            <div class="spec-box">
+                <div class="spec-box__title">Warning Sign #3</div>
+                <div class="spec-box__value" style="color:#ef4444;">Mandatory Extensions</div>
+                <div class="spec-box__desc">Websites claiming you must install a Chrome or Firefox extension before your download begins are attempting to hijack your browser search engine and insert affiliate cookies.</div>
+            </div>
+            <div class="spec-box">
+                <div class="spec-box__title">Warning Sign #4</div>
+                <div class="spec-box__value" style="color:#ef4444;">Notification Permissions</div>
+                <div class="spec-box__desc">Popups asking: <em>"Press Allow to prove you are not a robot"</em>. Granting permission allows the rogue advertiser to push deceptive system alert popups onto your desktop.</div>
+            </div>
+        </div>
+
+    <div class="prose">
+        <div class="aeo-box">
+            <div class="aeo-box__header">⚡ Quick Answer / Key Takeaway</div>
+            <p class="aeo-box__content">
+                <strong>Is downloading YouTube videos safe?</strong> Downloading media is safe when using an open-source, non-ad-supported tool like YT Downloader. The risks of video downloading come from third-party sites serving fake <code>.exe</code>/<code>.dmg</code> installers, adware popups, and malicious browser extensions. YT Downloader serves only authentic media files (.mp4, .mp3, .m4a) with zero trackers and automatic 24-hour server file purging.
+            </p>
+            <ul class="aeo-box__list">
+                <li><strong>No Executables:</strong> Only pure media MIME types are ever delivered.</li>
+                <li><strong>No Software Required:</strong> No companion apps, browser extensions, or helper tools.</li>
+                <li><strong>Ephemeral Storage:</strong> All media files are wiped after 24 hours.</li>
+            </ul>
+        </div>
+
+        <h2>How Shady Downloader Sites Endanger Users</h2>
+        <p>
+            The video conversion niche is one of the most heavily targeted categories on the web for malicious advertising. Unsuspecting users seeking to save a tutorial or music video often face serious digital safety risks:
+        </p>
+        <ol>
+            <li><strong>Trojan Horse Installers:</strong> Disguising malicious software installers as "media codecs" or "download accelerators."</li>
+            <li><strong>Browser Push Notification Traps:</strong> Forcing users to click "Allow" on notification prompts that later flood desktops with fake antivirus alerts.</li>
+            <li><strong>Aggressive Redirect Chains:</strong> Routing clicks through multiple affiliate advertising domains before revealing any media file.</li>
+        </ol>
+
+        <div class="table-wrap">
+            <table class="format-table">
+                <thead>
+                    <tr>
+                        <th>Security Criterion</th>
+                        <th>Common Web Downloaders</th>
+                        <th>YT Downloader Standard</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="highlight-col">Served File Extensions</td>
+                        <td>Often bundles .exe, .msi, or .apk</td>
+                        <td>Strictly .mp4, .mp3, .m4a, .wav, .zip</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Browser Permissions</td>
+                        <td>Requests Push Notifications &amp; Popups</td>
+                        <td>Zero browser permissions requested</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Account Requirement</td>
+                        <td>Requires email, credit card, or social login</td>
+                        <td>100% anonymous, zero signup</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Backend Engine</td>
+                        <td>Obfuscated proprietary scripts</td>
+                        <td>yt-dlp + FFmpeg (auditable open-source)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>How YT Downloader Guarantees Your Safety</h2>
+        <p>
+            Our project was specifically developed to counter these predatory practices:
+        </p>
+        <ul>
+            <li><strong>Strict File Serving:</strong> Our server serves exclusively media files (.mp4, .m4a, .mp3, .zip). Executable files are strictly blocked by server-side headers and MIME validation.</li>
+            <li><strong>Zero Extensions or Plugins:</strong> Everything runs server-side or natively in standard HTML5. No plugins or downloads are ever requested.</li>
+            <li><strong>24-Hour Automated Purge:</strong> Uploaded temporary cache and completed files are automatically and irreversibly deleted from our servers after 24 hours.</li>
+            <li><strong>Open Source &amp; Self-Hostable:</strong> Every line of code is inspectable. You can read our Python backend and run it locally on your own machine.</li>
+        </ul>
+
+        <h2>Step-by-Step: Safe Media Downloading Checklist</h2>
+        <div class="step-cards">
+            <div class="step-card">
+                <div class="step-card__number">1</div>
+                <div class="step-card__title">Inspect URL</div>
+                <p class="step-card__text">Paste genuine YouTube video or playlist links. Our backend validates the domain against SSRF attacks.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">2</div>
+                <div class="step-card__title">Verify Metadata</div>
+                <p class="step-card__text">Check the real title and thumbnail preview fetched live from YouTube before beginning the download.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">3</div>
+                <div class="step-card__title">Direct Stream</div>
+                <p class="step-card__text">Receive an authentic media file directly from our server with exact Content-Disposition headers.</p>
+            </div>
+        </div>
+
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-list">
+            <div class="faq-item">
+                <h3 class="faq-question">What should I do if I accidentally clicked a fake download button on another site?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Close the opened tab immediately. Check your browser's "Downloads" folder. If any file ending in <code>.exe</code>, <code>.dmg</code>, <code>.msi</code>, or <code>.crx</code> was downloaded, delete it immediately without double-clicking it.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Can I use this site safely on iPhone or Android?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Yes. Because we have no redirect popups or malicious scripts, downloading media works cleanly on Safari for iOS and Chrome for Android directly into your phone's native Files or Downloads folder.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Does YT Downloader monitor or log what videos I download?</h3>
+                <div class="faq-answer">
+                    <p>
+                        No. We do not maintain user download profiles, IP history, or search logs. The SQLite database only keeps ephemeral job identifiers for queue coordination and permanently purges them during maintenance cycles.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Why is there no login or registration option?</h3>
+                <div class="faq-answer">
+                    <p>
+                        We intentionally do not support user accounts because holding user credentials creates privacy liabilities. Privacy by design means never requesting information we do not need.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>
+
+        </div>
+    </main>
+
+    <!-- Comprehensive Global Footer -->
+    <footer class="site-footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Col 1: Brand & Philosophy -->
+                <div class="footer-brand">
+                    <div class="footer-brand__name">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent-secondary);">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        YT Downloader
+                    </div>
+                    <p class="footer-brand__desc">
+                        A private, ad-free web utility for archiving public educational and Creative Commons media via yt-dlp and FFmpeg. Fast conversion, zero trackers, no account needed.
+                    </p>
+                    <div class="footer-brand__badge">
+                        <span>🔒</span> 24h Auto-Purge &amp; Transient Storage
+                    </div>
+                </div>
+
+                <!-- Col 2: Core Tools -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Core Tools</h4>
+                    <ul class="footer-links">
+                        <li><a href="./" class="footer-link">Home (Overview)</a></li>
+                        <li><a href="./youtube-to-mp3.html" class="footer-link">YouTube to MP3</a></li>
+                        <li><a href="./youtube-video-downloader.html" class="footer-link">Video Downloader (4K)</a></li>
+                        <li><a href="./bulk-youtube-to-mp3.html" class="footer-link">Bulk MP3 Downloader</a></li>
+                        <li><a href="./bulk-youtube-video-downloader.html" class="footer-link">Bulk Video Downloader</a></li>
+                        <li><a href="./youtube-playlist-downloader.html" class="footer-link">Playlist Downloader</a></li>
+                        <li><a href="./youtube-video-info.html" class="footer-link">Video Info &amp; Codecs</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Format Converters -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Formats &amp; Features</h4>
+                    <ul class="footer-links">
+                        <li><a href="./youtube-to-mp4.html" class="footer-link">YouTube to MP4</a></li>
+                        <li><a href="./youtube-to-wav.html" class="footer-link">YouTube to WAV</a></li>
+                        <li><a href="./youtube-to-m4a.html" class="footer-link">YouTube to M4A</a></li>
+                        <li><a href="./youtube-to-flac.html" class="footer-link">YouTube to FLAC</a></li>
+                        <li><a href="./youtube-4k-downloader.html" class="footer-link">4K Video Downloader</a></li>
+                        <li><a href="./ad-free-youtube-downloader.html" class="footer-link">Ad-Free Downloader</a></li>
+                        <li><a href="./safe-youtube-downloader.html" class="footer-link">Safe Downloader Guide</a></li>
+                        <li><a href="./supported-sites.html" class="footer-link">Supported Sites</a></li>
+                        <li><a href="./yt-dlp-web-ui.html" class="footer-link">yt-dlp Web UI</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Guides & Articles -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Guides &amp; Articles</h4>
+                    <ul class="footer-links">
+                        <li><a href="/blog/what-is-yt-dlp" class="footer-link">What is yt-dlp?</a></li>
+                        <li><a href="/blog/install-ffmpeg-windows-mac-linux" class="footer-link">Install FFmpeg (Win/Mac/Linux)</a></li>
+                        <li><a href="/blog/best-video-quality-for-downloads" class="footer-link">4K vs 1080p vs 720p Guide</a></li>
+                        <li><a href="/blog/mp3-vs-m4a-vs-opus" class="footer-link">MP3 vs M4A vs Opus Audio</a></li>
+                        <li><a href="/blog/yt-dlp-common-errors-and-fixes" class="footer-link">Common yt-dlp Errors &amp; Fixes</a></li>
+                        <li><a href="./blog.html" class="footer-link" style="color:var(--accent-secondary); font-weight:600;">Browse All Guides &rarr;</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 5: Trust, Legal & Sitemap -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Trust &amp; Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="./about.html" class="footer-link">About Project</a></li>
+                        <li><a href="./how-it-works.html" class="footer-link">How It Works</a></li>
+                        <li><a href="./fair-use.html" class="footer-link">Fair Use &amp; Policy</a></li>
+                        <li><a href="./faq.html" class="footer-link">FAQ</a></li>
+                        <li><a href="./contact.html" class="footer-link">Contact &amp; Support</a></li>
+                        <li><a href="./privacy.html" class="footer-link">Privacy Policy</a></li>
+                        <li><a href="./terms.html" class="footer-link">Terms of Service</a></li>
+                        <li><a href="./dmca.html" class="footer-link">DMCA Takedown</a></li>
+                        <li><a href="./changelog.html" class="footer-link">Changelog</a></li>
+                        <li><a href="/site-map.html" class="footer-link" style="color:var(--accent-secondary);">HTML Site Map</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom Note with Legal Disclaimers -->
+            <div class="footer-bottom" style="flex-direction:column; gap:8px; text-align:center;">
+                <div>
+                    <strong>Disclaimer:</strong> YT Downloader is an independent utility and is not affiliated with or endorsed by YouTube or Google.
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); max-width:820px; margin:0 auto; line-height:1.5;">
+                    Usage Notice: Only download content you own, that is licensed for reuse (e.g. Creative Commons), or for which you have explicit rights holder permission. Converted files are automatically and permanently purged from server storage after 24 hours.
+                </div>
+                <div style="margin-top:6px; font-size:11px; color:var(--text-muted);">
+                    &copy; 2026 YT Downloader &bull; Built with Python, Flask, <a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener noreferrer" style="color:var(--text-secondary)">yt-dlp</a> &amp; <a href="https://ffmpeg.org" target="_blank" rel="noopener noreferrer" style="color:var(--text-secondary)">FFmpeg</a>.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Client Scripts -->
+    <script src="./static/js/ui-effects.js"></script>
+    
+    <script src="./static/js/app.js"></script>
+    
+</body>
+</html>
