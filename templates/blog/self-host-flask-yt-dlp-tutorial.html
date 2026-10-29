@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="google-site-verification" content="GAFtxEepvYnQvF145-T8hoBJyJY-FzdSeld5MOmTUk0">
+    <title>Self-Host a yt-dlp Web UI with Python &amp; Flask</title>
+    <meta name="description" content="Build and self-host a private YouTube downloader web service using Flask, yt-dlp, and SQLite. Complete tutorial with systemd and Docker deployment.">
+    
+<link rel="canonical" href="https://yt-downlooader.netlify.app/blog/self-host-flask-yt-dlp-tutorial">
+
+    
+    <!-- OpenGraph / Social -->
+    <meta property="og:site_name" content="YT Downloader">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Self-Host a yt-dlp Web UI with Python &amp; Flask">
+    <meta property="og:description" content="Build and self-host a private YouTube downloader web service using Flask, yt-dlp, and SQLite. Complete tutorial with systemd and Docker deployment.">
+    <meta property="og:url" content="https://yt-downlooader.netlify.app/blog/self-host-flask-yt-dlp-tutorial">
+    <meta property="og:image" content="https://yt-downlooader.netlify.app/static/favicon.svg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Self-Host a yt-dlp Web UI with Python &amp; Flask">
+    <meta name="twitter:description" content="Build and self-host a private YouTube downloader web service using Flask, yt-dlp, and SQLite. Complete tutorial with systemd and Docker deployment.">
+    <meta name="twitter:image" content="https://yt-downlooader.netlify.app/static/favicon.svg">
+
+    <!-- GEO & AEO Search Engine Direct Answer Signals -->
+    <meta name="geo.region" content="US">
+    <meta name="geo.placename" content="Global">
+    <meta name="distribution" content="Global">
+    <meta name="coverage" content="Worldwide">
+    <meta name="rating" content="General">
+    <link rel="alternate" hreflang="x-default" href="https://yt-downlooader.netlify.app/blog/self-host-flask-yt-dlp-tutorial">
+    <link rel="alternate" hreflang="en" href="https://yt-downlooader.netlify.app/blog/self-host-flask-yt-dlp-tutorial">
+    <link rel="icon" type="image/svg+xml" href="../static/favicon.svg">
+    <link rel="apple-touch-icon" href="../static/favicon.svg">
+
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Design System Stylesheets -->
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/content.css">
+
+    <!-- Structured Data (JSON-LD) -->
+    
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "YT Downloader",
+      "url": "https://yt-downlooader.netlify.app/",
+      "description": "High-speed local YouTube video and audio downloader powered by yt-dlp and FFmpeg.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "1080p, 1440p, and 4K Ultra HD video downloads",
+        "Lossless audio extraction to MP3, M4A, FLAC, and WAV",
+        "Bulk URL queue processing with ZIP archive packaging",
+        "Playlist batch downloads up to 50 videos",
+        "Zero third-party trackers, no popups, no account required",
+        "Automated 24-hour file cleanup"
+      ]
+    }
+    </script>
+    
+    
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Self-Host a yt-dlp Web UI with Python \u0026 Flask",
+  "description": "Build and self-host a private YouTube downloader web service using Flask, yt-dlp, and SQLite. Complete tutorial with systemd and Docker deployment.",
+  "datePublished": "2026-10-01",
+  "author": {
+    "@type": "Organization",
+    "name": "YT Downloader"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "YT Downloader"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://yt-downlooader.netlify.app/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blog",
+      "item": "https://yt-downlooader.netlify.app/blog"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Self-Host a yt-dlp Web UI with Python \u0026 Flask",
+      "item": "https://yt-downlooader.netlify.app/blog/self-host-flask-yt-dlp-tutorial"
+    }
+  ]
+}
+</script>
+
+    <script>
+        (function() {
+            var savedTheme = localStorage.getItem('ytdl_theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+</head>
+<body class="theme-light">
+    <!-- Aurora Mesh Background Canvas -->
+    <canvas id="aurora-canvas" aria-hidden="true"></canvas>
+    <!-- Header & Navigation -->
+    <header class="header" role="banner">
+        <div class="header__inner">
+            <div class="header__brand">
+                <a href="../" class="header__brand-link" aria-label="YT Downloader Home">
+                    <span class="brand-logo-text"><span class="brand-logo-badge" style="margin-left:0; margin-right:4px;">YT</span> Downloader</span>
+                </a>
+            </div>
+
+            <!-- Global Nav Links (Desktop) -->
+            <nav class="nav-links" id="main-nav" aria-label="Main Navigation">
+                <a href="../youtube-video-downloader.html" class="nav-link ">Video</a>
+                <a href="../youtube-to-mp3.html" class="nav-link ">MP3 Audio</a>
+                <a href="../youtube-4k-downloader.html" class="nav-link ">4K UHD</a>
+                <a href="../bulk-youtube-to-mp3.html" class="nav-link ">Bulk Audio</a>
+                <a href="../bulk-youtube-video-downloader.html" class="nav-link ">Bulk Video</a>
+                <a href="../blog.html" class="nav-link active">Guides</a>
+                <a href="../self-hosted-youtube-downloader.html" class="nav-link nav-link--highlight ">💻 Self-Host</a>
+            </nav>
+
+            <div class="header__actions">
+                <button type="button" class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Toggle dark/light mode" title="Toggle Dark/Light Mode">
+                    <span id="theme-toggle-icon">🌙</span>
+                </button>
+                <div class="header__status" id="health-status" title="System Status">
+                    <span class="status-dot" id="status-dot"></span>
+                    <span class="status-text" id="status-text">Checking...</span>
+                </div>
+                <!-- Mobile Navigation Toggle Button -->
+                <button type="button" class="header__menu-btn" id="mobile-menu-btn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-nav-drawer">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Drawer -->
+        <nav class="mobile-nav-drawer" id="mobile-nav-drawer" aria-label="Mobile Navigation" hidden>
+            <div class="mobile-nav-links">
+                <a href="../" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">🏠</span>
+                    <span>Home Overview</span>
+                </a>
+                <a href="../youtube-to-mp3.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">🎵</span>
+                    <span>YouTube to MP3</span>
+                </a>
+                <a href="../youtube-video-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">🎬</span>
+                    <span>YouTube Video Downloader (4K/1080p)</span>
+                </a>
+                <a href="../bulk-youtube-to-mp3.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">⚡</span>
+                    <span>Bulk MP3 Downloader</span>
+                </a>
+                <a href="../bulk-youtube-video-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📦</span>
+                    <span>Bulk Video Downloader</span>
+                </a>
+                <a href="../youtube-playlist-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📋</span>
+                    <span>Playlist Downloader</span>
+                </a>
+                <a href="../blog.html" class="mobile-nav-link active">
+                    <span class="mobile-nav-icon">📚</span>
+                    <span>Tech Guides &amp; Tutorials</span>
+                </a>
+                <a href="../self-hosted-youtube-downloader.html" class="mobile-nav-link mobile-nav-link--highlight ">
+                    <span class="mobile-nav-icon">💻</span>
+                    <span>Self-Host Guide (Docker/Python)</span>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main" role="main">
+        <div class="container">
+            
+<!-- Breadcrumb Nav -->
+<nav aria-label="Breadcrumb" style="margin-bottom:2rem; font-size:0.875rem; color:var(--text-muted);">
+    <a href="../" style="color:var(--text-muted); text-decoration:none;">Home</a>
+    <span style="margin:0 0.5rem;">/</span>
+    <a href="../blog.html" style="color:var(--text-muted); text-decoration:none;">Blog</a>
+    <span style="margin:0 0.5rem;">/</span>
+    <span style="color:var(--text-secondary);">Self-Host a yt-dlp Web UI with Python &amp; Flask</span>
+</nav>
+
+<section class="content-header">
+    <div class="content-badge">
+        <span>📖</span> Developer
+    </div>
+    <h1 class="content-title">Self-Host a yt-dlp Web UI with Python &amp; Flask</h1>
+    <div style="display:flex; align-items:center; gap:1.5rem; margin-top:1rem; flex-wrap:wrap;">
+        <span style="color:var(--text-muted); font-size:0.875rem;">📅 October 8, 2026</span>
+        <span style="color:var(--text-muted); font-size:0.875rem;">⏱️ 15 min read</span>
+        <span style="color:var(--text-muted); font-size:0.875rem; padding:0.25rem 0.75rem; background:rgba(124,58,237,0.15); border-radius:1rem; border:1px solid rgba(124,58,237,0.3);">Developer</span>
+    </div>
+    <p class="content-lead">
+        This tutorial walks through the complete architecture and implementation of a production-grade YouTube downloading web service using Python Flask, yt-dlp, FFmpeg, and SQLite. Whether you&#39;re studying the codebase behind YT Downloader or building your own private media archiving system, this guide explains every major design decision.
+    </p>
+</section>
+
+<article class="content-article" itemscope itemtype="https://schema.org/Article">
+    <div class="content-prose" itemprop="articleBody">
+        
+
+<div class="aeo-box">
+  <div class="aeo-box__header">⚡ Direct Answer / Key Takeaway</div>
+  <p class="aeo-box__content">
+    <strong>How do you self-host a private yt-dlp web downloader?</strong> Clone the open-source repository, install dependencies in a Python virtual environment (<code>pip install -r requirements.txt</code>), ensure FFmpeg is in your system PATH, and start the Flask server via Gunicorn or the built-in development runner. The app utilizes SQLite WAL mode for job queue persistence and ThreadPoolExecutor for concurrent media multiplexing.
+  </p>
+  <ul class="aeo-box__list">
+    <li><strong>Stack:</strong> Python 3.10+, Flask, SQLite WAL, yt-dlp, FFmpeg.</li>
+    <li><strong>Concurrency:</strong> ThreadPoolExecutor with bounded worker limits.</li>
+    <li><strong>Auto Maintenance:</strong> 24-hour background file cleanup janitor.</li>
+  </ul>
+</div>
+
+<h2>Architecture Overview</h2>
+<p>
+  A media downloader web service has fundamentally different performance requirements than a typical CRUD web application. Download operations are long-running (seconds to minutes), CPU-intensive (FFmpeg transcoding), and I/O bound (reading from network streams and writing to disk). The system must handle these without blocking the Flask request-response cycle.
+</p>
+<p>
+  The YT Downloader architecture uses three primary layers:
+</p>
+<ul>
+  <li><strong>HTTP Layer (Flask)</strong>: Lightweight request routing, JSON API, and template rendering. Immediately validates and queues requests without blocking.</li>
+  <li><strong>Job Queue (ThreadPoolExecutor)</strong>: Background thread pool with configurable concurrency (default: 3 workers). Long-running downloads execute entirely in worker threads.</li>
+  <li><strong>State Store (SQLite WAL)</strong>: Thread-safe SQLite database with Write-Ahead Logging enabled for concurrent reads during write operations. Stores job metadata, status, progress, and file paths.</li>
+</ul>
+
+<h2>Project Structure</h2>
+<div class="code-block">
+  <div class="code-block__header"><span class="code-block__lang">text</span></div>
+  <pre><code>yt-downloader/
+├── app.py              # Flask application factory, routes, error handlers
+├── downloader.py       # DownloaderService, job management, yt-dlp integration
+├── blog_posts.py       # Blog content data module
+├── templates/          # Jinja2 HTML templates
+│   ├── base.html       # Master layout with nav, footer, JSON-LD
+│   ├── index.html      # Main tool dashboard
+│   └── blog/           # Blog index and post templates
+├── static/
+│   ├── css/
+│   │   ├── style.css       # Core dark design system
+│   │   └── content.css     # SEO content page typography
+│   └── js/
+│       └── app.js          # React + API client
+├── downloads/          # Temporary media storage (gitignored)
+├── requirements.txt
+└── .env.example</code></pre>
+</div>
+
+<h2>The DownloaderService Class</h2>
+<p>The core service object encapsulates all media extraction logic. Here's a simplified view of the key responsibilities:</p>
+<div class="code-block">
+  <div class="code-block__header"><span class="code-block__lang">python</span></div>
+  <pre><code>class DownloaderService:
+    def __init__(self, config: dict):
+        self.config = config
+        self.executor = ThreadPoolExecutor(max_workers=int(config['MAX_CONCURRENT_DOWNLOADS']))
+        self.db = self._init_database()
+        self.ffmpeg_available = self._check_ffmpeg()
+
+    def submit_job(self, url: str, quality: str, format_type: str) -> dict:
+        # Validate, create DB record, and submit to thread pool.
+        job_id = str(uuid.uuid4())
+        self._db_create_job(job_id, url, quality, format_type)
+        self.executor.submit(self._download_worker, job_id)
+        return self._get_job(job_id)
+
+    def _download_worker(self, job_id: str):
+        # Worker thread: run yt-dlp, track progress, handle errors.
+        try:
+            self._db_update_status(job_id, 'downloading')
+            ydl_opts = self._build_ydl_opts(job_id)
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                ydl.download([url])
+            self._db_update_status(job_id, 'completed')
+        except Exception as e:
+            self._db_update_status(job_id, 'failed', error=str(e))</code></pre>
+</div>
+
+<h2>URL Validation &amp; SSRF Protection</h2>
+<p>
+  Media downloader services are prime targets for Server-Side Request Forgery (SSRF) attacks. Without robust URL validation, an attacker could submit internal IP addresses (e.g., <code>http://169.254.169.254/latest/meta-data/</code> on AWS) and use the downloader as a proxy to exfiltrate cloud metadata credentials.
+</p>
+<p>YT Downloader implements multi-layer SSRF protection:</p>
+<ol>
+  <li><strong>Host allowlist</strong>: Only <code>youtube.com</code>, <code>youtu.be</code>, and <code>youtube-nocookie.com</code> hostnames are permitted.</li>
+  <li><strong>IP range blocking</strong>: After DNS resolution, private IP ranges (10.x.x.x, 172.16-31.x.x, 192.168.x.x, 127.x.x.x, ::1) are rejected.</li>
+  <li><strong>Scheme enforcement</strong>: Only <code>https://</code> and <code>http://</code> schemes are permitted (no <code>file://</code>, <code>ftp://</code>, etc.).</li>
+</ol>
+<p>See our detailed <a href="/blog/ssrf-protection-in-flask-apps" style="color:var(--accent-secondary)">SSRF Protection deep dive article</a> for the full implementation.</p>
+
+<h2>Database Schema &amp; WAL Mode</h2>
+<div class="code-block">
+  <div class="code-block__header"><span class="code-block__lang">sql</span></div>
+  <pre><code>CREATE TABLE IF NOT EXISTS jobs (
+    id TEXT PRIMARY KEY,
+    url TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'queued',
+    quality TEXT,
+    format_type TEXT,
+    title TEXT,
+    thumbnail TEXT,
+    progress REAL DEFAULT 0,
+    file_path TEXT,
+    error_message TEXT,
+    retry_count INTEGER DEFAULT 0,
+    created_at TEXT,
+    updated_at TEXT
+);
+
+PRAGMA journal_mode=WAL;
+PRAGMA synchronous=NORMAL;</code></pre>
+</div>
+
+<h2>Production Deployment Checklist</h2>
+<ul>
+  <li>Set <code>FLASK_ENV=production</code> to suppress debug stack traces</li>
+  <li>Generate a strong random <code>SECRET_KEY</code> value</li>
+  <li>Deploy behind Nginx with TLS (Let's Encrypt / Caddy)</li>
+  <li>Set up weekly <code>pip install --upgrade yt-dlp</code> cron jobs</li>
+  <li>Mount the <code>/downloads</code> directory on fast local SSD storage</li>
+  <li>Configure log rotation for Flask and Gunicorn access logs</li>
+  <li>Add HTTP Basic Auth or Tailscale VPN if deploying for personal use only</li>
+</ul>
+
+
+<h2>Production Deployment: Systemd Service &amp; Nginx Reverse Proxy</h2>
+<p>
+  To run your self-hosted Flask media downloader as a resilient Linux background service that automatically restarts after system reboots, configure a systemd service unit:
+</p>
+<div class="code-block">
+  <div class="code-block__header"><span class="code-block__lang">ini</span></div>
+  <pre><code>[Unit]
+Description=YT Downloader Flask Application
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/yt-downloader
+Environment="PATH=/var/www/yt-downloader/.venv/bin:/usr/bin"
+ExecStart=/var/www/yt-downloader/.venv/bin/gunicorn --workers 3 --bind 127.0.0.1:5000 app:app
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+</div>
+<h3>Nginx Reverse Proxy with Large Request Support</h3>
+<p>
+  Pair your Gunicorn backend with an Nginx reverse proxy configured to handle media buffering and large download payloads:
+</p>
+<div class="code-block">
+  <div class="code-block__header"><span class="code-block__lang">nginx</span></div>
+  <pre><code>server {
+    listen 80;
+    server_name yourdomain.com;
+
+    client_max_body_size 64M;
+
+    location / {
+        proxy_pass http://127.0.0.1:5000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}</code></pre>
+</div>
+
+    </div>
+</article>
+
+<!-- Navigation Footer -->
+<div style="margin-top:3rem; padding:2rem; background:rgba(15,23,42,0.6); border-radius:1.5rem; border:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+    <div>
+        <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.5rem;">Browse All Articles</div>
+        <a href="../blog.html" style="color:var(--accent-secondary); font-weight:600; text-decoration:none;">&larr; Back to Blog</a>
+    </div>
+    <div style="text-align:right;">
+        <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.5rem;">Start Downloading</div>
+        <a href="../" class="btn btn--primary" style="text-decoration:none; font-size:0.875rem;">Use the Downloader &rarr;</a>
+    </div>
+</div>
+
+<!-- Related Posts -->
+
+<section style="margin-top:3rem;" aria-label="Related Articles">
+    <h2 style="font-size:1.5rem; margin-bottom:1.5rem;">Related Articles</h2>
+    <div class="blog-grid" style="grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));">
+        
+        <article class="blog-card">
+            <div class="blog-card__meta">
+                <span class="blog-card__category">Beginners</span>
+                <span class="blog-card__read-time">8 min</span>
+            </div>
+            <h3 class="blog-card__title" style="font-size:1.1rem;">
+                <a href="/blog/what-is-yt-dlp" class="blog-card__link">
+                    What Is yt-dlp? Complete Beginner&#39;s Guide to Video Downloading
+                </a>
+            </h3>
+            <div class="blog-card__footer">
+                <span class="blog-card__date">October 15, 2026</span>
+                <a href="/blog/what-is-yt-dlp" class="blog-card__cta">Read &rarr;</a>
+            </div>
+        </article>
+        
+        <article class="blog-card">
+            <div class="blog-card__meta">
+                <span class="blog-card__category">Setup</span>
+                <span class="blog-card__read-time">10 min</span>
+            </div>
+            <h3 class="blog-card__title" style="font-size:1.1rem;">
+                <a href="/blog/install-ffmpeg-windows-mac-linux" class="blog-card__link">
+                    How to Install FFmpeg on Windows, Mac &amp; Linux (2026 Guide)
+                </a>
+            </h3>
+            <div class="blog-card__footer">
+                <span class="blog-card__date">October 14, 2026</span>
+                <a href="/blog/install-ffmpeg-windows-mac-linux" class="blog-card__cta">Read &rarr;</a>
+            </div>
+        </article>
+        
+        <article class="blog-card">
+            <div class="blog-card__meta">
+                <span class="blog-card__category">Quality</span>
+                <span class="blog-card__read-time">9 min</span>
+            </div>
+            <h3 class="blog-card__title" style="font-size:1.1rem;">
+                <a href="/blog/best-video-quality-for-downloads" class="blog-card__link">
+                    1080p vs 720p vs 480p: Which Quality to Download?
+                </a>
+            </h3>
+            <div class="blog-card__footer">
+                <span class="blog-card__date">October 13, 2026</span>
+                <a href="/blog/best-video-quality-for-downloads" class="blog-card__cta">Read &rarr;</a>
+            </div>
+        </article>
+        
+    </div>
+</section>
+
+
+        </div>
+    </main>
+
+    <!-- Comprehensive Global Footer -->
+    <footer class="site-footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Col 1: Brand & Philosophy -->
+                <div class="footer-brand">
+                    <div class="footer-brand__name">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent-secondary);">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        YT Downloader
+                    </div>
+                    <p class="footer-brand__desc">
+                        A private, ad-free web utility for archiving public educational and Creative Commons media via yt-dlp and FFmpeg. Fast conversion, zero trackers, no account needed.
+                    </p>
+                    <div class="footer-brand__badge">
+                        <span>🔒</span> 24h Auto-Purge &amp; Transient Storage
+                    </div>
+                </div>
+
+                <!-- Col 2: Core Tools -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Core Tools</h4>
+                    <ul class="footer-links">
+                        <li><a href="../" class="footer-link">Home (Overview)</a></li>
+                        <li><a href="../youtube-to-mp3.html" class="footer-link">YouTube to MP3</a></li>
+                        <li><a href="../youtube-video-downloader.html" class="footer-link">Video Downloader (4K)</a></li>
+                        <li><a href="../bulk-youtube-to-mp3.html" class="footer-link">Bulk MP3 Downloader</a></li>
+                        <li><a href="../bulk-youtube-video-downloader.html" class="footer-link">Bulk Video Downloader</a></li>
+                        <li><a href="../youtube-playlist-downloader.html" class="footer-link">Playlist Downloader</a></li>
+                        <li><a href="../youtube-video-info.html" class="footer-link">Video Info &amp; Codecs</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Format Converters -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Formats &amp; Features</h4>
+                    <ul class="footer-links">
+                        <li><a href="../youtube-to-mp4.html" class="footer-link">YouTube to MP4</a></li>
+                        <li><a href="../youtube-to-wav.html" class="footer-link">YouTube to WAV</a></li>
+                        <li><a href="../youtube-to-m4a.html" class="footer-link">YouTube to M4A</a></li>
+                        <li><a href="../youtube-to-flac.html" class="footer-link">YouTube to FLAC</a></li>
+                        <li><a href="../youtube-4k-downloader.html" class="footer-link">4K Video Downloader</a></li>
+                        <li><a href="../ad-free-youtube-downloader.html" class="footer-link">Ad-Free Downloader</a></li>
+                        <li><a href="../safe-youtube-downloader.html" class="footer-link">Safe Downloader Guide</a></li>
+                        <li><a href="../supported-sites.html" class="footer-link">Supported Sites</a></li>
+                        <li><a href="../yt-dlp-web-ui.html" class="footer-link">yt-dlp Web UI</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Guides & Articles -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Guides &amp; Articles</h4>
+                    <ul class="footer-links">
+                        <li><a href="/blog/what-is-yt-dlp" class="footer-link">What is yt-dlp?</a></li>
+                        <li><a href="/blog/install-ffmpeg-windows-mac-linux" class="footer-link">Install FFmpeg (Win/Mac/Linux)</a></li>
+                        <li><a href="/blog/best-video-quality-for-downloads" class="footer-link">4K vs 1080p vs 720p Guide</a></li>
+                        <li><a href="/blog/mp3-vs-m4a-vs-opus" class="footer-link">MP3 vs M4A vs Opus Audio</a></li>
+                        <li><a href="/blog/yt-dlp-common-errors-and-fixes" class="footer-link">Common yt-dlp Errors &amp; Fixes</a></li>
+                        <li><a href="../blog.html" class="footer-link" style="color:var(--accent-secondary); font-weight:600;">Browse All Guides &rarr;</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 5: Trust, Legal & Sitemap -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Trust &amp; Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="../about.html" class="footer-link">About Project</a></li>
+                        <li><a href="../how-it-works.html" class="footer-link">How It Works</a></li>
+                        <li><a href="../fair-use.html" class="footer-link">Fair Use &amp; Policy</a></li>
+                        <li><a href="../faq.html" class="footer-link">FAQ</a></li>
+                        <li><a href="../contact.html" class="footer-link">Contact &amp; Support</a></li>
+                        <li><a href="../privacy.html" class="footer-link">Privacy Policy</a></li>
+                        <li><a href="../terms.html" class="footer-link">Terms of Service</a></li>
+                        <li><a href="../dmca.html" class="footer-link">DMCA Takedown</a></li>
+                        <li><a href="../changelog.html" class="footer-link">Changelog</a></li>
+                        <li><a href="/site-map.html" class="footer-link" style="color:var(--accent-secondary);">HTML Site Map</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom Note with Legal Disclaimers -->
+            <div class="footer-bottom" style="flex-direction:column; gap:8px; text-align:center;">
+                <div>
+                    <strong>Disclaimer:</strong> YT Downloader is an independent utility and is not affiliated with or endorsed by YouTube or Google.
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); max-width:820px; margin:0 auto; line-height:1.5;">
+                    Usage Notice: Only download content you own, that is licensed for reuse (e.g. Creative Commons), or for which you have explicit rights holder permission. Converted files are automatically and permanently purged from server storage after 24 hours.
+                </div>
+                <div style="margin-top:6px; font-size:11px; color:var(--text-muted);">
+                    &copy; 2026 YT Downloader &bull; Built with Python, Flask, <a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener noreferrer" style="color:var(--text-secondary)">yt-dlp</a> &amp; <a href="https://ffmpeg.org" target="_blank" rel="noopener noreferrer" style="color:var(--text-secondary)">FFmpeg</a>.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Client Scripts -->
+    <script src="../static/js/ui-effects.js"></script>
+    
+    <script src="../static/js/app.js"></script>
+    
+</body>
+</html>

@@ -1,0 +1,286 @@
+{% extends "base.html" %}
+
+{% block title %}YouTube to MP4 Converter – 1080p, 4K UHD & 720p{% endblock %}
+{% block meta_description %}Convert and download YouTube videos to MP4 in 1080p Full HD or 4K UHD. Free, ad-free converter with full DASH stream multiplexing powered by yt-dlp and FFmpeg.{% endblock %}
+
+{% block json_ld %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "YouTube to MP4 Converter",
+      "url": "https://yt-downlooader.netlify.app/youtube-to-mp4",
+      "description": "Convert YouTube videos to high-definition MP4 containers with universal device compatibility.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://yt-downlooader.netlify.app/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "YouTube to MP4",
+          "item": "https://yt-downlooader.netlify.app/youtube-to-mp4"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Why is MP4 the best format for video downloads?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "MP4 (MPEG-4 Part 14) is supported by virtually 100% of consumer electronics including Windows PCs, Apple Macs, iPhones, Android devices, gaming consoles, and smart TVs without installing additional codec packs."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does MP4 compare to MKV or WebM?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "While WebM is optimized for browser streaming and MKV supports multiple subtitle tracks, MP4 offers the broadest universal hardware acceleration and native playback support across default system video players."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="{{ url_for('index') }}">Home</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span class="breadcrumbs__current">YouTube to MP4</span>
+</div>
+
+<article class="content-article">
+    <header class="content-article__hero content-article__hero--center">
+        <span class="content-badge">🎞️ Universal Video Container</span>
+        <h1 class="content-title">Convert YouTube Videos to MP4 (1080p / 4K)</h1>
+        <p class="content-subtitle" style="margin:0 auto; max-width:680px;">
+            Download YouTube videos in universal MP4 format with audio tracks multiplexed via <strong>FFmpeg</strong>. Compatible with every smartphone, tablet, laptop, and television.
+        </p>
+    </header>
+
+    <div class="trust-strip">
+        <span class="trust-item"><span class="trust-item__icon">🎞️</span> <strong>Universal MP4</strong> H.264 / AAC</span>
+        <span class="trust-item"><span class="trust-item__icon">🎬</span> <strong>Up to 4K UHD</strong> Full Frame Rate</span>
+        <span class="trust-item"><span class="trust-item__icon">🚫</span> <strong>No Ads</strong> Zero Popups</span>
+        <span class="trust-item"><span class="trust-item__icon">⚡</span> <strong>No Signup</strong> Instant Save</span>
+    </div>
+
+    <div class="usage-notice">
+        <span class="usage-notice__icon">⚖️</span>
+        <div>
+            <strong>Responsible Archival Notice:</strong> Only convert and download MP4 videos that you own, that are licensed under Creative Commons, or for which you have explicit rights holder permission.
+        </div>
+    </div>
+
+    <!-- Quick Conversion Tool -->
+    <div class="card" style="margin-bottom:var(--space-10);">
+        <h2 style="font-size:1.25rem; font-family:'Outfit',sans-serif; margin-top:0; margin-bottom:var(--space-3); color:var(--text-primary);">
+            🎬 Convert Video to MP4
+        </h2>
+        <div class="form-group">
+            <label for="url-input" class="form-label">YouTube Video URL</label>
+            <div class="input-row">
+                <div class="input-field-wrap">
+                    <span class="input-field-icon" aria-hidden="true">🎬</span>
+                    <input type="url" id="url-input" class="form-input form-input--has-actions"
+                           placeholder="https://www.youtube.com/watch?v=..." autocomplete="off">
+                    <button type="button" id="btn-paste-url" class="btn-input-action" title="Paste link from clipboard">
+                        <span>📋</span> Paste
+                    </button>
+                </div>
+                <button type="button" id="btn-fetch-meta" class="btn btn--fetch" title="Inspect video info">
+                    <span>✨</span> Inspect
+                </button>
+            </div>
+            <div id="url-feedback" class="form-feedback" role="alert" aria-live="polite"></div>
+        </div>
+
+        <div id="meta-preview" class="meta-preview hidden" aria-live="polite">
+            <div class="meta-preview__thumb" id="meta-thumb"></div>
+            <div class="meta-preview__info">
+                <span class="meta-preview__title" id="meta-title"></span>
+                <span class="meta-preview__detail" id="meta-detail"></span>
+            </div>
+        </div>
+
+        <div class="options-row" style="margin-top:var(--space-4);">
+            <div class="form-group form-group--half">
+                <label for="quality-select" class="form-label">Target Resolution</label>
+                <select id="quality-select" class="form-select">
+                    <option value="best" selected>🎬 Best Quality Available (Up to 4K MP4)</option>
+                    <option value="1080p">📺 1080p Full HD MP4</option>
+                    <option value="720p">📱 720p HD MP4 (Fastest)</option>
+                    <option value="480p">💾 480p SD MP4</option>
+                </select>
+            </div>
+            <div class="form-group form-group--half" style="display:flex; align-items:flex-end;">
+                <button type="button" id="btn-download" class="btn btn--primary btn--full">
+                    <span class="btn__text">Convert to MP4</span>
+                    <span class="btn__spinner hidden" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <section class="section" id="jobs-section" style="margin-bottom:var(--space-10);">
+        <div class="history-header">
+            <h2 class="section__title" id="jobs-heading">
+                <span class="section__icon" aria-hidden="true">⬇</span>
+                Download Queue
+                <span class="badge" id="active-count">0</span>
+            </h2>
+            <div class="history-controls">
+                <button type="button" id="btn-clear-history" class="btn btn--secondary btn--small">🗑 Clear</button>
+            </div>
+        </div>
+        <div id="jobs-list" class="jobs-list">
+            <div class="empty-state" id="empty-state">
+                <h3 class="empty-state__heading" id="empty-state-text">No active MP4 conversions</h3>
+                <p class="empty-state__hint" id="empty-state-hint">Paste a YouTube link above and click <strong>Convert to MP4</strong>.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Deep Technical SEO Content -->
+    <div class="prose">
+        <div class="aeo-box">
+            <div class="aeo-box__header">⚡ Quick Answer / Key Takeaway</div>
+            <p class="aeo-box__content">
+                <strong>Why MP4 for YouTube downloads?</strong> MP4 (MPEG-4 Part 14) is universally supported across 99% of consumer hardware, including iOS, Android, Windows, Mac, and smart TVs. YT Downloader downloads YouTube's high-definition video and audio DASH streams and multiplexes them using FFmpeg stream copy (<code>-c copy</code>) without transcoding, giving you pristine 1080p or 4K playback.
+            </p>
+            <ul class="aeo-box__list">
+                <li><strong>No Transcoding:</strong> Exact bitstream multiplexed into an MP4 wrapper.</li>
+                <li><strong>Universal Hardware Acceleration:</strong> Native playback in QuickTime, Windows Media Player, and iPhones.</li>
+                <li><strong>Full Resolution Support:</strong> Download 720p, 1080p, 1440p, or 4K Ultra HD.</li>
+            </ul>
+        </div>
+
+        <h2>MP4 vs. MKV vs. WebM: Which Container Should You Download?</h2>
+        <p>
+            When downloading video streams from the internet, the container format dictates how audio, video, and metadata streams are stored together in a single file. Understanding container differences helps ensure your downloads open effortlessly on any device:
+        </p>
+
+        <div class="table-wrap">
+            <table class="format-table">
+                <thead>
+                    <tr>
+                        <th>Container</th>
+                        <th>Video Codecs</th>
+                        <th>Audio Codecs</th>
+                        <th>Compatibility Score</th>
+                        <th>Best Use Case</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="highlight-col">MP4</td>
+                        <td>H.264 (AVC), H.265 (HEVC), AV1</td>
+                        <td>AAC, MP3</td>
+                        <td>99% (Universal)</td>
+                        <td>Smartphones, QuickTime, Windows, TVs, in-flight media</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">MKV (Matroska)</td>
+                        <td>Virtually all codecs</td>
+                        <td>All codecs + FLAC</td>
+                        <td>75% (Needs VLC)</td>
+                        <td>Desktop power users &amp; multi-track subtitle archiving</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">WebM</td>
+                        <td>VP9, AV1</td>
+                        <td>Opus, Vorbis</td>
+                        <td>80% (Modern browsers)</td>
+                        <td>Direct HTML5 video embeds &amp; browser streaming</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Why MP4 Is YouTube Downloader's Default Choice</h2>
+        <p>
+            While YouTube stores native high-definition videos in VP9 and AV1 WebM streams to minimize bandwidth on its web player, default operating system media players on iOS and macOS (such as QuickTime) frequently reject WebM files.
+        </p>
+        <p>
+            <strong>YT Downloader solves this:</strong> our backend downloads YouTube's video and audio streams and remuxes them into an ISO-compliant MP4 container using FFmpeg's stream copy engine (<code>ffmpeg -c copy</code>). This provides 100% video and audio fidelity with zero compression loss and total device compatibility.
+        </p>
+
+        <h2>Step-by-Step: How to Save MP4 Videos</h2>
+        <div class="step-cards">
+            <div class="step-card">
+                <div class="step-card__number">1</div>
+                <div class="step-card__title">Paste Video URL</div>
+                <p class="step-card__text">Paste the YouTube video link in the input box above and select your target resolution (1080p, 720p, or best available).</p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">2</div>
+                <div class="step-card__title">FFmpeg Remuxing</div>
+                <p class="step-card__text">Our backend downloads the adaptive DASH video and audio streams and multiplexes them together into a standard MP4 file.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">3</div>
+                <div class="step-card__title">Download &amp; Play</div>
+                <p class="step-card__text">Save the finished MP4 file directly to your device. Plays natively on smartphones, computers, and TVs with no extra software.</p>
+            </div>
+        </div>
+
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-list">
+            <div class="faq-item">
+                <h3 class="faq-question">Will downloading an MP4 reduce video quality?</h3>
+                <div class="faq-answer">
+                    <p>
+                        No. Our FFmpeg multiplexer copies the exact video and audio packets directly from YouTube's stream without transcoding them. You receive the exact visual fidelity broadcast by YouTube.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Why do 1080p videos require FFmpeg to download with sound?</h3>
+                <div class="faq-answer">
+                    <p>
+                        YouTube does not host pre-merged 1080p video files with embedded audio. Instead, it serves video and audio as two separate DASH tracks. An engine with FFmpeg is required to download both tracks and multiplex them together into a single playable MP4.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Can I convert an MP4 into an MP3 later?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Yes, though if you only want the sound track, you can save time and storage by using our direct <a href="{{ url_for('youtube_to_mp3') }}" style="color:var(--accent-secondary);">YouTube to MP3 Converter</a>.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Does YT Downloader inject watermarks or logos into the video?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Never. We respect original media fidelity. Your downloaded MP4 contains only the pure stream data without any watermarks, overlays, or modifications.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>
+{% endblock %}

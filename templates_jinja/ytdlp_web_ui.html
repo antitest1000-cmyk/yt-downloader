@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+
+{% block title %}yt-dlp Web UI – Clean Browser Interface for yt-dlp & FFmpeg{% endblock %}
+{% block meta_description %}A modern, lightweight web user interface for yt-dlp and FFmpeg. Download video and audio streams from your browser with queue management and progress tracking.{% endblock %}
+
+{% block json_ld %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "yt-dlp Web UI",
+      "url": "https://yt-downlooader.netlify.app/yt-dlp-web-ui",
+      "description": "A browser GUI for the yt-dlp command line media downloader and FFmpeg processing pipeline.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://yt-downlooader.netlify.app/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "yt-dlp Web UI",
+          "item": "https://yt-downlooader.netlify.app/yt-dlp-web-ui"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is yt-dlp Web UI?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "yt-dlp Web UI provides a graphical browser interface on top of the yt-dlp command-line tool. It allows users to paste URLs, choose formats, monitor download progress, and manage batch queues without terminal commands."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I run this Web UI in a local Docker container?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The entire application is containerized and can be launched on any Linux, macOS, or Windows machine with a single docker-compose command."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="{{ url_for('index') }}">Home</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span class="breadcrumbs__current">yt-dlp Web UI</span>
+</div>
+
+<article class="content-article">
+    <header class="content-article__hero content-article__hero--center">
+        <span class="content-badge">💻 Open Source Browser GUI</span>
+        <h1 class="content-title">yt-dlp Web UI: A Modern Browser GUI for yt-dlp</h1>
+        <p class="content-subtitle" style="margin:0 auto; max-width:680px;">
+            Harness the power of the world's most capable command-line stream extractor without touching the terminal. Clean Python &amp; Flask architecture with live job polling.
+        </p>
+    </header>
+
+    <div class="trust-strip">
+        <span class="trust-item"><span class="trust-item__icon">⚡</span> <strong>Python 3 &amp; Flask</strong> RESTful Backend</span>
+        <span class="trust-item"><span class="trust-item__icon">🛠️</span> <strong>yt-dlp + FFmpeg</strong> Native Core</span>
+        <span class="trust-item"><span class="trust-item__icon">📊</span> <strong>SQLite WAL</strong> Thread-Safe Queue</span>
+        <span class="trust-item"><span class="trust-item__icon">🐳</span> <strong>Docker Ready</strong> 1-Command Setup</span>
+    </div>
+
+    <!-- Quick Tool Entry -->
+    <div class="card" style="margin-bottom:var(--space-10); text-align:center; padding:var(--space-6);">
+        <h2 style="margin-top:0; color:var(--text-primary); font-size:1.35rem;">Use the Web UI Right Now</h2>
+        <p style="color:var(--text-secondary); max-width:540px; margin:0 auto var(--space-4); font-size:0.95rem;">
+            Test the live web interface running on our hosted instance:
+        </p>
+        <div style="display:flex; justify-content:center; gap:var(--space-3); flex-wrap:wrap;">
+            <a href="{{ url_for('index') }}" class="btn btn--primary">⚡ Launch Web Downloader</a>
+            <a href="{{ url_for('self_hosted_youtube_downloader') }}" class="btn btn--secondary">💻 Self-Host on Your Server</a>
+        </div>
+    </div>
+
+    <div class="prose">
+        <div class="aeo-box">
+            <div class="aeo-box__header">⚡ Quick Answer / Key Takeaway</div>
+            <p class="aeo-box__content">
+                <strong>What is the YT Downloader Web UI?</strong> It is a graphical, web-based frontend for the world-renowned command-line media tool <strong>yt-dlp</strong>. Built with Python, Flask, and SQLite, it enables non-technical users to access the full power of yt-dlp—including 4K video merging, batch downloading, and lossless audio extraction—through a browser without writing terminal commands.
+            </p>
+            <ul class="aeo-box__list">
+                <li><strong>No Terminal Required:</strong> Simple paste-and-click browser interface for mobile and desktop.</li>
+                <li><strong>FFmpeg Automated:</strong> Multiplexes adaptive DASH video and audio automatically in background workers.</li>
+                <li><strong>Privacy &amp; Self-Hostable:</strong> Open-source, local-first architecture with optional Docker deployment.</li>
+            </ul>
+        </div>
+
+        <h2>Why yt-dlp Deserves a Great Web Interface</h2>
+        <p>
+            <strong>yt-dlp</strong> is widely recognized by software engineers and digital preservationists as the most robust, actively maintained command-line video and audio stream extractor in the world. It supports over 1,800 websites and quickly patches upstream changes in video streaming formats.
+        </p>
+        <p>
+            However, command-line interfaces present friction for everyday tasks:
+        </p>
+        <ul>
+            <li>Remembering complex format flags (e.g. <code>-f 'ba' -x --audio-format mp3 --audio-quality 0</code>).</li>
+            <li>Downloading videos on mobile devices (smartphones and tablets lack easy terminal environments).</li>
+            <li>Sharing media conversion capabilities across a local home network or office team.</li>
+        </ul>
+
+        <div class="table-wrap">
+            <table class="format-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Standard yt-dlp (CLI)</th>
+                        <th>YT Downloader (Web UI)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="highlight-col">Interface</td>
+                        <td>Terminal command line</td>
+                        <td>Visual web dashboard with progress bars</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Installation Requirements</td>
+                        <td>Python 3, pip, terminal, FFmpeg PATH</td>
+                        <td>Runs in any browser (Chrome, Safari, Firefox)</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Mobile Usability</td>
+                        <td>Requires Termux or SSH shell</td>
+                        <td>Responsive touch-friendly mobile web UI</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Format Selection</td>
+                        <td>Manual format string syntax</td>
+                        <td>One-click presets (MP3, MP4, M4A, WAV, 4K)</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Background Queue</td>
+                        <td>Manual backgrounding or screen/tmux</td>
+                        <td>Built-in ThreadPoolExecutor + SQLite WAL queue</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Architectural Design of Our Web UI</h2>
+        <p>
+            YT Downloader wraps yt-dlp in a lightweight, robust, and asynchronous web server stack:
+        </p>
+        <div class="grid-2" style="margin:var(--space-6) 0;">
+            <div class="feature-card">
+                <div class="feature-card__icon">🐍</div>
+                <h3 class="feature-card__title">Flask &amp; Thread-Pool Worker</h3>
+                <p class="feature-card__desc">
+                    A multi-threaded Python 3 worker pool handles media downloads asynchronously in background threads, keeping the HTTP server snappy and responsive.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-card__icon">💾</div>
+                <h3 class="feature-card__title">SQLite WAL State Engine</h3>
+                <p class="feature-card__desc">
+                    Job metadata, batch progress, and completion states are persisted in SQLite WAL mode for thread-safe lock-free querying.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-card__icon">🎨</div>
+                <h3 class="feature-card__title">Zero-Dependency Frontend</h3>
+                <p class="feature-card__desc">
+                    Built entirely with vanilla JavaScript and modern CSS tokens. No bloated frontend frameworks or tracking libraries.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-card__icon">🧹</div>
+                <h3 class="feature-card__title">Automated Retention Janitor</h3>
+                <p class="feature-card__desc">
+                    A background cleanup cron automatically removes files older than 24 hours, preventing storage leaks and respecting user privacy.
+                </p>
+            </div>
+        </div>
+
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-list">
+            <div class="faq-item">
+                <h3 class="faq-question">How do I keep yt-dlp updated on my server?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Our container configuration can execute <code>pip install -U yt-dlp</code> during scheduled restarts to ensure you always have the latest format extractors and patches.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Is an API available for programmatic downloads?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Yes. Our backend exposes REST endpoints (e.g. <code>/api/job/create</code>, <code>/api/job/status/&lt;id&gt;</code>) for integration with your own automation scripts.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Can I run this Web UI on a Raspberry Pi or NAS?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Yes. Because the stack uses lightweight Python, SQLite, and FFmpeg, it runs effortlessly on ARM single-board computers like Raspberry Pi 4/5, Synology NAS Docker containers, and inexpensive VPS instances.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Does this Web UI support batch downloading multiple URLs?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Yes. You can paste up to 20 video URLs at once in our Bulk Downloaders, or paste full YouTube playlist URLs for automated multi-item processing.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>
+{% endblock %}

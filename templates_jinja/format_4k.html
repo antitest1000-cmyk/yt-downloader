@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+
+{% block title %}YouTube 4K Downloader – Download 2160p UHD Videos (yt-dlp){% endblock %}
+{% block meta_description %}Download YouTube videos in true 4K Ultra HD (2160p) and 60fps with merged audio via yt-dlp and FFmpeg. Free, ad-free, and privacy-first.{% endblock %}
+
+{% block json_ld %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "YouTube 4K Downloader",
+      "url": "https://yt-downlooader.netlify.app/youtube-4k-downloader",
+      "description": "Download 4K UHD 2160p YouTube videos with automated DASH stream multiplexing.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://yt-downlooader.netlify.app/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "4K Video Downloader",
+          "item": "https://yt-downlooader.netlify.app/youtube-4k-downloader"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Why do some 4K YouTube videos download with no sound on other sites?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "YouTube splits 4K video into separate video and audio DASH streams. Downloading 4K with audio requires a multiplexing engine like FFmpeg to combine both streams. YT Downloader merges these automatically."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What hardware is required to play 4K video smoothly?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Playing 4K 60fps video requires a GPU with hardware VP9 or AV1 decoding support, such as Intel Gen 7+, Apple Silicon (M1/M2/M3), AMD Ryzen with Radeon, or NVIDIA GTX 10-series or newer."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="{{ url_for('index') }}">Home</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span class="breadcrumbs__current">4K Video Downloader</span>
+</div>
+
+<article class="content-article">
+    <header class="content-article__hero content-article__hero--center">
+        <span class="content-badge">👑 Ultra High Definition</span>
+        <h1 class="content-title">Download YouTube Videos in 4K UHD (2160p)</h1>
+        <p class="content-subtitle" style="margin:0 auto; max-width:680px;">
+            Save ultra-crisp 4K 2160p and 60fps YouTube videos with synchronized stereo audio. High-speed stream multiplexing powered by <strong>yt-dlp</strong> and <strong>FFmpeg</strong>.
+        </p>
+    </header>
+
+    <div class="trust-strip">
+        <span class="trust-item"><span class="trust-item__icon">👑</span> <strong>3840 &times; 2160</strong> 4K UHD</span>
+        <span class="trust-item"><span class="trust-item__icon">⚡</span> <strong>60 FPS Support</strong> High Frame Rate</span>
+        <span class="trust-item"><span class="trust-item__icon">🛡️</span> <strong>No Ads</strong> Zero Popups</span>
+        <span class="trust-item"><span class="trust-item__icon">🔒</span> <strong>24h Auto-Purge</strong> Private Cache</span>
+    </div>
+
+    <div class="usage-notice">
+        <span class="usage-notice__icon">⚖️</span>
+        <div>
+            <strong>Notice:</strong> Please only download 4K videos you own, that are licensed for reuse under Creative Commons, or for which you have explicit rights holder permission.
+        </div>
+    </div>
+
+    <!-- Quick Tool Card for 4K -->
+    <div class="card" style="margin-bottom:var(--space-10);">
+        <h2 style="font-size:1.25rem; font-family:'Outfit',sans-serif; margin-top:0; margin-bottom:var(--space-3); color:var(--text-primary);">
+            🎬 Download in 4K Quality
+        </h2>
+        <div class="form-group">
+            <label for="url-input" class="form-label">YouTube Video URL</label>
+            <div class="input-row">
+                <div class="input-field-wrap">
+                    <span class="input-field-icon" aria-hidden="true">🎬</span>
+                    <input type="url" id="url-input" class="form-input form-input--has-actions"
+                           placeholder="https://www.youtube.com/watch?v=..." autocomplete="off">
+                    <button type="button" id="btn-paste-url" class="btn-input-action" title="Paste link from clipboard">
+                        <span>📋</span> Paste
+                    </button>
+                </div>
+                <button type="button" id="btn-fetch-meta" class="btn btn--fetch" title="Inspect 4K stream info">
+                    <span>✨</span> Inspect
+                </button>
+            </div>
+            <div id="url-feedback" class="form-feedback" role="alert" aria-live="polite"></div>
+        </div>
+
+        <div id="meta-preview" class="meta-preview hidden" aria-live="polite">
+            <div class="meta-preview__thumb" id="meta-thumb"></div>
+            <div class="meta-preview__info">
+                <span class="meta-preview__title" id="meta-title"></span>
+                <span class="meta-preview__detail" id="meta-detail"></span>
+            </div>
+        </div>
+
+        <div class="options-row" style="margin-top:var(--space-4);">
+            <div class="form-group form-group--half">
+                <label for="quality-select" class="form-label">Quality Profile</label>
+                <select id="quality-select" class="form-select">
+                    <option value="best" selected>👑 Best Quality Available (Up to 4K / 8K UHD)</option>
+                    <option value="1080p">📺 1080p Full HD</option>
+                    <option value="720p">📱 720p HD</option>
+                </select>
+            </div>
+            <div class="form-group form-group--half" style="display:flex; align-items:flex-end;">
+                <button type="button" id="btn-download" class="btn btn--primary btn--full">
+                    <span class="btn__text">Download in 4K</span>
+                    <span class="btn__spinner hidden" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <section class="section" id="jobs-section" style="margin-bottom:var(--space-10);">
+        <div class="history-header">
+            <h2 class="section__title" id="jobs-heading">
+                <span class="section__icon" aria-hidden="true">⬇</span>
+                Download Queue
+                <span class="badge" id="active-count">0</span>
+            </h2>
+            <div class="history-controls">
+                <button type="button" id="btn-clear-history" class="btn btn--secondary btn--small">🗑 Clear</button>
+            </div>
+        </div>
+        <div id="jobs-list" class="jobs-list">
+            <div class="empty-state" id="empty-state">
+                <h3 class="empty-state__heading" id="empty-state-text">No active 4K downloads</h3>
+                <p class="empty-state__hint" id="empty-state-hint">Paste a 4K video link above and click <strong>Download in 4K</strong>.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="prose">
+        <div class="aeo-box">
+            <div class="aeo-box__header">⚡ Quick Answer / Key Takeaway</div>
+            <p class="aeo-box__content">
+                <strong>Can you download YouTube videos in 4K UHD?</strong> Yes. When a video is uploaded in 4K (2160p), YouTube encodes it into VP9 or AV1 video-only DASH streams. YT Downloader utilizes yt-dlp to identify the 3840&times;2160 stream and FFmpeg to multiplex it with high-bitrate audio into a clean, universally playable MP4 or MKV container at full 60fps.
+            </p>
+            <ul class="aeo-box__list">
+                <li><strong>Native 2160p Resolution:</strong> True 3840&times;2160 resolution with up to 60 frames per second.</li>
+                <li><strong>Adaptive DASH Merging:</strong> Merges video and audio streams via FFmpeg stream-copy.</li>
+                <li><strong>No Quality Throttling:</strong> Unlike ad-supported sites that cap downloads at 720p or 1080p.</li>
+            </ul>
+        </div>
+
+        <h2>What Goes Into Downloading a 4K YouTube Video?</h2>
+        <p>
+            A true 4K video offers four times the resolution of 1080p (<strong>3840 &times; 2160 pixels</strong>). To deliver such immense resolution over standard consumer internet connections, YouTube uses advanced video compression codecs:
+        </p>
+
+        <div class="spec-grid">
+            <div class="spec-box">
+                <div class="spec-box__title">Resolution</div>
+                <div class="spec-box__value">3840 &times; 2160</div>
+                <div class="spec-box__desc">8.3 million pixels per frame at up to 60fps.</div>
+            </div>
+            <div class="spec-box">
+                <div class="spec-box__title">Video Codecs</div>
+                <div class="spec-box__value">VP9 &amp; AV1</div>
+                <div class="spec-box__desc">Next-generation codecs with high compression efficiency.</div>
+            </div>
+            <div class="spec-box">
+                <div class="spec-box__title">File Footprint</div>
+                <div class="spec-box__value">~150&ndash;350 MB</div>
+                <div class="spec-box__desc">Typical file size per 10 minutes of 4K footage.</div>
+            </div>
+            <div class="spec-box">
+                <div class="spec-box__title">Multiplexing</div>
+                <div class="spec-box__value">FFmpeg Remux</div>
+                <div class="spec-box__desc">Merges DASH audio &amp; video streams into playable MP4.</div>
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <table class="format-table">
+                <thead>
+                    <tr>
+                        <th>Resolution</th>
+                        <th>Pixel Dimensions</th>
+                        <th>Total Pixels</th>
+                        <th>Typical Bitrate</th>
+                        <th>Ideal Display</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="highlight-col">4K Ultra HD (2160p)</td>
+                        <td>3840 &times; 2160</td>
+                        <td>8,294,400</td>
+                        <td>15,000–35,000 kbps</td>
+                        <td>4K TVs, Retina Displays, High-end Monitors</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">1440p Quad HD (2K)</td>
+                        <td>2560 &times; 1440</td>
+                        <td>3,686,400</td>
+                        <td>9,000–18,000 kbps</td>
+                        <td>1440p Gaming Monitors, Laptops</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">1080p Full HD</td>
+                        <td>1920 &times; 1080</td>
+                        <td>2,073,600</td>
+                        <td>3,500–6,000 kbps</td>
+                        <td>Standard desktop monitors, phones, tablets</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">720p HD</td>
+                        <td>1280 &times; 720</td>
+                        <td>921,600</td>
+                        <td>1,500–2,500 kbps</td>
+                        <td>Mobile data savings, older laptops</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Step-by-Step: Downloading YouTube Videos in 4K</h2>
+        <div class="step-cards">
+            <div class="step-card">
+                <div class="step-card__number">1</div>
+                <div class="step-card__title">Verify 4K Upload</div>
+                <p class="step-card__text">Ensure the source YouTube video was uploaded in 4K (look for the "4K" badge in the YouTube player settings gear).</p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">2</div>
+                <div class="step-card__title">Paste URL &amp; Queue</div>
+                <p class="step-card__text">Paste the link into the URL field above and click Download in 4K. Our engine locks onto the 2160p stream.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">3</div>
+                <div class="step-card__title">Stream Remuxing</div>
+                <p class="step-card__text">The 4K video stream and audio stream are downloaded and multiplexed by FFmpeg into a playable MP4 file.</p>
+            </div>
+        </div>
+
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-list">
+            <div class="faq-item">
+                <h3 class="faq-question">Why does a 4K download take longer than 1080p?</h3>
+                <div class="faq-answer">
+                    <p>
+                        4K video files contain four times more pixel data than 1080p. The server must download both large files (often over 200MB) from YouTube and multiplex them with FFmpeg before serving the completed file.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">What media player is best for playing 4K videos on PC or Mac?</h3>
+                <div class="faq-answer">
+                    <p>
+                        We recommend <a href="https://www.videolan.org/vlc/" target="_blank" rel="noopener noreferrer" style="color:var(--accent-secondary)">VLC Media Player</a>, mpv, or IINA (on macOS). Both utilize your computer's dedicated graphics hardware to decode 4K 60fps VP9 and AV1 streams effortlessly.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Does YT Downloader compress or downscale 4K files?</h3>
+                <div class="faq-answer">
+                    <p>
+                        No. Unlike many web downloaders that secretly downscale 4K streams to 1080p or 720p to save server bandwidth, YT Downloader serves the genuine 2160p video stream directly from YouTube's CDN.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Can I play 4K videos on a phone?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Modern smartphones (iPhone 11 and later, Galaxy S20 and later, Google Pixel 5 and later) can decode 4K 60fps video with hardware acceleration. However, on small screens, 1080p looks virtually indistinguishable and saves significant storage.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>
+{% endblock %}

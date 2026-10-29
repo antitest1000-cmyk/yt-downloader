@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Terms of Service &amp; Fair Use Guidelines | YT Downloader{% endblock %}
+{% block meta_description %}YT Downloader terms of service: guidelines for personal archival, research, and fair-use downloading. Strictly no copyright infringement or DRM circumvention.{% endblock %}
+
+{% block content %}
+<section class="content-header">
+    <div class="content-badge"><span>📜</span> Terms of Service</div>
+    <h1 class="content-title">Terms of Service</h1>
+    <p class="content-lead">
+        By using YT Downloader, you agree to these terms. Please read them carefully before downloading or converting any media.
+    </p>
+    <p style="color:var(--text-muted); font-size:0.875rem; margin-top:0.5rem;">Last updated: October 2026</p>
+</section>
+
+<article class="content-article">
+    <div class="content-prose">
+
+        <div class="callout callout--warning">
+            <div class="callout__title">Important: Acceptable Use Only</div>
+            <p>
+                This tool is intended exclusively for downloading publicly accessible media for personal archiving, academic research, or other fair-use purposes. Downloading copyrighted content for redistribution, commercial exploitation, or in violation of platform terms of service is prohibited and is the sole responsibility of the user.
+            </p>
+        </div>
+
+        <h2>1. Acceptance of Terms</h2>
+        <p>
+            By accessing or using the YT Downloader web application or its API endpoints, you agree to be bound by these Terms of Service. If you do not agree to these terms, do not use the service. We reserve the right to modify these terms at any time; continued use of the service constitutes acceptance of any modifications.
+        </p>
+
+        <h2>2. Permitted Uses</h2>
+        <p>
+            You are permitted to use this service for the following purposes:
+        </p>
+        <ul style="color:var(--text-secondary); line-height:1.8; margin-left:1.5rem; margin-bottom:1.5rem;">
+            <li><strong>Personal archival:</strong> Downloading publicly accessible videos for personal offline viewing on devices you own.</li>
+            <li><strong>Academic &amp; educational research:</strong> Archiving publicly available educational content, lectures, or documentaries for research purposes.</li>
+            <li><strong>Creative commons and public domain content:</strong> Downloading media explicitly licensed for free use, reuse, or redistribution.</li>
+            <li><strong>Own original content:</strong> Downloading your own videos or videos on which you hold the copyright.</li>
+            <li><strong>Fair use:</strong> Uses protected under applicable fair use or fair dealing copyright doctrines in your jurisdiction.</li>
+        </ul>
+
+        <h2>3. Prohibited Uses</h2>
+        <p>
+            You must NOT use this service for any of the following:
+        </p>
+        <ul style="color:var(--text-secondary); line-height:1.8; margin-left:1.5rem; margin-bottom:1.5rem;">
+            <li>Downloading copyrighted material without authorization from the rights holder for commercial redistribution, public performance, or mass duplication.</li>
+            <li>Circumventing, bypassing, or disabling any digital rights management (DRM) system, encryption, or technical protection measure.</li>
+            <li>Accessing age-restricted, private, unlisted, or membership-gated content that requires authentication credentials.</li>
+            <li>Systematic scraping, bulk automated downloading, or using the API in a manner inconsistent with personal use.</li>
+            <li>Attempting to probe, exploit, or compromise the security of this application or its underlying infrastructure.</li>
+            <li>Violating YouTube's Terms of Service, Google's Acceptable Use Policy, or any applicable local or international copyright laws.</li>
+        </ul>
+
+        <h2>4. Intellectual Property &amp; Copyright</h2>
+        <p>
+            This service downloads media from YouTube solely through publicly accessible streams and does not bypass, remove, or modify any DRM protections. All downloaded content remains the intellectual property of its respective rights holders. Users are solely responsible for ensuring their use of downloaded content complies with applicable copyright law in their jurisdiction.
+        </p>
+        <p>
+            We respect intellectual property rights and promptly respond to valid DMCA takedown notices as detailed in our <a href="{{ url_for('dmca') }}" style="color:var(--accent-secondary); font-weight:600;">DMCA Policy</a>.
+        </p>
+
+        <h2>5. Disclaimer of Warranties</h2>
+        <p>
+            The YT Downloader service is provided on an "as is" and "as available" basis without warranties of any kind, whether express or implied. We do not warrant that the service will be error-free, uninterrupted, or that any particular video URL will be successfully downloadable. YouTube frequently changes its platform behavior, and yt-dlp compatibility may temporarily lag behind such changes.
+        </p>
+
+        <h2>6. Limitation of Liability</h2>
+        <p>
+            To the maximum extent permitted by applicable law, YT Downloader and its operators shall not be liable for any direct, indirect, incidental, special, consequential, or punitive damages arising from your use of the service or downloaded content, including but not limited to legal disputes arising from copyright infringement by users.
+        </p>
+
+        <h2>7. Indemnification</h2>
+        <p>
+            You agree to indemnify and hold harmless YT Downloader and its operators from any claims, liabilities, damages, or expenses (including legal fees) arising from your violation of these terms, your infringement of any third-party rights, or your use of downloaded content in violation of applicable law.
+        </p>
+
+        <h2>8. Termination</h2>
+        <p>
+            We reserve the right to restrict or terminate access to the service at any time for users who violate these Terms of Service, abuse the system, or engage in behaviors that place undue load on shared resources.
+        </p>
+
+        <h2>9. Governing Law</h2>
+        <p>
+            These Terms shall be governed by applicable law. Any disputes arising under these Terms shall be resolved through good-faith negotiation.
+        </p>
+
+        <h2>10. Contact</h2>
+        <p>
+            For questions about these Terms of Service, visit our <a href="{{ url_for('contact') }}" style="color:var(--accent-secondary); font-weight:600;">Contact page</a>.
+        </p>
+    </div>
+</article>
+{% endblock %}

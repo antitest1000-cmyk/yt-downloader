@@ -1,0 +1,300 @@
+{% extends "base.html" %}
+
+{% block title %}Self-Host a YouTube Downloader with Python and Flask{% endblock %}
+{% block meta_description %}Step-by-step guide to self-hosting a private YouTube downloader using Python, Flask, yt-dlp, and FFmpeg with Docker configs and production security practices.{% endblock %}
+
+{% block content %}
+<section class="content-header">
+    <div class="content-badge">
+        <span>💻</span> Developer Guide &amp; Self-Hosting
+    </div>
+    <h1 class="content-title">Run Your Own Downloader</h1>
+    <p class="content-lead">
+        Deploy a private, local-first YouTube downloading and audio conversion service on your own home server, VPS, or Docker cluster using modern Python, Flask, yt-dlp, and FFmpeg.
+    </p>
+</section>
+
+<!-- Quick Action Card -->
+<div class="step-card" style="margin-bottom:2.5rem; border-color:rgba(124,58,237,0.3); background:linear-gradient(135deg, rgba(30,27,75,0.4), rgba(15,23,42,0.6));">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+        <div>
+            <h3 style="margin:0 0 0.5rem 0; color:#fff;">Deploy in Under 3 Minutes</h3>
+            <p style="margin:0; color:var(--text-secondary); font-size:0.95rem;">
+                Clone the repository, configure your environment variables, and launch using standard Python or Docker Compose.
+            </p>
+        </div>
+        <div>
+            <a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener noreferrer" class="btn btn--primary" style="text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem;">
+                <span>⭐</span> View on GitHub
+            </a>
+        </div>
+    </div>
+</div>
+
+<article class="content-article">
+    <div class="content-prose">
+        <h2>Why Self-Host Your Own Media Downloader?</h2>
+        <p>
+            Public downloader websites are notoriously plagued with intrusive pop-up advertisements, deceptive download buttons, invasive browser fingerprinting scripts, and aggressive artificial rate limits. Even worse, many commercial web converters secretly route your media requests through opaque proxy networks that inspect traffic or inject promotional watermarks into encoded audio and video files.
+        </p>
+        <p>
+            By self-hosting this open-source Flask and yt-dlp application, you gain complete operational sovereignty over your media processing pipeline. Every download is executed directly on your hardware, audio is converted locally via your own FFmpeg binary, and temporary media files reside exclusively on your local filesystem under a strict 24-hour automatic retention purge policy.
+        </p>
+
+        <div class="callout callout--info">
+            <div class="callout__title">Core Principles of this Implementation</div>
+            <p>
+                This architecture was designed from the ground up for resilience and safety: non-blocking background thread pool execution, SQLite job state tracking with WAL mode, strict URL host allowlisting, SSRF protection against private IP probing, and zero client-side JavaScript tracking.
+            </p>
+        </div>
+
+        <h2>System Prerequisites</h2>
+        <p>
+            Before deploying the service, ensure that your host system meets the following software requirements:
+        </p>
+        <ul style="color:var(--text-secondary); line-height:1.8; margin-left:1.5rem; margin-bottom:1.5rem;">
+            <li><strong>Python 3.10+</strong>: Python 3.10, 3.11, or 3.12 with <code>venv</code> and <code>pip</code> installed.</li>
+            <li><strong>FFmpeg 5.0+</strong>: Essential for merging DASH video and audio streams (1080p, 1440p, 4K) and converting audio extractions to MP3, M4A, or FLAC.</li>
+            <li><strong>Git</strong>: To clone and update the codebase.</li>
+            <li><strong>Disk Space</strong>: At least 10–20 GB of free storage allocated to your temporary download directory, depending on concurrent usage.</li>
+            <li><strong>RAM</strong>: Minimum 1 GB RAM (2 GB recommended when transcribing or converting high-bitrate audio).</li>
+        </ul>
+
+        <h2>Bare-Metal Quickstart (Linux, macOS, Windows)</h2>
+        <p>
+            Follow these step-by-step commands to get the application running locally in a virtual environment:
+        </p>
+
+        <div class="code-block">
+            <div class="code-block__header">
+                <span class="code-block__lang">bash</span>
+                <span class="code-block__hint">Terminal Setup</span>
+            </div>
+            <pre><code># 1. Clone the repository
+git clone https://github.com/your-username/yt-downloader.git
+cd yt-downloader
+
+# 2. Create and activate a Python virtual environment
+python3 -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# 3. Upgrade pip and install production dependencies
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# 4. Copy the environment configuration template
+cp .env.example .env
+
+# 5. Verify FFmpeg installation
+ffmpeg -version
+
+# 6. Initialize database and start the local server
+python app.py</code></pre>
+        </div>
+
+        <p>
+            Once started, open your web browser and navigate to <code>http://127.0.0.1:5000</code>. The application dashboard will automatically test connectivity to FFmpeg and initialize the SQLite database table schema.
+        </p>
+
+        <h2>Environment Variables Configuration</h2>
+        <p>
+            The service is configured via environment variables or a local <code>.env</code> file. The table below details every configuration parameter, its default value, and its operational purpose:
+        </p>
+
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Variable</th>
+                        <th>Default</th>
+                        <th>Description &amp; Operational Impact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>FLASK_ENV</code></td>
+                        <td><code>development</code></td>
+                        <td>Set to <code>production</code> on live public deployments to disable debug error traces.</td>
+                    </tr>
+                    <tr>
+                        <td><code>SECRET_KEY</code></td>
+                        <td>Auto-generated</td>
+                        <td>Cryptographic key for signing Flask session cookies and CSRF tokens.</td>
+                    </tr>
+                    <tr>
+                        <td><code>DOWNLOAD_DIR</code></td>
+                        <td><code>./downloads</code></td>
+                        <td>Directory where in-progress and completed media files are written.</td>
+                    </tr>
+                    <tr>
+                        <td><code>DATABASE_PATH</code></td>
+                        <td><code>./ytdl.db</code></td>
+                        <td>Path to SQLite database file. Automatically uses WAL mode for concurrent write safety.</td>
+                    </tr>
+                    <tr>
+                        <td><code>MAX_CONCURRENT_DOWNLOADS</code></td>
+                        <td><code>3</code></td>
+                        <td>Worker thread concurrency limit for downloading and transcode jobs.</td>
+                    </tr>
+                    <tr>
+                        <td><code>MAX_BATCH_SIZE</code></td>
+                        <td><code>20</code></td>
+                        <td>Maximum number of discrete video URLs permitted in a single bulk submission.</td>
+                    </tr>
+                    <tr>
+                        <td><code>MAX_PLAYLIST_ITEMS</code></td>
+                        <td><code>50</code></td>
+                        <td>Strict ceiling on items extracted and queued from a single YouTube playlist URL.</td>
+                    </tr>
+                    <tr>
+                        <td><code>MAX_QUEUE_DEPTH</code></td>
+                        <td><code>50</code></td>
+                        <td>Maximum total pending jobs allowed in the waiting queue before returning 429.</td>
+                    </tr>
+                    <tr>
+                        <td><code>DOWNLOAD_TIMEOUT</code></td>
+                        <td><code>1800</code></td>
+                        <td>Job timeout threshold in seconds (30 minutes) to prevent zombie processes.</td>
+                    </tr>
+                    <tr>
+                        <td><code>FILE_RETENTION_HOURS</code></td>
+                        <td><code>24</code></td>
+                        <td>Hours before completed files and expired database job records are permanently pruned.</td>
+                    </tr>
+                    <tr>
+                        <td><code>RATE_LIMIT_PER_MINUTE</code></td>
+                        <td><code>30</code></td>
+                        <td>IP-based client rate limit enforced via Flask-Limiter memory backend.</td>
+                    </tr>
+                    <tr>
+                        <td><code>FFMPEG_PATH</code></td>
+                        <td><em>(empty)</em></td>
+                        <td>Optional custom path to FFmpeg binary if not present in your system <code>$PATH</code>.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Docker &amp; Docker Compose Deployment</h2>
+        <p>
+            For containerized environments, running the downloader in Docker ensures FFmpeg is packaged consistently without host system dependency conflicts:
+        </p>
+
+        <div class="code-block">
+            <div class="code-block__header">
+                <span class="code-block__lang">dockerfile</span>
+                <span class="code-block__hint">Dockerfile</span>
+            </div>
+            <pre><code>FROM python:3.11-slim
+
+# Install system dependencies including FFmpeg
+RUN apt-get update &amp;&amp; apt-get install -y --no-install-recommends \
+    ffmpeg \
+    curl \
+    &amp;&amp; rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy dependency specifications and install
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt gunicorn
+
+# Copy application source code
+COPY . .
+
+# Create volume mount points
+RUN mkdir -p /app/downloads &amp;&amp; chmod 777 /app/downloads
+
+EXPOSE 5000
+
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "2", "--threads", "4", "--timeout", "120", "app:create_app()"]</code></pre>
+        </div>
+
+        <p>
+            Deploy using Docker Compose with dedicated persistent volume mounts for your downloads directory and SQLite state database:
+        </p>
+
+        <div class="code-block">
+            <div class="code-block__header">
+                <span class="code-block__lang">yaml</span>
+                <span class="code-block__hint">docker-compose.yml</span>
+            </div>
+            <pre><code>version: '3.8'
+
+services:
+  yt-downloader:
+    build: .
+    container_name: yt-downloader
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - MAX_CONCURRENT_DOWNLOADS=3
+      - FILE_RETENTION_HOURS=24
+      - RATE_LIMIT_PER_MINUTE=60
+    volumes:
+      - ./downloads:/app/downloads
+      - ./data:/app/data
+    security_opt:
+      - no-new-privileges:true
+    read_only: false</code></pre>
+        </div>
+
+        <h2>Production Hardening Checklist</h2>
+        <p>
+            If you intend to expose your self-hosted instance to the public internet or share it with remote family and colleagues, follow these mandatory security practices:
+        </p>
+
+        <div class="step-card">
+            <div class="step-card__number">1</div>
+            <h3 class="step-card__title">Deploy Behind a Reverse Proxy (Nginx / Caddy)</h3>
+            <p class="step-card__text">
+                Never expose Flask's built-in WSGI server or bare Gunicorn directly to the public web. Place Nginx or Caddy in front to manage TLS termination, request buffering, and client header sanitization.
+            </p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-card__number">2</div>
+            <h3 class="step-card__title">Enable Automatic SSL/TLS Encryption</h3>
+            <p class="step-card__text">
+                Issue a free Let's Encrypt TLS certificate using Certbot or Caddy's automatic HTTPS. Ensure HTTP requests are redirected to HTTPS with HSTS headers enabled.
+            </p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-card__number">3</div>
+            <h3 class="step-card__title">Enforce Authentication or Tailscale VPN Access</h3>
+            <p class="step-card__text">
+                If the downloader is meant solely for your personal use, restrict access via HTTP Basic Auth, Authelia, Cloudflare Access, or a private WireGuard / Tailscale mesh network. This shields your server bandwidth from scrapers.
+            </p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-card__number">4</div>
+            <h3 class="step-card__title">Regularly Update yt-dlp</h3>
+            <p class="step-card__text">
+                YouTube frequently updates video stream extraction signatures and anti-bot challenges. Set up a weekly cron job to update the yt-dlp package: <code>pip install --upgrade yt-dlp</code>.
+            </p>
+        </div>
+
+        <div class="callout callout--warning">
+            <div class="callout__title">Egress Bandwidth &amp; VPS Hosting Notice</div>
+            <p>
+                Video downloads consume significant upstream and downstream network bandwidth. If deploying on low-cost cloud providers (such as DigitalOcean, Linode, or Hetzner), monitor your monthly egress bandwidth allowances to prevent overage charges.
+            </p>
+        </div>
+
+        <h2>Related Tools &amp; Reading</h2>
+        <p>
+            Explore our related in-depth guides and technical documentation:
+        </p>
+        <ul style="color:var(--text-secondary); line-height:1.8; margin-left:1.5rem;">
+            <li><a href="{{ url_for('blog_post', slug='self-host-flask-yt-dlp-tutorial') }}" style="color:var(--accent-secondary); font-weight:600;">Full Developer Tutorial: Building a Flask yt-dlp App from Scratch &rarr;</a></li>
+            <li><a href="{{ url_for('blog_post', slug='install-ffmpeg-windows-mac-linux') }}" style="color:var(--accent-secondary); font-weight:600;">How to Install and Verify FFmpeg on Windows, Mac, and Linux &rarr;</a></li>
+            <li><a href="{{ url_for('blog_post', slug='ssrf-protection-in-flask-apps') }}" style="color:var(--accent-secondary); font-weight:600;">Securing Media Downloaders Against SSRF Attacks &rarr;</a></li>
+            <li><a href="{{ url_for('how_it_works') }}" style="color:var(--accent-secondary); font-weight:600;">Architecture Deep Dive: Job Queues, Threads, and SQLite &rarr;</a></li>
+        </ul>
+    </div>
+</article>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Project Changelog & Release Notes – YT Downloader{% endblock %}
+{% block meta_description %}Track engine updates, yt-dlp version upgrades, bug fixes, performance improvements, and feature releases for the open-source YT Downloader web app.{% endblock %}
+
+{% block content %}
+<div class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="{{ url_for('index') }}">Home</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span class="breadcrumbs__current">Changelog</span>
+</div>
+
+<article class="content-article">
+    <header class="content-article__hero content-article__hero--center">
+        <span class="content-badge">📦 Release History</span>
+        <h1 class="content-title">Project Changelog &amp; Updates</h1>
+        <p class="content-subtitle" style="margin:0 auto; max-width:640px;">
+            Tracking active development, security improvements, and extractor updates across YT Downloader releases.
+        </p>
+    </header>
+
+    <div class="prose">
+        <div class="card" style="margin-bottom:var(--space-6); padding:var(--space-6);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:var(--space-3); flex-wrap:wrap; gap:8px;">
+                <h2 style="margin:0; font-size:1.3rem; color:var(--text-primary);">v1.2.0 &ndash; SEO Architecture &amp; Dedicated Format Routes</h2>
+                <span style="font-size:0.8rem; background:rgba(0,212,168,0.15); color:var(--status-completed); border:1px solid rgba(0,212,168,0.3); padding:2px 8px; border-radius:999px;">October 2026</span>
+            </div>
+            <ul style="color:var(--text-secondary); line-height:1.7; margin-left:1.2rem; margin-bottom:0;">
+                <li><strong>Duplicate Route Resolution:</strong> Implemented permanent 301 redirects for legacy URLs and established clean canonical slugs (<code>/youtube-to-mp3</code>, <code>/youtube-video-downloader</code>, <code>/bulk-youtube-to-mp3</code>, <code>/bulk-youtube-video-downloader</code>).</li>
+                <li><strong>Dedicated Format Tool Pages:</strong> Added dedicated landing pages for MP4, WAV, M4A, FLAC, and 4K UHD.</li>
+                <li><strong>Differentiator Hubs:</strong> Launched guides for ad-free media conversion, download safety checklists, and supported platform matrices.</li>
+                <li><strong>Structured JSON-LD Data:</strong> Integrated <code>WebApplication</code>, <code>BreadcrumbList</code>, and <code>FAQPage</code> schemas.</li>
+                <li><strong>Fair Use Policy &amp; HTML Sitemap:</strong> Published comprehensive copyright guidance and a complete human/crawler site map.</li>
+            </ul>
+        </div>
+
+        <div class="card" style="margin-bottom:var(--space-6); padding:var(--space-6);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:var(--space-3); flex-wrap:wrap; gap:8px;">
+                <h2 style="margin:0; font-size:1.3rem; color:var(--text-primary);">v1.1.0 &ndash; Multi-Track Batch Engine &amp; ZIP Packaging</h2>
+                <span style="font-size:0.8rem; background:rgba(124,92,252,0.15); color:var(--accent-secondary); border:1px solid rgba(124,92,252,0.3); padding:2px 8px; border-radius:999px;">September 2026</span>
+            </div>
+            <ul style="color:var(--text-secondary); line-height:1.7; margin-left:1.2rem; margin-bottom:0;">
+                <li><strong>Bulk Processing:</strong> Added support for queuing up to 20 URLs at once with asynchronous background worker threads.</li>
+                <li><strong>ZIP Export:</strong> Built 1-click ZIP archive packaging for completed batch jobs.</li>
+                <li><strong>SSRF Defense Engine:</strong> Hardened server security with strict hostname validation and private IP address shielding.</li>
+                <li><strong>SQLite Thread Safety:</strong> Upgraded queue persistence to SQLite WAL mode to support high concurrent write throughput.</li>
+            </ul>
+        </div>
+
+        <div class="card" style="margin-bottom:var(--space-6); padding:var(--space-6);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:var(--space-3); flex-wrap:wrap; gap:8px;">
+                <h2 style="margin:0; font-size:1.3rem; color:var(--text-primary);">v1.0.0 &ndash; Initial Open-Source Release</h2>
+                <span style="font-size:0.8rem; background:rgba(255,255,255,0.1); color:var(--text-muted); border:1px solid rgba(255,255,255,0.15); padding:2px 8px; border-radius:999px;">August 2026</span>
+            </div>
+            <ul style="color:var(--text-secondary); line-height:1.7; margin-left:1.2rem; margin-bottom:0;">
+                <li><strong>Core Engine:</strong> Integrated yt-dlp stream extraction with FFmpeg DASH multiplexing.</li>
+                <li><strong>Formats:</strong> Support for MP3, M4A, 720p, 1080p, and 4K downloads.</li>
+                <li><strong>24-Hour Auto-Purge:</strong> Background janitor thread to permanently delete temporary files after 24 hours.</li>
+                <li><strong>Dark UI System:</strong> Bespoke Vanilla CSS with aurora mesh background and micro-animations.</li>
+            </ul>
+        </div>
+    </div>
+</article>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}About YT Downloader – Open Source, Local-First Media Archiver{% endblock %}
+{% block meta_description %}Learn about YT Downloader, our mission to provide a transparent, ad-free, local-first media downloading and conversion toolkit powered by yt-dlp and FFmpeg.{% endblock %}
+
+{% block content %}
+<section class="content-header">
+    <div class="content-badge">
+        <span>ℹ️</span> About the Project
+    </div>
+    <h1 class="content-title">About YT Downloader</h1>
+    <p class="content-lead">
+        A privacy-conscious, open-source media archiving tool created to give users complete control over their personal educational and archival video downloads without predatory ads or deceptive software.
+    </p>
+</section>
+
+<article class="content-article">
+    <div class="content-prose">
+        <h2>Our Mission &amp; Purpose</h2>
+        <p>
+            The modern web is inundated with video converter websites designed to exploit users. A typical online downloader bombards visitors with aggressive pop-under advertisements, fraudulent "system alert" notifications, cryptocurrency mining scripts, and confusing fake download buttons that trick users into installing malicious extensions or bloatware.
+        </p>
+        <p>
+            <strong>YT Downloader was created as an antidote to this ecosystem.</strong> Our goal is simple: provide a clean, lightning-fast, and trustworthy web interface on top of the world's most battle-tested open-source media extraction engines—<a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener noreferrer" style="color:var(--accent-secondary)">yt-dlp</a> and <a href="https://ffmpeg.org" target="_blank" rel="noopener noreferrer" style="color:var(--accent-secondary)">FFmpeg</a>.
+        </p>
+
+        <div class="callout callout--info">
+            <div class="callout__title">100% Free &amp; Ad-Free Commitment</div>
+            <p>
+                We do not display third-party advertisements, we do not require account registration, and we will never sell or monetize user data. The tool is free for personal archival, academic research, and fair-use educational purposes.
+            </p>
+        </div>
+
+        <h2>Core Engineering Principles</h2>
+        <div class="grid-2" style="margin:2rem 0;">
+            <div class="feature-card">
+                <div class="feature-card__icon">🔒</div>
+                <h3 class="feature-card__title">Privacy by Default</h3>
+                <p class="feature-card__desc">
+                    We do not track user identities, browsing habits, or download history. Rate limiting is kept in transient server memory, and completed files are automatically and permanently purged from server disk storage after 24 hours.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-card__icon">⚡</div>
+                <h3 class="feature-card__title">Local-First Architecture</h3>
+                <p class="feature-card__desc">
+                    Media processing occurs locally on your host environment. When you run our container or self-hosted Python script, data flows directly between YouTube and your machine—no third-party proxy interceptors.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-card__icon">🛠️</div>
+                <h3 class="feature-card__title">Open &amp; Auditable Tech</h3>
+                <p class="feature-card__desc">
+                    Built with clean Python, Flask, Jinja2, SQLite, and vanilla modern CSS. Every line of backend routing and queue processing is fully inspectable, transparent, and reproducible.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-card__icon">🛡️</div>
+                <h3 class="feature-card__title">Responsible Archiving</h3>
+                <p class="feature-card__desc">
+                    We support only publicly accessible videos, lecture materials, and creative commons works. The application strictly forbids DRM circumvention and enforces robust SSRF defenses against malicious probing.
+                </p>
+            </div>
+        </div>
+
+        <h2>Technology Stack</h2>
+        <p>
+            YT Downloader is built with modern, lightweight technologies chosen for reliability, deterministic resource usage, and low overhead:
+        </p>
+        <ul style="color:var(--text-secondary); line-height:1.8; margin-left:1.5rem; margin-bottom:1.5rem;">
+            <li><strong>Python 3.11 &amp; Flask</strong>: Powers the responsive HTTP API, server-side template rendering, and asynchronous job life-cycle handling.</li>
+            <li><strong>yt-dlp</strong>: The gold standard open-source command-line audio/video stream extractor, actively maintained by an international open-source community.</li>
+            <li><strong>FFmpeg</strong>: The industry benchmark multimedia framework used for multiplexing DASH audio/video streams, audio transcoding, and ID3 metadata tagging.</li>
+            <li><strong>SQLite (WAL Mode)</strong>: Lightweight, zero-configuration relational database maintaining thread-safe state for active download jobs, batches, and progress updates.</li>
+            <li><strong>Vanilla CSS Design System</strong>: Bespoke modern dark UI utilizing HSL color palettes, subtle glowing gradients, and fluid micro-animations without bloated runtime frameworks.</li>
+        </ul>
+
+        <h2>Who We Are &amp; Open Source</h2>
+        <p>
+            YT Downloader is developed by independent software engineers and digital preservation enthusiasts who believe that access to personal media archives should be open, secure, and respectful of user autonomy. Whether you need to archive public educational lectures before traveling offline or convert your personal creative projects into high-fidelity audio stems, our software provides the tools you need.
+        </p>
+
+        <h2>Our Stance on User Privacy &amp; Data Minimization</h2>
+        <p>
+            Most video converter websites profit by collecting IP logs, injecting tracking cookies, and selling audience profiles to third-party ad networks. We reject this monetization model entirely:
+        </p>
+        <ul style="color:var(--text-secondary); line-height:1.8; margin-left:1.5rem; margin-bottom:1.5rem;">
+            <li><strong>Zero Activity Logs:</strong> We do not log submitted URLs, IP addresses, or client user agents in persistent storage.</li>
+            <li><strong>Automated Disk Sanitization:</strong> Any temporary audio/video files created during FFmpeg multiplexing are automatically and irreversibly deleted after 24 hours by our background garbage collector.</li>
+            <li><strong>Direct CDN Streams When Possible:</strong> Where native audio formats can be downloaded directly by your browser, our fast-path routes the stream directly from YouTube's edge cache, bypassing intermediate server storage entirely.</li>
+        </ul>
+
+        <h2>Get in Touch</h2>
+        <p>
+            Have feedback, noticed a bug with stream extraction, or want to contribute to our self-hosting documentation? Visit our <a href="{{ url_for('contact') }}" style="color:var(--accent-secondary); font-weight:600;">Contact &amp; Support page</a> or check our comprehensive <a href="{{ url_for('faq') }}" style="color:var(--accent-secondary); font-weight:600;">Frequently Asked Questions</a>.
+        </p>
+    </div>
+</article>
+{% endblock %}

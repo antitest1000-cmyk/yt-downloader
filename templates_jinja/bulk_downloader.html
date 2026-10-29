@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}Bulk YouTube Downloader – Queue Up to 20 URLs{% endblock %}
+{% block meta_description %}Download multiple YouTube videos simultaneously. Queue up to 20 URLs with automatic duplicate detection and multi-threaded worker processing.{% endblock %}
+
+{% block content %}
+<div class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="{{ url_for('index') }}">Home</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span class="breadcrumbs__current">Bulk Downloader</span>
+</div>
+
+<article class="content-article">
+    <header class="content-article__hero content-article__hero--center">
+        <span class="content-badge">📦 Multi-URL Batch Utility</span>
+        <h1 class="content-title">Download Multiple YouTube Videos at Once</h1>
+        <p class="content-subtitle" style="margin:0 auto;">
+            Paste up to 20 YouTube URLs on separate lines. Our multi-threaded queue handles deduplication, stream extraction, and background encoding.
+        </p>
+    </header>
+
+    <!-- Bulk Tool Card -->
+    <div class="card" style="margin-bottom:var(--space-10);">
+        <h2 style="font-size:1.25rem; font-family:'Outfit',sans-serif; margin-top:0; margin-bottom:var(--space-3); color:var(--text-primary);">
+            📦 Bulk Download Input
+        </h2>
+        <div class="form-group">
+            <label for="bulk-input" class="form-label">Paste YouTube URLs (one per line, maximum 20)</label>
+            <textarea id="bulk-input" class="form-textarea" rows="6"
+                      placeholder="https://www.youtube.com/watch?v=video1&#10;https://www.youtube.com/watch?v=video2&#10;https://youtu.be/video3"
+                      spellcheck="false" aria-describedby="bulk-feedback"></textarea>
+            <div id="bulk-feedback" class="form-feedback" role="alert" aria-live="polite"></div>
+        </div>
+
+        <!-- Bulk Validation Summary -->
+        <div id="bulk-summary" class="bulk-summary hidden" aria-live="polite">
+            <span class="bulk-summary__valid" id="bulk-valid">0 valid</span>
+            <span class="bulk-summary__sep">·</span>
+            <span class="bulk-summary__invalid" id="bulk-invalid">0 invalid</span>
+            <span class="bulk-summary__sep">·</span>
+            <span class="bulk-summary__dupes" id="bulk-dupes">0 duplicates</span>
+        </div>
+
+        <div class="options-row">
+            <div class="form-group form-group--half">
+                <label for="bulk-quality-select" class="form-label">Target Quality</label>
+                <select id="bulk-quality-select" class="form-select">
+                    <option value="best" selected>⚡ Best Available (up to 4K)</option>
+                    <option value="1080p">🎬 1080p Full HD</option>
+                    <option value="720p">📺 720p HD</option>
+                    <option value="480p">📱 480p SD</option>
+                </select>
+            </div>
+            <div class="form-group form-group--half">
+                <label class="form-label">Format</label>
+                <div class="pill-group" role="radiogroup">
+                    <button type="button" class="pill active" id="bulk-fmt-audio" data-format="audio">🎵 Audio (MP3 / M4A)</button>
+                    <button type="button" class="pill" id="bulk-fmt-video" data-format="video">🎬 Video (MP4)</button>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" id="btn-bulk-download" class="btn btn--primary btn--full">
+            <span class="btn__text">Download All in Queue</span>
+            <span class="btn__spinner hidden" aria-hidden="true"></span>
+        </button>
+    </div>
+
+    <!-- Active Jobs Section -->
+    <section class="section" id="jobs-section" style="margin-bottom:var(--space-10);">
+        <div class="history-header">
+            <h2 class="section__title" id="jobs-heading">
+                <span class="section__icon" aria-hidden="true">⬇</span>
+                Batch Queue Status
+                <span class="badge" id="active-count">0</span>
+            </h2>
+            <div class="history-controls">
+                <button type="button" id="btn-clear-history" class="btn btn--secondary btn--small">🗑 Clear</button>
+            </div>
+        </div>
+        <div id="jobs-list" class="jobs-list">
+            <div class="empty-state" id="empty-state">
+                <h3 class="empty-state__heading" id="empty-state-text">No active batch jobs</h3>
+                <p class="empty-state__hint" id="empty-state-hint">Paste multiple URLs in the box above to begin bulk processing.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Deep-Dive Technical Content -->
+    <div class="prose">
+        <h2>How the Bulk Downloader Works</h2>
+        <p>
+            Downloading individual videos one by one is time-consuming when you are archiving video research, saving presentation references, or preparing offline media for long travel. Our <strong>Bulk YouTube Downloader</strong> allows you to paste a list of URLs and let the server process them systematically in the background.
+        </p>
+
+        <h3>1. Real-Time Client Validation &amp; Deduplication</h3>
+        <p>
+            As you type or paste links into the textarea, client-side debounced validation scans every line:
+        </p>
+        <ul>
+            <li>Validates the domain against YouTube's official hostnames (<code>youtube.com</code>, <code>youtu.be</code>, <code>m.youtube.com</code>).</li>
+            <li>Normalizes query parameters, stripping tracking parameters like <code>si=...</code> and feature tags.</li>
+            <li>Detects duplicates within your input list and marks them so they aren't downloaded twice.</li>
+            <li>Summarizes the result in real time: <code>15 valid · 0 invalid · 2 duplicates</code>.</li>
+        </ul>
+
+        <h3>2. Architecture of the 3-Worker Thread Pool</h3>
+        <p>
+            To deliver rapid downloads without overloading system memory or triggering rate limits from YouTube, our Python backend runs an asynchronous worker pool:
+        </p>
+        <p>
+            When a batch is submitted, the backend creates a unique <code>batch_id</code> and records each valid job with state <code>QUEUED</code> in our SQLite database. Three dedicated worker threads continuously poll the queue for jobs in <code>QUEUED</code> status.
+        </p>
+        <p>
+            Because 3 downloads run in parallel:
+        </p>
+        <ol>
+            <li><strong>Worker 1</strong> starts downloading Video 1.</li>
+            <li><strong>Worker 2</strong> starts downloading Video 2.</li>
+            <li><strong>Worker 3</strong> starts downloading Video 3.</li>
+            <li>As soon as Worker 1 finishes multiplexing its file with FFmpeg and sets status to <code>COMPLETED</code>, it immediately claims Video 4 from the queue.</li>
+        </ol>
+
+        <h2>System Limits &amp; Specifications Table</h2>
+        <p>
+            Here is a complete breakdown of operational boundaries configured for safety and performance:
+        </p>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Default Limit</th>
+                        <th>Purpose &amp; Rationale</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="highlight-col">Max Batch Size</td>
+                        <td>20 URLs</td>
+                        <td>Prevents browser payload exhaustion and protects worker queues.</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Concurrent Workers</td>
+                        <td>3 Threads</td>
+                        <td>Optimal CPU/bandwidth balance for simultaneous FFmpeg transcode jobs.</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Max Queue Depth</td>
+                        <td>50 Jobs</td>
+                        <td>Protects local storage from unbounded disk space consumption.</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Job Timeout</td>
+                        <td>30 Minutes (1,800s)</td>
+                        <td>Terminates hung processes or infinite live-stream captures.</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">File Retention</td>
+                        <td>24 Hours</td>
+                        <td>Automatic cleanup deletes finished media to free up disk space.</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Max Retry Attempts</td>
+                        <td>3 Retries</td>
+                        <td>Allows transient network hiccups to recover with exponential backoff.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Best Practices for Bulk Downloading</h2>
+        <ul>
+            <li><strong>Use 720p for Rapid Archiving:</strong> If you are downloading 20 long lectures, selecting 720p instead of Best/4K can reduce your total download size by over 70% and cut download time by 3x.</li>
+            <li><strong>Switch to Audio Only:</strong> If you only need the audio commentary or podcast track, choose <strong>Audio (MP3)</strong> to save substantial disk space.</li>
+            <li><strong>Download Files As They Complete:</strong> You do not need to wait for the entire batch of 20 to complete before downloading. Finished cards display a green <strong>📥 Download File</strong> button immediately.</li>
+        </ul>
+    </div>
+</article>
+{% endblock %}

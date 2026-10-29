@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}HTML Site Map – All Tools, Formats & Guides | YT Downloader{% endblock %}
+{% block meta_description %}Complete HTML sitemap directory of YT Downloader. Easily find every download tool, audio converter, format specification, technical guide, and policy page.{% endblock %}
+
+{% block content %}
+<div class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="{{ url_for('index') }}">Home</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span class="breadcrumbs__current">Site Map</span>
+</div>
+
+<article class="content-article">
+    <header class="content-article__hero content-article__hero--center">
+        <span class="content-badge">🗺️ Site Index</span>
+        <h1 class="content-title">Complete HTML Site Map</h1>
+        <p class="content-subtitle" style="margin:0 auto; max-width:680px;">
+            A unified directory of all pages, tools, format converters, developer tutorials, and trust documentation available on YT Downloader.
+        </p>
+    </header>
+
+    <div class="grid-2" style="margin:var(--space-8) 0; gap:var(--space-6);">
+        <!-- Core Tools -->
+        <div class="card" style="padding:var(--space-6);">
+            <h2 style="font-size:1.25rem; font-family:'Outfit',sans-serif; margin-top:0; color:var(--text-primary);">
+                ⚡ Core Media Downloader Tools
+            </h2>
+            <ul style="line-height:2; color:var(--text-secondary); padding-left:1.2rem;">
+                <li><a href="{{ url_for('index') }}" style="color:var(--accent-secondary); font-weight:600;">Free YouTube Downloader (Overview)</a> &ndash; Ad-free overview tool</li>
+                <li><a href="{{ url_for('youtube_to_mp3') }}">YouTube to MP3 Converter</a> &ndash; 320kbps MP3 audio extractor with ID3 tags</li>
+                <li><a href="{{ url_for('youtube_video_downloader') }}">YouTube Video Downloader</a> &ndash; 1080p, 4K UHD, and 720p MP4 downloader</li>
+                <li><a href="{{ url_for('bulk_youtube_to_mp3') }}">Bulk YouTube to MP3</a> &ndash; Batch audio queue for up to 20 URLs with ZIP export</li>
+                <li><a href="{{ url_for('bulk_youtube_video_downloader') }}">Bulk YouTube Video Downloader</a> &ndash; Batch video downloader with progress table</li>
+                <li><a href="{{ url_for('youtube_playlist_downloader') }}">YouTube Playlist Downloader</a> &ndash; Complete playlist archiver for up to 50 items</li>
+                <li><a href="{{ url_for('youtube_video_info') }}">YouTube Video Info &amp; Codecs</a> &ndash; Metadata, tag, and codec checker</li>
+            </ul>
+        </div>
+
+        <!-- Format Pages -->
+        <div class="card" style="padding:var(--space-6);">
+            <h2 style="font-size:1.25rem; font-family:'Outfit',sans-serif; margin-top:0; color:var(--text-primary);">
+                🎞️ Dedicated Format Converters
+            </h2>
+            <ul style="line-height:2; color:var(--text-secondary); padding-left:1.2rem;">
+                <li><a href="{{ url_for('youtube_to_mp4') }}">YouTube to MP4</a> &ndash; Universal H.264 &amp; AAC container</li>
+                <li><a href="{{ url_for('youtube_to_wav') }}">YouTube to WAV</a> &ndash; 16-bit uncompressed PCM for video editors and DAWs</li>
+                <li><a href="{{ url_for('youtube_to_m4a') }}">YouTube to M4A</a> &ndash; Zero-transcoding native AAC for iPhone and Mac</li>
+                <li><a href="{{ url_for('youtube_to_flac') }}">YouTube to FLAC</a> &ndash; Lossless Huffman audio compression</li>
+                <li><a href="{{ url_for('youtube_4k_downloader') }}">YouTube 4K Downloader</a> &ndash; 2160p UHD 60fps with DASH audio merging</li>
+            </ul>
+        </div>
+
+        <!-- Differentiator & Tech Pages -->
+        <div class="card" style="padding:var(--space-6);">
+            <h2 style="font-size:1.25rem; font-family:'Outfit',sans-serif; margin-top:0; color:var(--text-primary);">
+                🛡️ Differentiators &amp; Engineering
+            </h2>
+            <ul style="line-height:2; color:var(--text-secondary); padding-left:1.2rem;">
+                <li><a href="{{ url_for('ad_free_youtube_downloader') }}">Ad-Free Downloader</a> &ndash; Why our tool has zero advertisements or trackers</li>
+                <li><a href="{{ url_for('safe_youtube_downloader') }}">Is YouTube Downloader Safe?</a> &ndash; Checklist to avoid fake download buttons</li>
+                <li><a href="{{ url_for('self_hosted_youtube_downloader') }}">Self-Host Guide</a> &ndash; Run locally using Docker and Python</li>
+                <li><a href="{{ url_for('yt_dlp_web_ui') }}">yt-dlp Web UI</a> &ndash; Architecture of our Flask browser GUI</li>
+                <li><a href="{{ url_for('supported_sites') }}">Supported Sites</a> &ndash; Verified platforms (YouTube, Vimeo, SoundCloud, Bandcamp)</li>
+                <li><a href="{{ url_for('how_it_works') }}">How It Works</a> &ndash; Pipeline breakdown: yt-dlp fetch, FFmpeg merge, 24h purge</li>
+                <li><a href="{{ url_for('changelog') }}">Project Changelog</a> &ndash; Release history and engine updates</li>
+            </ul>
+        </div>
+
+        <!-- Trust & Legal Documentation -->
+        <div class="card" style="padding:var(--space-6);">
+            <h2 style="font-size:1.25rem; font-family:'Outfit',sans-serif; margin-top:0; color:var(--text-primary);">
+                📜 Trust &amp; Legal Policies
+            </h2>
+            <ul style="line-height:2; color:var(--text-secondary); padding-left:1.2rem;">
+                <li><a href="{{ url_for('about') }}">About the Project</a> &ndash; Mission, engineering principles, and team</li>
+                <li><a href="{{ url_for('faq') }}">Frequently Asked Questions</a> &ndash; Detailed technical and usage FAQ</li>
+                <li><a href="{{ url_for('fair_use') }}">Fair Use &amp; Archival Policy</a> &ndash; Responsible digital archiving guidelines</li>
+                <li><a href="{{ url_for('contact') }}">Contact &amp; Support</a> &ndash; Issue reporting and feedback</li>
+                <li><a href="{{ url_for('privacy') }}">Privacy Policy</a> &ndash; No tracking, no cookies, 24h automatic purge</li>
+                <li><a href="{{ url_for('terms') }}">Terms of Service</a> &ndash; Acceptable use guidelines</li>
+                <li><a href="{{ url_for('dmca') }}">DMCA Takedown Policy</a> &ndash; Copyright notices and designated agent contact</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Guides Section -->
+    <section class="card" style="padding:var(--space-6); margin-bottom:var(--space-8);">
+        <h2 style="font-size:1.25rem; font-family:'Outfit',sans-serif; margin-top:0; color:var(--text-primary);">
+            📚 In-Depth Guides &amp; Tutorials
+        </h2>
+        <p style="color:var(--text-secondary); margin-bottom:var(--space-4);">
+            Explore our complete engineering blog and technical walkthroughs (<a href="{{ url_for('blog_index') }}" style="color:var(--accent-secondary); font-weight:600;">Browse All Blog Articles &rarr;</a>):
+        </p>
+        <ul style="line-height:2; color:var(--text-secondary); padding-left:1.2rem;">
+            <li><a href="{{ url_for('blog_post', slug='what-is-yt-dlp') }}">What Is yt-dlp? A Beginner's Complete Guide</a></li>
+            <li><a href="{{ url_for('blog_post', slug='install-ffmpeg-windows-mac-linux') }}">How to Install FFmpeg on Windows, Mac &amp; Linux</a></li>
+            <li><a href="{{ url_for('blog_post', slug='best-video-quality-for-downloads') }}">4K vs 1080p vs 720p: Best Video Quality for Downloads</a></li>
+            <li><a href="{{ url_for('blog_post', slug='mp3-vs-m4a-vs-opus') }}">MP3 vs. M4A vs. Opus: Which YouTube Audio Format Sounds Best?</a></li>
+            <li><a href="{{ url_for('blog_post', slug='download-youtube-playlist-step-by-step') }}">How to Download a YouTube Playlist Step-by-Step</a></li>
+            <li><a href="{{ url_for('blog_post', slug='yt-dlp-common-errors-and-fixes') }}">Common yt-dlp Errors &amp; Fixes</a></li>
+            <li><a href="{{ url_for('blog_post', slug='is-it-legal-to-download-youtube-videos') }}">Is It Legal to Download YouTube Videos? A Balanced Overview</a></li>
+            <li><a href="{{ url_for('blog_post', slug='self-host-flask-yt-dlp-tutorial') }}">How to Self-Host Your Own Web Downloader with Flask &amp; yt-dlp</a></li>
+            <li><a href="{{ url_for('blog_post', slug='ssrf-protection-in-flask-apps') }}">SSRF Protection in Web Apps: Securing URL Fetchers</a></li>
+            <li><a href="{{ url_for('blog_post', slug='downloading-for-offline-travel-study') }}">Downloading Media for Offline Travel &amp; Study</a></li>
+        </ul>
+    </section>
+</article>
+{% endblock %}

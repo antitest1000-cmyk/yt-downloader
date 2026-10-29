@@ -1,0 +1,158 @@
+[build]
+  publish = "docs"
+
+# Pretty URL mappings for static pages
+[[redirects]]
+  from = "/youtube-to-mp3"
+  to = "/youtube_to_mp3.html"
+  status = 200
+
+[[redirects]]
+  from = "/youtube-video-downloader"
+  to = "/youtube_video_downloader.html"
+  status = 200
+
+[[redirects]]
+  from = "/bulk-youtube-to-mp3"
+  to = "/bulk_youtube_to_mp3.html"
+  status = 200
+
+[[redirects]]
+  from = "/bulk-youtube-video-downloader"
+  to = "/bulk_youtube_video_downloader.html"
+  status = 200
+
+[[redirects]]
+  from = "/youtube-playlist-downloader"
+  to = "/youtube_playlist_downloader.html"
+  status = 200
+
+[[redirects]]
+  from = "/youtube-video-info"
+  to = "/youtube_video_info.html"
+  status = 200
+
+[[redirects]]
+  from = "/youtube-to-mp4"
+  to = "/format_mp4.html"
+  status = 200
+
+[[redirects]]
+  from = "/youtube-to-wav"
+  to = "/format_wav.html"
+  status = 200
+
+[[redirects]]
+  from = "/youtube-to-m4a"
+  to = "/format_m4a.html"
+  status = 200
+
+[[redirects]]
+  from = "/youtube-to-flac"
+  to = "/format_flac.html"
+  status = 200
+
+[[redirects]]
+  from = "/youtube-4k-downloader"
+  to = "/format_4k.html"
+  status = 200
+
+[[redirects]]
+  from = "/ad-free-youtube-downloader"
+  to = "/ad_free.html"
+  status = 200
+
+[[redirects]]
+  from = "/safe-youtube-downloader"
+  to = "/safe_downloader.html"
+  status = 200
+
+[[redirects]]
+  from = "/self-hosted-youtube-downloader"
+  to = "/self_hosted_youtube_downloader.html"
+  status = 200
+
+[[redirects]]
+  from = "/yt-dlp-web-ui"
+  to = "/ytdlp_web_ui.html"
+  status = 200
+
+[[redirects]]
+  from = "/supported-sites"
+  to = "/supported_sites.html"
+  status = 200
+
+[[redirects]]
+  from = "/how-it-works"
+  to = "/how_it_works.html"
+  status = 200
+
+[[redirects]]
+  from = "/faq"
+  to = "/faq.html"
+  status = 200
+
+[[redirects]]
+  from = "/about"
+  to = "/about.html"
+  status = 200
+
+[[redirects]]
+  from = "/contact"
+  to = "/contact.html"
+  status = 200
+
+[[redirects]]
+  from = "/privacy"
+  to = "/privacy.html"
+  status = 200
+
+[[redirects]]
+  from = "/terms"
+  to = "/terms.html"
+  status = 200
+
+[[redirects]]
+  from = "/dmca"
+  to = "/dmca.html"
+  status = 200
+
+[[redirects]]
+  from = "/fair-use"
+  to = "/fair_use.html"
+  status = 200
+
+[[redirects]]
+  from = "/changelog"
+  to = "/changelog.html"
+  status = 200
+
+[[redirects]]
+  from = "/site-map.html"
+  to = "/site_map.html"
+  status = 200
+
+[[redirects]]
+  from = "/blog"
+  to = "/blog.html"
+  status = 200
+
+# Blog slug redirect
+[[redirects]]
+  from = "/blog/:slug"
+  to = "/blog/:slug.html"
+  status = 200
+
+# Proxy /api requests to Render backend
+[[redirects]]
+  from = "/api/*"
+  to = "https://yt-downloader-backend-n68l.onrender.com/api/:splat"
+  status = 200
+  force = true
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

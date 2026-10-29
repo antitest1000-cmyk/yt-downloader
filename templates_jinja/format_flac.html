@@ -1,0 +1,293 @@
+{% extends "base.html" %}
+
+{% block title %}YouTube to FLAC Converter – Lossless Audio Compression (yt-dlp){% endblock %}
+{% block meta_description %}Convert YouTube videos to FLAC lossless audio. Learn the acoustic limits of YouTube audio streams, stop generational transcoding loss, and download ad-free.{% endblock %}
+
+{% block json_ld %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "YouTube to FLAC Converter",
+      "url": "https://yt-downlooader.netlify.app/youtube-to-flac",
+      "description": "Convert YouTube audio tracks to Free Lossless Audio Codec (FLAC) with metadata preservation.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://yt-downlooader.netlify.app/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "YouTube to FLAC",
+          "item": "https://yt-downlooader.netlify.app/youtube-to-flac"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does converting YouTube to FLAC produce true studio-master audio?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. YouTube compresses all uploaded audio to ~160 kbps Opus or 128 kbps AAC. Converting to FLAC compresses the audio losslessly from that point forward, preventing additional degradation, but it cannot recreate high frequencies discarded during YouTube's initial upload compression."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why use FLAC instead of MP3?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "FLAC uses lossless Huffman coding rather than psychoacoustic lossy discard. For archivists and editors who plan to re-edit or process the sound, FLAC prevents generational compression artifacts."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="{{ url_for('index') }}">Home</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span class="breadcrumbs__current">YouTube to FLAC</span>
+</div>
+
+<article class="content-article">
+    <header class="content-article__hero content-article__hero--center">
+        <span class="content-badge">🎼 Lossless Compression</span>
+        <h1 class="content-title">Convert YouTube Videos to FLAC Audio</h1>
+        <p class="content-subtitle" style="margin:0 auto; max-width:680px;">
+            Extract audio tracks into <strong>Free Lossless Audio Codec (FLAC)</strong> format. Stop generational compression loss for music archiving and podcast editing.
+        </p>
+    </header>
+
+    <div class="trust-strip">
+        <span class="trust-item"><span class="trust-item__icon">🎼</span> <strong>Lossless Coding</strong> Bit-Perfect FLAC</span>
+        <span class="trust-item"><span class="trust-item__icon">🛡️</span> <strong>No Generational Loss</strong> Zero Extra Discard</span>
+        <span class="trust-item"><span class="trust-item__icon">🚫</span> <strong>No Ads</strong> Zero Popups</span>
+        <span class="trust-item"><span class="trust-item__icon">🔒</span> <strong>24h Auto-Purge</strong> Private Cache</span>
+    </div>
+
+    <div class="usage-notice">
+        <span class="usage-notice__icon">⚖️</span>
+        <div>
+            <strong>Archival Notice:</strong> Only convert audio you have permission to download, such as educational materials, creative commons compositions, or your own video backups.
+        </div>
+    </div>
+
+    <!-- Quick Tool Card for FLAC -->
+    <div class="card" style="margin-bottom:var(--space-10);">
+        <h2 style="font-size:1.25rem; font-family:'Outfit',sans-serif; margin-top:0; margin-bottom:var(--space-3); color:var(--text-primary);">
+            🎼 Convert Audio to FLAC
+        </h2>
+        <div class="form-group">
+            <label for="url-input" class="form-label">YouTube Video URL</label>
+            <div class="input-row">
+                <div class="input-field-wrap">
+                    <span class="input-field-icon" aria-hidden="true">🎵</span>
+                    <input type="url" id="url-input" class="form-input form-input--has-actions"
+                           placeholder="https://www.youtube.com/watch?v=..." autocomplete="off">
+                    <button type="button" id="btn-paste-url" class="btn-input-action" title="Paste link from clipboard">
+                        <span>📋</span> Paste
+                    </button>
+                </div>
+                <button type="button" id="btn-fetch-meta" class="btn btn--fetch" title="Inspect video details">
+                    <span>✨</span> Inspect
+                </button>
+            </div>
+            <div id="url-feedback" class="form-feedback" role="alert" aria-live="polite"></div>
+        </div>
+
+        <div id="meta-preview" class="meta-preview hidden" aria-live="polite">
+            <div class="meta-preview__thumb" id="meta-thumb"></div>
+            <div class="meta-preview__info">
+                <span class="meta-preview__title" id="meta-title"></span>
+                <span class="meta-preview__detail" id="meta-detail"></span>
+            </div>
+        </div>
+
+        <input type="hidden" id="quality-select" value="audio_best">
+        <div class="options-row" style="margin-top:var(--space-4);">
+            <div class="form-group form-group--half">
+                <label for="audio-format-select" class="form-label">Audio Quality Profile</label>
+                <select id="audio-format-select" class="form-select">
+                    <option value="audio_best" selected>🎼 FLAC / Lossless Source (Highest Fidelity)</option>
+                    <option value="audio_mp3">🎧 MP3 Audio (Universal 320kbps)</option>
+                </select>
+            </div>
+            <div class="form-group form-group--half" style="display:flex; align-items:flex-end;">
+                <button type="button" id="btn-download" class="btn btn--primary btn--full">
+                    <span class="btn__text">Convert to FLAC</span>
+                    <span class="btn__spinner hidden" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <section class="section" id="jobs-section" style="margin-bottom:var(--space-10);">
+        <div class="history-header">
+            <h2 class="section__title" id="jobs-heading">
+                <span class="section__icon" aria-hidden="true">⬇</span>
+                Download Queue
+                <span class="badge" id="active-count">0</span>
+            </h2>
+            <div class="history-controls">
+                <button type="button" id="btn-clear-history" class="btn btn--secondary btn--small">🗑 Clear</button>
+            </div>
+        </div>
+        <div id="jobs-list" class="jobs-list">
+            <div class="empty-state" id="empty-state">
+                <h3 class="empty-state__heading" id="empty-state-text">No active FLAC conversions</h3>
+                <p class="empty-state__hint" id="empty-state-hint">Paste a link above and click <strong>Convert to FLAC</strong>.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="prose">
+        <div class="aeo-box">
+            <div class="aeo-box__header">⚡ Quick Answer / Key Takeaway</div>
+            <p class="aeo-box__content">
+                <strong>Why convert YouTube to FLAC?</strong> While YouTube audio is capped at ~160kbps Opus or ~128kbps AAC, converting to FLAC encapsulates the stream using lossless Linear Predictive Coding (LPC). This freezes audio degradation, ensuring zero secondary lossy artifacts during audio archiving or sound design work.
+            </p>
+            <ul class="aeo-box__list">
+                <li><strong>Lossless Archiving:</strong> Compresses file size ~50% compared to WAV with zero acoustic loss.</li>
+                <li><strong>No MP3 Smearing:</strong> Free of lossy psychoacoustic phase distortion.</li>
+                <li><strong>Audiophile &amp; Sound Design:</strong> Ideal intermediate format for remixing and sound libraries.</li>
+            </ul>
+        </div>
+
+        <h2>The Technical Limits of FLAC Audio on YouTube</h2>
+        <p>
+            FLAC (Free Lossless Audio Codec) is the gold standard format for preserving studio-master audio without discarding acoustic information. However, when converting internet video streams, it is crucial to recognize <strong>the source cap limit</strong>:
+        </p>
+        <p>
+            YouTube does not store uncompressed audio. Regardless of how pristine the creator's original file was, YouTube compresses all audio to <strong>~160 kbps Opus</strong> or <strong>128 kbps AAC</strong> upon upload.
+        </p>
+        <p>
+            Converting a 160 kbps Opus stream to FLAC cannot restore acoustic frequencies that YouTube discarded. What FLAC does achieve is <strong>perfect preservation of the remaining audio stream</strong>:
+        </p>
+        <ul>
+            <li><strong>No Secondary Psychoacoustic Compression:</strong> MP3 and AAC discard high-frequency data during encoding. FLAC compresses file size using variable-length linear predictive coding, meaning every bit decoded from the stream is 100% mathematically identical to what YouTube broadcast.</li>
+            <li><strong>Audio Archiving:</strong> If you collect audio stems for remixing, video editing, or analysis in sound software, FLAC guarantees your archive won't deteriorate with subsequent saves.</li>
+        </ul>
+
+        <div class="table-wrap">
+            <table class="format-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>FLAC</th>
+                        <th>WAV</th>
+                        <th>MP3 (320k)</th>
+                        <th>M4A (AAC)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="highlight-col">Algorithm</td>
+                        <td>Lossless (LPC)</td>
+                        <td>Uncompressed PCM</td>
+                        <td>Lossy (MDCT)</td>
+                        <td>Lossy (AAC)</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Acoustic Preservation</td>
+                        <td>100% bit-exact</td>
+                        <td>100% bit-exact</td>
+                        <td>Approximated psychoacoustic</td>
+                        <td>Native stream copy</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Average Size (4 min)</td>
+                        <td>~22 MB</td>
+                        <td>~42 MB</td>
+                        <td>~9.2 MB</td>
+                        <td>~3.8 MB</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">Tagging Support</td>
+                        <td>Vorbis comment (rich)</td>
+                        <td>Limited RIFF chunks</td>
+                        <td>ID3v2 tags</td>
+                        <td>MPEG-4 atoms</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Step-by-Step: Converting to FLAC</h2>
+        <div class="step-cards">
+            <div class="step-card">
+                <div class="step-card__number">1</div>
+                <div class="step-card__title">Copy &amp; Paste</div>
+                <p class="step-card__text">Paste any public YouTube link in the URL box above and verify metadata with one click.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">2</div>
+                <div class="step-card__title">Lossless Transcode</div>
+                <p class="step-card__text">FFmpeg extracts the best audio stream and packages it into a lossless 16-bit FLAC container.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">3</div>
+                <div class="step-card__title">Local Archiving</div>
+                <p class="step-card__text">Save the resulting .flac file directly to your drive. Ready for foobar2000, VLC, or audio editing software.</p>
+            </div>
+        </div>
+
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-list">
+            <div class="faq-item">
+                <h3 class="faq-question">Will FLAC files play in Apple Music or iTunes?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Apple devices natively support Apple Lossless (ALAC) and AAC (M4A) rather than FLAC. To play FLAC on macOS or iOS, use VLC Media Player or choose our <a href="{{ url_for('youtube_to_m4a') }}" style="color:var(--accent-secondary);">YouTube to M4A Converter</a> for native Apple compatibility.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">How does FLAC compare in file size to WAV?</h3>
+                <div class="faq-answer">
+                    <p>
+                        FLAC is typically 40% to 50% smaller than an uncompressed WAV file of the same audio while preserving identical sound quality.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Can I tag FLAC files with album covers and artist metadata?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Yes. FLAC uses Vorbis comments which fully support high-resolution embedded album art, artist credits, genre, and custom tagging without risk of audio corruption.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Does YT Downloader charge any subscription for FLAC downloads?</h3>
+                <div class="faq-answer">
+                    <p>
+                        No. All formats on YT Downloader are 100% free and open-source without ads, premium paywalls, or daily download quotas.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>
+{% endblock %}
