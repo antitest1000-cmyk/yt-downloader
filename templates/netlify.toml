@@ -1,5 +1,5 @@
 [build]
-  publish = "docs"
+  publish = "."
 
 # Pretty URL mappings for static pages
 [[redirects]]

@@ -219,9 +219,17 @@ def build():
     with open(os.path.join(templates_dir, '_redirects'), 'w', encoding='utf-8') as f:
         f.write(redirects_content)
         
-    shutil.copyfile(os.path.join(root_dir, 'netlify.toml'), os.path.join(templates_dir, 'netlify.toml'))
+    with open(os.path.join(templates_dir, 'netlify.toml'), 'w', encoding='utf-8') as f:
+        with open(os.path.join(root_dir, 'netlify.toml'), 'r', encoding='utf-8') as rf:
+            f.write(rf.read().replace('publish = "templates"', 'publish = "."'))
     with open(os.path.join(templates_dir, '.nojekyll'), 'w', encoding='utf-8') as f:
         f.write('')
+        
+    # Also mirror docs into templates/docs
+    templates_docs = os.path.join(templates_dir, 'docs')
+    if os.path.exists(templates_docs):
+        shutil.rmtree(templates_docs)
+    shutil.copytree(docs_dir, templates_docs)
 
     print("SUCCESS: templates/ folder is now fully self-contained with all CSS, JS, assets, and compiled HTML ready for instant Netlify push!")
 

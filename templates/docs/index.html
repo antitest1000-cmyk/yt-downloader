@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="google-site-verification" content="GAFtxEepvYnQvF145-T8hoBJyJY-FzdSeld5MOmTUk0">
+    <title>Free YouTube Downloader Without Ads – Private & Fast (yt-dlp)</title>
+    <meta name="description" content="Free YouTube downloader without ads, popups, or signups. Download YouTube videos and audio up to 4K, 1080p, or 320kbps MP3 powered by open-source yt-dlp and FFmpeg.">
+    
+    <link rel="canonical" href="https://yt-downlooader.netlify.app/">
+    
+    
+    <!-- OpenGraph / Social -->
+    <meta property="og:site_name" content="YT Downloader">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Free YouTube Downloader Without Ads – Private & Fast (yt-dlp)">
+    <meta property="og:description" content="Free YouTube downloader without ads, popups, or signups. Download YouTube videos and audio up to 4K, 1080p, or 320kbps MP3 powered by open-source yt-dlp and FFmpeg.">
+    <meta property="og:url" content="https://yt-downlooader.netlify.app/">
+    <meta property="og:image" content="https://yt-downlooader.netlify.app/static/favicon.svg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Free YouTube Downloader Without Ads – Private & Fast (yt-dlp)">
+    <meta name="twitter:description" content="Free YouTube downloader without ads, popups, or signups. Download YouTube videos and audio up to 4K, 1080p, or 320kbps MP3 powered by open-source yt-dlp and FFmpeg.">
+    <meta name="twitter:image" content="https://yt-downlooader.netlify.app/static/favicon.svg">
+
+    <!-- GEO & AEO Search Engine Direct Answer Signals -->
+    <meta name="geo.region" content="US">
+    <meta name="geo.placename" content="Global">
+    <meta name="distribution" content="Global">
+    <meta name="coverage" content="Worldwide">
+    <meta name="rating" content="General">
+    <link rel="alternate" hreflang="x-default" href="https://yt-downlooader.netlify.app/">
+    <link rel="alternate" hreflang="en" href="https://yt-downlooader.netlify.app/">
+    <link rel="icon" type="image/svg+xml" href="./static/favicon.svg">
+    <link rel="apple-touch-icon" href="./static/favicon.svg">
+
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Design System Stylesheets -->
+    <link rel="stylesheet" href="./static/css/style.css">
+    <link rel="stylesheet" href="./static/css/content.css">
+
+    <!-- Structured Data (JSON-LD) -->
+    
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "YT Downloader",
+      "url": "https://yt-downlooader.netlify.app/",
+      "description": "Ad-free, privacy-first YouTube video and audio downloader powered by yt-dlp and FFmpeg.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "name": "YT Downloader",
+      "url": "https://yt-downlooader.netlify.app/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://yt-downlooader.netlify.app/youtube-video-info?url={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is this YouTube downloader completely free and ad-free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. YT Downloader has zero advertisements, zero pop-up redirects, and zero third-party tracking scripts. It runs on open-source yt-dlp and FFmpeg software."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need to register or create an account to download videos?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No sign-up or registration is required. You can paste any publicly accessible URL and download media directly without providing an email address or password."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How long are converted video and audio files stored on the server?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Files are held in transient temporary storage only and are automatically and permanently purged from server disks after 24 hours."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What video and audio formats and qualities are supported?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We support MP4, MKV, and WebM video formats from 360p up to 1080p Full HD, 4K UHD, and 8K. For audio, we support universal MP3 (up to 320 kbps), native source M4A (AAC), WAV, and FLAC."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I self-host this application on my own computer or server?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The entire code base is self-hostable using Docker or Python. When self-hosted, all media traffic streams directly between YouTube and your machine."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+    <script>
+        (function() {
+            var savedTheme = localStorage.getItem('ytdl_theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+</head>
+<body class="theme-light">
+    <!-- Aurora Mesh Background Canvas -->
+    <canvas id="aurora-canvas" aria-hidden="true"></canvas>
+    <!-- Header & Navigation -->
+    <header class="header" role="banner">
+        <div class="header__inner">
+            <div class="header__brand">
+                <a href="./" class="header__brand-link" aria-label="YT Downloader Home">
+                    <span class="brand-logo-text"><span class="brand-logo-badge" style="margin-left:0; margin-right:4px;">YT</span> Downloader</span>
+                </a>
+            </div>
+
+            <!-- Global Nav Links (Desktop) -->
+            <nav class="nav-links" id="main-nav" aria-label="Main Navigation">
+                <a href="./youtube-video-downloader.html" class="nav-link ">Video</a>
+                <a href="./youtube-to-mp3.html" class="nav-link ">MP3 Audio</a>
+                <a href="./youtube-4k-downloader.html" class="nav-link ">4K UHD</a>
+                <a href="./bulk-youtube-to-mp3.html" class="nav-link ">Bulk Audio</a>
+                <a href="./bulk-youtube-video-downloader.html" class="nav-link ">Bulk Video</a>
+                <a href="./blog.html" class="nav-link ">Guides</a>
+                <a href="./self-hosted-youtube-downloader.html" class="nav-link nav-link--highlight ">💻 Self-Host</a>
+            </nav>
+
+            <div class="header__actions">
+                <button type="button" class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Toggle dark/light mode" title="Toggle Dark/Light Mode">
+                    <span id="theme-toggle-icon">🌙</span>
+                </button>
+                <div class="header__status" id="health-status" title="System Status">
+                    <span class="status-dot" id="status-dot"></span>
+                    <span class="status-text" id="status-text">Checking...</span>
+                </div>
+                <!-- Mobile Navigation Toggle Button -->
+                <button type="button" class="header__menu-btn" id="mobile-menu-btn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-nav-drawer">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Drawer -->
+        <nav class="mobile-nav-drawer" id="mobile-nav-drawer" aria-label="Mobile Navigation" hidden>
+            <div class="mobile-nav-links">
+                <a href="./" class="mobile-nav-link active">
+                    <span class="mobile-nav-icon">🏠</span>
+                    <span>Home Overview</span>
+                </a>
+                <a href="./youtube-to-mp3.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">🎵</span>
+                    <span>YouTube to MP3</span>
+                </a>
+                <a href="./youtube-video-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">🎬</span>
+                    <span>YouTube Video Downloader (4K/1080p)</span>
+                </a>
+                <a href="./bulk-youtube-to-mp3.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">⚡</span>
+                    <span>Bulk MP3 Downloader</span>
+                </a>
+                <a href="./bulk-youtube-video-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📦</span>
+                    <span>Bulk Video Downloader</span>
+                </a>
+                <a href="./youtube-playlist-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📋</span>
+                    <span>Playlist Downloader</span>
+                </a>
+                <a href="./blog.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📚</span>
+                    <span>Tech Guides &amp; Tutorials</span>
+                </a>
+                <a href="./self-hosted-youtube-downloader.html" class="mobile-nav-link mobile-nav-link--highlight ">
+                    <span class="mobile-nav-icon">💻</span>
+                    <span>Self-Host Guide (Docker/Python)</span>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main" role="main">
+        <div class="container">
+            
+<!-- SnapYT Centered Hero -->
+<div style="text-align:center; margin-bottom:var(--space-6);">
+    <div class="snap-badge">
+        <span class="snap-badge__dot">●</span> YouTube Video Downloader
+    </div>
+    <h1 class="snap-title">YouTube Video Downloader</h1>
+    <p class="snap-subtitle">
+        Paste a YouTube video or Shorts link, choose your preferred quality, and save the video or audio in seconds.
+    </p>
+</div>
+
+<!-- Main Download Panel (SnapYT Unified Search Card) -->
+<section class="panel active" id="panel-single" role="region" aria-label="Main Download Interface">
+    <div class="snap-search-card">
+        <div class="snap-input-bar">
+            <span class="snap-input-icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+            </span>
+            <input type="url" id="url-input" class="snap-input"
+                   placeholder="Paste a YouTube video or Shorts link"
+                   autocomplete="off" spellcheck="false"
+                   aria-label="YouTube video or Shorts link"
+                   aria-describedby="url-feedback">
+            <button type="button" id="btn-paste-url" class="btn-snap-paste" title="Paste link from clipboard" aria-label="Paste from clipboard">
+                <span class="btn-input-action__icon">📋</span>
+                <span>Paste</span>
+            </button>
+            <button type="button" id="btn-fetch-meta" class="btn-snap-paste" title="Inspect video details" aria-label="Fetch video info" style="display:none;">
+                <span class="fetch-icon" aria-hidden="true">✨</span>
+                <span class="fetch-text">Inspect</span>
+            </button>
+            <button type="button" id="btn-download" class="btn-snap-download" aria-label="Download video or audio">
+                <span class="btn__text">⬇ Download</span>
+                <span class="btn__spinner hidden" aria-hidden="true"></span>
+            </button>
+        </div>
+        <div id="url-feedback" class="form-feedback" role="alert" aria-live="polite"></div>
+
+        <!-- Format & Quality Preset Controls (Compact & Clean) -->
+        <div class="options-row" style="margin-top:var(--space-3); margin-bottom:var(--space-2); gap:var(--space-3);">
+            <div class="form-group form-group--half" style="margin-bottom:0;">
+                <label for="quality-select" class="form-label" style="font-size:0.8rem; margin-bottom:4px;">Format &amp; Quality Preset</label>
+                <select id="quality-select" class="form-select" style="padding:6px 10px; font-size:0.85rem;">
+                    <optgroup label="🎬 Video (Auto-Merged via FFmpeg)">
+                        <option value="best" selected>🎬 Best Quality Available (Up to 4K UHD)</option>
+                        <option value="1080p">📺 1080p Full HD (MP4)</option>
+                        <option value="720p">📱 720p HD (Balanced Speed)</option>
+                        <option value="480p">💾 480p SD (Small File Size)</option>
+                    </optgroup>
+                    <optgroup label="🎵 Audio Extraction">
+                        <option value="audio_mp3">🎧 MP3 Audio (Universal &bull; 320 kbps)</option>
+                        <option value="audio_best">🎵 M4A / WebM (Native Source &bull; Zero Loss)</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div class="form-group form-group--half" style="margin-bottom:0;">
+                <label for="audio-format-select" class="form-label" style="font-size:0.8rem; margin-bottom:4px;">Audio Container</label>
+                <select id="audio-format-select" class="form-select" style="padding:6px 10px; font-size:0.85rem;">
+                    <option value="audio_mp3" selected>MP3 (Universal Compatibility)</option>
+                    <option value="audio_best">M4A (High Fidelity AAC)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Hidden format selectors for script hooks -->
+        <div class="pill-group" style="display:none" role="radiogroup">
+            <button type="button" class="pill active" id="fmt-video" data-format="video">Video</button>
+            <button type="button" class="pill" id="fmt-audio" data-format="audio">Audio</button>
+        </div>
+
+        <!-- Metadata Preview Card -->
+        <div id="meta-preview" class="meta-preview hidden" aria-live="polite" style="margin-top:var(--space-3); margin-bottom:0;">
+            <div class="meta-preview__thumb" id="meta-thumb"></div>
+            <div class="meta-preview__info">
+                <span class="meta-preview__title" id="meta-title"></span>
+                <span class="meta-preview__detail" id="meta-detail"></span>
+            </div>
+        </div>
+
+        <!-- Playlist Options (auto-detected) -->
+        <div id="playlist-options" class="playlist-options hidden" style="margin-top:var(--space-3); margin-bottom:0;">
+            <div class="playlist-options__header">
+                <span class="playlist-options__badge">📋 Playlist Detected</span>
+                <span id="playlist-options-title" class="playlist-options__title"></span>
+            </div>
+            <div class="pill-group" role="radiogroup" aria-label="Playlist download mode">
+                <button type="button" class="pill active" id="mode-playlist"
+                        role="radio" aria-checked="true" data-mode="playlist">
+                    📋 Entire Playlist
+                </button>
+                <button type="button" class="pill" id="mode-single"
+                        role="radio" aria-checked="false" data-mode="video">
+                    🎬 This Video Only
+                </button>
+            </div>
+        </div>
+
+        <!-- Collapsible Batch Drawer (Ensures test compatibility and batch convenience) -->
+        <details class="advanced-expander" style="margin-top:var(--space-3); background:var(--bg-tertiary); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:var(--space-2) var(--space-3);">
+            <summary style="cursor:pointer; color:var(--text-secondary); font-size:0.82rem; font-weight:600;">
+                ⚡ Need to paste multiple links? Open Batch Queue (Up to 20 URLs)
+            </summary>
+            <div style="margin-top:var(--space-2);">
+                <label for="bulk-input" class="form-label" style="font-size:0.8rem;">Paste YouTube links (one per line):</label>
+                <textarea id="bulk-input" class="form-textarea" rows="3" placeholder="https://www.youtube.com/watch?v=...&#10;https://www.youtube.com/watch?v=..."></textarea>
+                <p style="font-size:11px; color:var(--text-muted); margin-top:4px;">
+                    Or navigate directly to the <a href="./bulk-youtube-to-mp3.html" style="color:#ff0033;">Dedicated Bulk MP3</a> or <a href="./bulk-youtube-video-downloader.html" style="color:#ff0033;">Bulk Video</a> tools.
+                </p>
+            </div>
+        </details>
+
+        <!-- Fair Use Confirmation -->
+        <div class="tos-agree-bar accepted" id="tos-bar-single" style="margin-top:var(--space-3); border:none; padding:0; background:transparent;">
+            <label class="tos-agree-label" for="tos-check-single" style="font-size:0.78rem; color:var(--text-muted); justify-content:center;">
+                <input type="checkbox" id="tos-check-single" class="tos-check" checked>
+                <span class="tos-agree-text">
+                    I confirm this media is for personal, educational, or fair-use archiving in compliance with the <a href="./terms.html" target="_blank" class="tos-link">Terms of Service</a>.
+                </span>
+            </label>
+        </div>
+
+        <!-- Snap Tip & Microcopy -->
+        <div class="snap-tip">
+            Tip: open the YouTube video, tap Share &rarr; Copy link, then paste it above.<br>
+            By using YT Downloader you agree to our <a href="./terms.html" target="_blank">Terms of Service</a> and <a href="./privacy.html" target="_blank">Privacy Policy</a>.<br>
+            Please respect copyright: only download videos you own or have permission to save. &#9432;
+        </div>
+    </div>
+</section>
+
+<!-- Job Queue & History Section (Immediately visible below input) -->
+<section class="section" id="jobs-section" aria-labelledby="jobs-heading" style="max-width:820px; margin:var(--space-4) auto var(--space-8);">
+    <div class="history-header">
+        <h2 class="section__title" id="jobs-heading">
+            <span class="section__icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+            </span>
+            Active Downloads &amp; History
+            <span class="badge" id="active-count" title="Active downloads">0</span>
+        </h2>
+        <div class="history-controls">
+            <div class="storage-toggle-wrap" title="Toggle saving downloaded video links in your browser storage">
+                <label class="toggle-switch" for="toggle-history-storage">
+                    <input type="checkbox" id="toggle-history-storage" aria-describedby="storage-info-text">
+                    <span class="toggle-switch__slider"></span>
+                </label>
+                <label for="toggle-history-storage" class="storage-toggle-label">
+                    <span class="storage-toggle-label-text">Save History</span>
+                    <span class="storage-toggle-badge" id="storage-status-badge">Off</span>
+                </label>
+            </div>
+            <button type="button" id="btn-clear-history" class="btn btn--secondary btn--small" title="Clear saved video history from browser storage">
+                <span aria-hidden="true">🗑</span> Clear
+            </button>
+        </div>
+    </div>
+
+    <!-- Browser Storage Privacy Info -->
+    <div class="history-storage-info" id="history-storage-info" role="note">
+        <span class="history-storage-info__icon" aria-hidden="true">🔒</span>
+        <p class="history-storage-info__text" id="storage-info-text">
+            <strong>Privacy First:</strong> Download history stays strictly in your browser's local memory. No search queries or files are tracked on any external server.
+        </p>
+    </div>
+
+    <div id="jobs-list" class="jobs-list" aria-live="polite">
+        <div class="empty-state" id="empty-state">
+            <div class="empty-state__icon-wrap">
+                <div class="empty-state__icon" aria-hidden="true">
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                </div>
+            </div>
+            <h3 class="empty-state__heading" id="empty-state-text">Ready to Download</h3>
+            <p class="empty-state__hint" id="empty-state-hint">Paste any YouTube URL above and click <strong>Start Download</strong> to begin processing.</p>
+            <div class="empty-state__features">
+                <span class="feature-tag"><span class="feature-tag__dot"></span>⚡ yt-dlp Engine</span>
+                <span class="feature-tag"><span class="feature-tag__dot"></span>🎬 Up to 4K UHD</span>
+                <span class="feature-tag"><span class="feature-tag__dot"></span>🎵 320k Audio</span>
+                <span class="feature-tag"><span class="feature-tag__dot"></span>📋 Batch Processing</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Easy-Access Tools Switcher Strip -->
+<div class="snap-tools-bar" role="navigation" aria-label="Download tools">
+    <a href="./youtube-video-downloader.html" class="snap-tool-btn active">🎬 Video (MP4 / 4K)</a>
+    <a href="./youtube-to-mp3.html" class="snap-tool-btn">🎵 MP3 Audio</a>
+    <a href="./youtube-4k-downloader.html" class="snap-tool-btn">👑 4K UHD</a>
+    <a href="./bulk-youtube-to-mp3.html" class="snap-tool-btn">⚡ Bulk Audio</a>
+    <a href="./bulk-youtube-video-downloader.html" class="snap-tool-btn">📦 Bulk Video</a>
+    <a href="./youtube-playlist-downloader.html" class="snap-tool-btn">📑 Playlists</a>
+    <a href="./youtube-video-info.html" class="snap-tool-btn">🔍 Inspect Info</a>
+</div>
+
+<!-- 4 Key Features Strip -->
+<div class="snap-features-strip" role="region" aria-label="Key features">
+    <span class="snap-feature-pill">⚡ Lightning-fast YouTube fetch</span>
+    <span class="snap-feature-pill">📺 Up to Full HD 1080p</span>
+    <span class="snap-feature-pill">🎵 Extract YouTube audio</span>
+    <span class="snap-feature-pill">🔒 No sign-up, no install</span>
+</div>
+
+<!-- 3-Step Numbered Guide Cards -->
+<div class="snap-steps-grid" role="region" aria-label="How it works">
+    <div class="snap-step-card">
+        <div class="snap-step-num">1</div>
+        <p class="snap-step-text">Copy the YouTube video or Shorts link.</p>
+    </div>
+    <div class="snap-step-card">
+        <div class="snap-step-num">2</div>
+        <p class="snap-step-text">Paste it into the box above and tap Download.</p>
+    </div>
+    <div class="snap-step-card">
+        <div class="snap-step-num">3</div>
+        <p class="snap-step-text">Pick a quality &mdash; video or audio &mdash; and save the file.</p>
+    </div>
+</div>
+
+<!-- YT Downloader Content Header & Anchor Nav Pills -->
+<div id="overview" style="text-align:center; max-width:860px; margin:var(--space-8) auto var(--space-4);">
+    <h2 class="snap-title" style="font-size:clamp(1.5rem, 3.5vw, 2.2rem);">Best YouTube Video Downloader — Save Videos &amp; Audio (When Available)</h2>
+    <p class="snap-subtitle" style="font-size:0.95rem; margin-top:8px; margin-bottom:var(--space-4);">
+        Paste a link or search by keyword/@handle/#hashtag. Playlists aren't supported—copy each video link to download one by one.
+    </p>
+    <p style="font-size:0.85rem; color:var(--text-secondary); max-width:720px; margin:0 auto var(--space-5); line-height:1.6;">
+        <strong>YT Downloader</strong> is a professional, compliance-first <strong>YouTube downloader online</strong>. Paste a link to download YouTube video or search YouTube by keyword, @handle or #hashtag to find a result. <em>Playlists are not supported—to save a playlist, open it on YouTube, copy the link of each video, and download them one by one.</em>
+    </p>
+</div>
+
+<!-- Quick Anchor Navigation Pills -->
+<div class="snap-nav-pills" role="navigation" aria-label="Jump to section">
+    <a href="#overview" class="snap-nav-pill">Overview</a>
+    <a href="#how-to" class="snap-nav-pill">How to</a>
+    <a href="#copy-link" class="snap-nav-pill">Copy Link</a>
+    <a href="#features" class="snap-nav-pill">Features</a>
+    <a href="#use-cases" class="snap-nav-pill">Use cases</a>
+    <a href="#devices" class="snap-nav-pill">Devices</a>
+    <a href="#limits" class="snap-nav-pill">Limits</a>
+    <a href="#pro-tips" class="snap-nav-pill">Pro tips</a>
+    <a href="#guide" class="snap-nav-pill">Guide</a>
+    <a href="#link-formats" class="snap-nav-pill">Link formats</a>
+    <a href="#troubleshooting" class="snap-nav-pill">Troubleshooting</a>
+    <a href="#faq" class="snap-nav-pill">FAQ</a>
+    <a href="#legal" class="snap-nav-pill">Legal</a>
+</div>
+
+<!-- Red-Bordered Callout Alert -->
+<div class="snap-callout" id="copy-link">
+    <p class="snap-callout-text">
+        ⚠️ <strong>Important:</strong> YT Downloader mirrors the source quality. If the original is SD, HD, 2K or 4K, you can save the same when it's available. We never upscale or add watermarks.
+    </p>
+    <div class="snap-callout-badges">
+        <span class="snap-callout-badge"><span class="snap-callout-badge__dot">●</span> Best in class UX</span>
+        <span class="snap-callout-badge"><span class="snap-callout-badge__dot">●</span> Playlists: copy each video link</span>
+        <span class="snap-callout-badge"><span class="snap-callout-badge__dot">●</span> No registration</span>
+        <span class="snap-callout-badge"><span class="snap-callout-badge__dot">●</span> Browser-based</span>
+    </div>
+</div>
+
+<!-- YT Downloader at a Glance Comparison Section -->
+<div id="use-cases" style="max-width:860px; margin:var(--space-6) auto var(--space-2);">
+    <h2 style="font-family:'Outfit',var(--font-primary); font-size:1.4rem; font-weight:700; color:var(--text-primary); border-left:4px solid #ff0033; padding-left:12px; margin-bottom:12px;">YT Downloader at a Glance</h2>
+    <p style="font-size:0.88rem; color:var(--text-secondary); line-height:1.6; margin-bottom:var(--space-4);">
+        <strong>YT Downloader</strong> aims to be the best <em>YouTube Video Downloader</em> for everyday tasks — fast, clear, and responsible. Paste a link to fetch available variants, or search by <strong>keyword</strong>, <strong>@handle</strong>, or <strong>#hashtag</strong>. <em>Playlists aren't supported; to save a list, copy each video's URL and download them individually (no playlist or bulk downloading). Works on modern desktop and mobile browsers.</em>
+    </p>
+</div>
+
+<div class="snap-glance-grid" id="devices">
+    <div class="snap-glance-card">
+        <h3 style="color:#d63031;">What you can save (when allowed)</h3>
+        <ul class="snap-glance-list">
+            <li>Videos (MP4/WEBM) in the available resolutions</li>
+            <li>Audio-only (MP3/M4A) when the provider exposes it</li>
+            <li>Shorts and long form videos that are public</li>
+            <li>No playlist downloads — copy each video link to save</li>
+        </ul>
+    </div>
+    <div class="snap-glance-card">
+        <h3 style="color:#ff0033;">Why choose YT Downloader</h3>
+        <ul class="snap-glance-list">
+            <li>Compliance-first, transparent limitations</li>
+            <li>Paste link or search; quick results</li>
+            <li>No signup &bull; Works on iPhone, Android, Windows &amp; macOS</li>
+            <li>We never watermark or modify media</li>
+        </ul>
+    </div>
+</div>
+
+<p id="limits" style="text-align:center; font-size:0.8rem; color:var(--text-muted); font-style:italic; max-width:760px; margin:0 auto var(--space-8);">
+    Availability depends on the source and your region. Some content is restricted by policy, license, or age/geo controls.
+</p>
+
+<!-- ========================================================================
+     Below-The-Fold Comprehensive SEO Content
+     ======================================================================== -->
+<hr style="border:none; border-top:1px solid rgba(255,255,255,0.07); margin:var(--space-12) 0 var(--space-8);">
+
+<article class="prose content-article" style="max-width:100%;">
+    <!-- 3 Step Workflow -->
+    <section id="how-to">
+        <h2>🚀 How to Download YouTube Videos in 3 Simple Steps</h2>
+        <p>
+            Traditional converter websites force you through deceptive pop-up ads and multi-step redirects. Our local-first interface makes archiving media straightforward and transparent:
+        </p>
+
+        <div class="step-cards">
+            <div class="step-card">
+                <div class="step-card__number">1</div>
+                <h3 class="step-card__title">Paste the Video URL</h3>
+                <p class="step-card__text">
+                    Copy the video, music, or playlist URL from YouTube and paste it into the search box above. Click <strong>Inspect</strong> to verify metadata, runtime, and author.
+                </p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">2</div>
+                <h3 class="step-card__title">Choose Format &amp; Resolution</h3>
+                <p class="step-card__text">
+                    Select your preferred output: crystal-clear video (4K, 1080p Full HD, 720p MP4) or audio tracks (320kbps MP3 or native lossless-source M4A).
+                </p>
+            </div>
+            <div class="step-card">
+                <div class="step-card__number">3</div>
+                <h3 class="step-card__title">Direct, Fast Download</h3>
+                <p class="step-card__text">
+                    Click <strong>Start Download</strong>. The backend processes the media via yt-dlp and FFmpeg, multiplexes the audio and video streams, and serves the completed file.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Ad-Free Matters -->
+    <section id="features">
+        <h2>🛡️ Why We Built an Ad-Free, Privacy-First Downloader</h2>
+        <p>
+            The media converter ecosystem is notoriously plagued by deceptive tactics. Most online converters depend on aggressive advertising networks that deliver popunders, fake virus warnings, push-notification spam, and cryptocurrency miners. Many even substitute the genuine download button with deceptive affiliate advertisements designed to install unwanted browser extensions or malware.
+        </p>
+        <p>
+            <strong>YT Downloader takes the opposite approach:</strong>
+        </p>
+        <div class="grid-2" style="margin:var(--space-6) 0;">
+            <div class="feature-card">
+                <div class="feature-card__icon">🚫</div>
+                <h3 class="feature-card__title">Zero Advertisements or Trackers</h3>
+                <p class="feature-card__desc">
+                    We do not load third-party ad scripts, tracking beacons, or analytics SDKs. Your queries and downloaded file names are never monetized or sold to third parties.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-card__icon">⏱️</div>
+                <h3 class="feature-card__title">Automatic 24-Hour File Purge</h3>
+                <p class="feature-card__desc">
+                    We maintain no long-term media archives. All completed video and audio files are held in transient cache and permanently purged by a background worker after 24 hours.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-card__icon">⚙️</div>
+                <h3 class="feature-card__title">Battle-Tested Open Engines</h3>
+                <p class="feature-card__desc">
+                    Rather than relying on proprietary, closed-source conversion software, we utilize <a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener noreferrer" style="color:var(--accent-secondary)">yt-dlp</a> and <a href="https://ffmpeg.org" target="_blank" rel="noopener noreferrer" style="color:var(--accent-secondary)">FFmpeg</a>—the same tools trusted by researchers and digital preservationists worldwide.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-card__icon">💻</div>
+                <h3 class="feature-card__title">Run It Yourself (Self-Host)</h3>
+                <p class="feature-card__desc">
+                    Want absolute autonomy? You can self-host the exact same Python application on your personal machine or private server via Docker, keeping all traffic strictly direct.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Format & Quality Matrix -->
+    <section id="guide">
+        <h2>📊 Supported Quality &amp; Format Specifications</h2>
+        <p>
+            YouTube delivers high-definition content (1080p and higher) as separate video and audio DASH streams. Our backend automatically stitches these streams together using FFmpeg's lossless stream multiplexer:
+        </p>
+        <div class="table-scroll-hint" aria-hidden="true">
+            <span>⇄</span> Swipe table to view all formats &amp; bitrates
+        </div>
+        <div class="table-wrap" id="link-formats">
+            <table class="format-table">
+                <thead>
+                    <tr>
+                        <th>Profile</th>
+                        <th>Resolution</th>
+                        <th>Container</th>
+                        <th>Bitrate Range</th>
+                        <th>Best For</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="highlight-col">👑 4K UHD</td>
+                        <td>3840 &times; 2160</td>
+                        <td>MP4 / MKV</td>
+                        <td>15 &ndash; 25 Mbps</td>
+                        <td>4K TVs, home theater setups &amp; visual archiving</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">⭐ 1080p FHD</td>
+                        <td>1920 &times; 1080</td>
+                        <td>MP4</td>
+                        <td>4 &ndash; 8 Mbps</td>
+                        <td>Laptops, desktop monitors &amp; crisp lectures</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">📱 720p HD</td>
+                        <td>1280 &times; 720</td>
+                        <td>MP4</td>
+                        <td>2 &ndash; 3 Mbps</td>
+                        <td>Smartphones, tablets &amp; mobile offline study</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">🎧 MP3 Audio</td>
+                        <td>Transcoded MP3</td>
+                        <td>MP3</td>
+                        <td>Up to 320 kbps (CBR)</td>
+                        <td>Car stereos, legacy MP3 players &amp; audiobooks</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">🎵 Native M4A</td>
+                        <td>Original AAC Stream</td>
+                        <td>M4A</td>
+                        <td>128 &ndash; 160 kbps (Lossless source)</td>
+                        <td>Highest audio fidelity with zero transcode artifacts</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Who Is It For Section -->
+    <section id="pro-tips">
+        <h2>🎯 Who Is YT Downloader Built For?</h2>
+        <ul style="color:var(--text-secondary); line-height:1.8; margin-left:1.5rem; margin-bottom:var(--space-6);">
+            <li><strong>Educators &amp; Students:</strong> Preparing for classes or traveling to areas with unreliable internet access by archiving open courseware and tutorial series.</li>
+            <li><strong>Researchers &amp; Historians:</strong> Preserving digital citizen journalism, public speeches, and historical debates before videos are removed or delisted.</li>
+            <li><strong>Content Creators:</strong> Downloading their own backup footage from YouTube Studio Takeout or retrieving Creative Commons assets for editing.</li>
+            <li><strong>Travelers &amp; Commuters:</strong> Saving long-form podcasts, technical presentations, and audiobooks for offline flights and train rides.</li>
+        </ul>
+    </section>
+
+    <!-- Visible FAQ Section with Structured Content -->
+    <section id="faq">
+        <h2>❓ Frequently Asked Questions</h2>
+        <div class="faq-list">
+            <div class="faq-item">
+                <h3 class="faq-question">Why is there no advertisement or subscription fee?</h3>
+                <div class="faq-answer">
+                    <p>
+                        YT Downloader is an open-source, non-profit project created for education, digital archiving, and fair-use media preservation. We do not partner with ad networks or sell user telemetry.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item" id="troubleshooting">
+                <h3 class="faq-question">Why does 1080p and 4K video require FFmpeg merging?</h3>
+                <div class="faq-answer">
+                    <p>
+                        YouTube does not host combined audio/video files for resolutions above 720p. Instead, it serves video-only and audio-only streams via adaptive DASH protocol. We use FFmpeg to seamlessly multiplex these streams into a single playable MP4 file.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">What is the difference between MP3 and native M4A?</h3>
+                <div class="faq-answer">
+                    <p>
+                        YouTube natively stores audio in AAC (inside M4A) or Opus formats. When you choose M4A, the stream is saved without re-encoding, preserving exact original sound quality. MP3 re-encodes the stream for maximum compatibility across older car stereos and media players.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">How does the 24-hour retention policy work?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Whenever a download job completes, the file is saved to transient server disk space. An automated cron background process scans the download directory and permanently removes any file older than 24 hours to safeguard user privacy.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item" id="legal">
+                <h3 class="faq-question">Is it legal to download YouTube videos?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Downloading content that you own, that is explicitly licensed under Creative Commons, or that resides in the public domain is generally legal under fair use principles. Downloading copyrighted commercial media without authorization is a violation of copyright law and YouTube's Terms of Service. For a balanced overview, read our <a href="./fair-use.html" style="color:var(--accent-secondary);">Fair Use &amp; Archival Policy</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Specialized Internal Tools Navigation -->
+    <section>
+        <h2>🧭 Specialized Media Tools</h2>
+        <div class="step-cards">
+            <div class="step-card">
+                <h3 class="step-card__title">🎵 <a href="./youtube-to-mp3.html" style="color:inherit; text-decoration:none;">YouTube to MP3</a></h3>
+                <p class="step-card__text">
+                    Extract audio tracks with FFmpeg. Learn about 320kbps bitrates, ID3 metadata tags, and album art embedding.
+                </p>
+                <div style="margin-top:var(--space-3);"><a href="./youtube-to-mp3.html" class="footer-link" style="color:var(--accent-secondary); font-weight:600;">Go to MP3 Converter &rarr;</a></div>
+            </div>
+            <div class="step-card">
+                <h3 class="step-card__title">🎬 <a href="./youtube-video-downloader.html" style="color:inherit; text-decoration:none;">YouTube Video Downloader</a></h3>
+                <p class="step-card__text">
+                    Save full 1080p Full HD, 4K UHD, and 8K video with audio stream merging and subtitle options.
+                </p>
+                <div style="margin-top:var(--space-3);"><a href="./youtube-video-downloader.html" class="footer-link" style="color:var(--accent-secondary); font-weight:600;">Download 4K Videos &rarr;</a></div>
+            </div>
+            <div class="step-card">
+                <h3 class="step-card__title">⚡ <a href="./bulk-youtube-to-mp3.html" style="color:inherit; text-decoration:none;">Bulk Audio Queue</a></h3>
+                <p class="step-card__text">
+                    Queue up to 20 URLs at once. Batch background workers extract audio concurrently and package into a single ZIP.
+                </p>
+                <div style="margin-top:var(--space-3);"><a href="./bulk-youtube-to-mp3.html" class="footer-link" style="color:var(--accent-secondary); font-weight:600;">Open Bulk MP3 &rarr;</a></div>
+            </div>
+        </div>
+
+        <h3 style="margin-top:var(--space-6);">Trending Guides from Our Engineering Hub</h3>
+        <ul style="padding-left:1.2rem; line-height:1.9;">
+            <li><a href="/blog/what-is-yt-dlp"><strong>What is yt-dlp?</strong> Complete history, feature benchmarks, and difference from youtube-dl</a></li>
+            <li><a href="/blog/install-ffmpeg-windows-mac-linux"><strong>How to Install FFmpeg on Windows, Mac &amp; Linux:</strong> Terminal copy-paste commands and verification</a></li>
+            <li><a href="/blog/best-video-quality-for-downloads"><strong>4K vs 1080p vs 720p:</strong> File size, codec differences (VP9, AV1, H.264), and storage tips</a></li>
+            <li><a href="/blog/mp3-vs-m4a-vs-opus"><strong>MP3 vs M4A vs Opus:</strong> Which audio format sounds best?</a></li>
+            <li><a href="./blog.html" style="color:var(--accent-secondary); font-weight:600;">Browse all guides in our Engineering Blog &rarr;</a></li>
+        </ul>
+    </section>
+</article>
+
+        </div>
+    </main>
+
+    <!-- Comprehensive Global Footer -->
+    <footer class="site-footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Col 1: Brand & Philosophy -->
+                <div class="footer-brand">
+                    <div class="footer-brand__name">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent-secondary);">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        YT Downloader
+                    </div>
+                    <p class="footer-brand__desc">
+                        A private, ad-free web utility for archiving public educational and Creative Commons media via yt-dlp and FFmpeg. Fast conversion, zero trackers, no account needed.
+                    </p>
+                    <div class="footer-brand__badge">
+                        <span>🔒</span> 24h Auto-Purge &amp; Transient Storage
+                    </div>
+                </div>
+
+                <!-- Col 2: Core Tools -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Core Tools</h4>
+                    <ul class="footer-links">
+                        <li><a href="./" class="footer-link">Home (Overview)</a></li>
+                        <li><a href="./youtube-to-mp3.html" class="footer-link">YouTube to MP3</a></li>
+                        <li><a href="./youtube-video-downloader.html" class="footer-link">Video Downloader (4K)</a></li>
+                        <li><a href="./bulk-youtube-to-mp3.html" class="footer-link">Bulk MP3 Downloader</a></li>
+                        <li><a href="./bulk-youtube-video-downloader.html" class="footer-link">Bulk Video Downloader</a></li>
+                        <li><a href="./youtube-playlist-downloader.html" class="footer-link">Playlist Downloader</a></li>
+                        <li><a href="./youtube-video-info.html" class="footer-link">Video Info &amp; Codecs</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Format Converters -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Formats &amp; Features</h4>
+                    <ul class="footer-links">
+                        <li><a href="./youtube-to-mp4.html" class="footer-link">YouTube to MP4</a></li>
+                        <li><a href="./youtube-to-wav.html" class="footer-link">YouTube to WAV</a></li>
+                        <li><a href="./youtube-to-m4a.html" class="footer-link">YouTube to M4A</a></li>
+                        <li><a href="./youtube-to-flac.html" class="footer-link">YouTube to FLAC</a></li>
+                        <li><a href="./youtube-4k-downloader.html" class="footer-link">4K Video Downloader</a></li>
+                        <li><a href="./ad-free-youtube-downloader.html" class="footer-link">Ad-Free Downloader</a></li>
+                        <li><a href="./safe-youtube-downloader.html" class="footer-link">Safe Downloader Guide</a></li>
+                        <li><a href="./supported-sites.html" class="footer-link">Supported Sites</a></li>
+                        <li><a href="./yt-dlp-web-ui.html" class="footer-link">yt-dlp Web UI</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Guides & Articles -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Guides &amp; Articles</h4>
+                    <ul class="footer-links">
+                        <li><a href="/blog/what-is-yt-dlp" class="footer-link">What is yt-dlp?</a></li>
+                        <li><a href="/blog/install-ffmpeg-windows-mac-linux" class="footer-link">Install FFmpeg (Win/Mac/Linux)</a></li>
+                        <li><a href="/blog/best-video-quality-for-downloads" class="footer-link">4K vs 1080p vs 720p Guide</a></li>
+                        <li><a href="/blog/mp3-vs-m4a-vs-opus" class="footer-link">MP3 vs M4A vs Opus Audio</a></li>
+                        <li><a href="/blog/yt-dlp-common-errors-and-fixes" class="footer-link">Common yt-dlp Errors &amp; Fixes</a></li>
+                        <li><a href="./blog.html" class="footer-link" style="color:var(--accent-secondary); font-weight:600;">Browse All Guides &rarr;</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 5: Trust, Legal & Sitemap -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Trust &amp; Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="./about.html" class="footer-link">About Project</a></li>
+                        <li><a href="./how-it-works.html" class="footer-link">How It Works</a></li>
+                        <li><a href="./fair-use.html" class="footer-link">Fair Use &amp; Policy</a></li>
+                        <li><a href="./faq.html" class="footer-link">FAQ</a></li>
+                        <li><a href="./contact.html" class="footer-link">Contact &amp; Support</a></li>
+                        <li><a href="./privacy.html" class="footer-link">Privacy Policy</a></li>
+                        <li><a href="./terms.html" class="footer-link">Terms of Service</a></li>
+                        <li><a href="./dmca.html" class="footer-link">DMCA Takedown</a></li>
+                        <li><a href="./changelog.html" class="footer-link">Changelog</a></li>
+                        <li><a href="/site-map.html" class="footer-link" style="color:var(--accent-secondary);">HTML Site Map</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom Note with Legal Disclaimers -->
+            <div class="footer-bottom" style="flex-direction:column; gap:8px; text-align:center;">
+                <div>
+                    <strong>Disclaimer:</strong> YT Downloader is an independent utility and is not affiliated with or endorsed by YouTube or Google.
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); max-width:820px; margin:0 auto; line-height:1.5;">
+                    Usage Notice: Only download content you own, that is licensed for reuse (e.g. Creative Commons), or for which you have explicit rights holder permission. Converted files are automatically and permanently purged from server storage after 24 hours.
+                </div>
+                <div style="margin-top:6px; font-size:11px; color:var(--text-muted);">
+                    &copy; 2026 YT Downloader &bull; Built with Python, Flask, <a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener noreferrer" style="color:var(--text-secondary)">yt-dlp</a> &amp; <a href="https://ffmpeg.org" target="_blank" rel="noopener noreferrer" style="color:var(--text-secondary)">FFmpeg</a>.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Client Scripts -->
+    <script src="./static/js/ui-effects.js"></script>
+    
+    <script src="./static/js/app.js"></script>
+    
+</body>
+</html>

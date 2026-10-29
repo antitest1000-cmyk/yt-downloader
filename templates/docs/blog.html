@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="google-site-verification" content="GAFtxEepvYnQvF145-T8hoBJyJY-FzdSeld5MOmTUk0">
+    <title>Blog – YouTube Downloader Guides, Tutorials &amp; yt-dlp Tips</title>
+    <meta name="description" content="In-depth articles on yt-dlp, FFmpeg, video quality, audio formats, self-hosting, security, and legal considerations for YouTube media archiving.">
+    
+    <link rel="canonical" href="https://yt-downlooader.netlify.app/blog">
+    
+    
+    <!-- OpenGraph / Social -->
+    <meta property="og:site_name" content="YT Downloader">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Blog – YouTube Downloader Guides, Tutorials &amp; yt-dlp Tips">
+    <meta property="og:description" content="In-depth articles on yt-dlp, FFmpeg, video quality, audio formats, self-hosting, security, and legal considerations for YouTube media archiving.">
+    <meta property="og:url" content="https://yt-downlooader.netlify.app/blog">
+    <meta property="og:image" content="https://yt-downlooader.netlify.app/static/favicon.svg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Blog – YouTube Downloader Guides, Tutorials &amp; yt-dlp Tips">
+    <meta name="twitter:description" content="In-depth articles on yt-dlp, FFmpeg, video quality, audio formats, self-hosting, security, and legal considerations for YouTube media archiving.">
+    <meta name="twitter:image" content="https://yt-downlooader.netlify.app/static/favicon.svg">
+
+    <!-- GEO & AEO Search Engine Direct Answer Signals -->
+    <meta name="geo.region" content="US">
+    <meta name="geo.placename" content="Global">
+    <meta name="distribution" content="Global">
+    <meta name="coverage" content="Worldwide">
+    <meta name="rating" content="General">
+    <link rel="alternate" hreflang="x-default" href="https://yt-downlooader.netlify.app/blog">
+    <link rel="alternate" hreflang="en" href="https://yt-downlooader.netlify.app/blog">
+    <link rel="icon" type="image/svg+xml" href="./static/favicon.svg">
+    <link rel="apple-touch-icon" href="./static/favicon.svg">
+
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Design System Stylesheets -->
+    <link rel="stylesheet" href="./static/css/style.css">
+    <link rel="stylesheet" href="./static/css/content.css">
+
+    <!-- Structured Data (JSON-LD) -->
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "YT Downloader",
+      "url": "https://yt-downlooader.netlify.app/",
+      "description": "High-speed local YouTube video and audio downloader powered by yt-dlp and FFmpeg.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "1080p, 1440p, and 4K Ultra HD video downloads",
+        "Lossless audio extraction to MP3, M4A, FLAC, and WAV",
+        "Bulk URL queue processing with ZIP archive packaging",
+        "Playlist batch downloads up to 50 videos",
+        "Zero third-party trackers, no popups, no account required",
+        "Automated 24-hour file cleanup"
+      ]
+    }
+    </script>
+    
+    
+    <script>
+        (function() {
+            var savedTheme = localStorage.getItem('ytdl_theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+</head>
+<body class="theme-light">
+    <!-- Aurora Mesh Background Canvas -->
+    <canvas id="aurora-canvas" aria-hidden="true"></canvas>
+    <!-- Header & Navigation -->
+    <header class="header" role="banner">
+        <div class="header__inner">
+            <div class="header__brand">
+                <a href="./" class="header__brand-link" aria-label="YT Downloader Home">
+                    <span class="brand-logo-text"><span class="brand-logo-badge" style="margin-left:0; margin-right:4px;">YT</span> Downloader</span>
+                </a>
+            </div>
+
+            <!-- Global Nav Links (Desktop) -->
+            <nav class="nav-links" id="main-nav" aria-label="Main Navigation">
+                <a href="./youtube-video-downloader.html" class="nav-link ">Video</a>
+                <a href="./youtube-to-mp3.html" class="nav-link ">MP3 Audio</a>
+                <a href="./youtube-4k-downloader.html" class="nav-link ">4K UHD</a>
+                <a href="./bulk-youtube-to-mp3.html" class="nav-link ">Bulk Audio</a>
+                <a href="./bulk-youtube-video-downloader.html" class="nav-link ">Bulk Video</a>
+                <a href="./blog.html" class="nav-link active">Guides</a>
+                <a href="./self-hosted-youtube-downloader.html" class="nav-link nav-link--highlight ">💻 Self-Host</a>
+            </nav>
+
+            <div class="header__actions">
+                <button type="button" class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Toggle dark/light mode" title="Toggle Dark/Light Mode">
+                    <span id="theme-toggle-icon">🌙</span>
+                </button>
+                <div class="header__status" id="health-status" title="System Status">
+                    <span class="status-dot" id="status-dot"></span>
+                    <span class="status-text" id="status-text">Checking...</span>
+                </div>
+                <!-- Mobile Navigation Toggle Button -->
+                <button type="button" class="header__menu-btn" id="mobile-menu-btn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-nav-drawer">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Drawer -->
+        <nav class="mobile-nav-drawer" id="mobile-nav-drawer" aria-label="Mobile Navigation" hidden>
+            <div class="mobile-nav-links">
+                <a href="./" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">🏠</span>
+                    <span>Home Overview</span>
+                </a>
+                <a href="./youtube-to-mp3.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">🎵</span>
+                    <span>YouTube to MP3</span>
+                </a>
+                <a href="./youtube-video-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">🎬</span>
+                    <span>YouTube Video Downloader (4K/1080p)</span>
+                </a>
+                <a href="./bulk-youtube-to-mp3.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">⚡</span>
+                    <span>Bulk MP3 Downloader</span>
+                </a>
+                <a href="./bulk-youtube-video-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📦</span>
+                    <span>Bulk Video Downloader</span>
+                </a>
+                <a href="./youtube-playlist-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📋</span>
+                    <span>Playlist Downloader</span>
+                </a>
+                <a href="./blog.html" class="mobile-nav-link active">
+                    <span class="mobile-nav-icon">📚</span>
+                    <span>Tech Guides &amp; Tutorials</span>
+                </a>
+                <a href="./self-hosted-youtube-downloader.html" class="mobile-nav-link mobile-nav-link--highlight ">
+                    <span class="mobile-nav-icon">💻</span>
+                    <span>Self-Host Guide (Docker/Python)</span>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main" role="main">
+        <div class="container">
+            
+<section class="content-header">
+    <div class="content-badge"><span>📖</span> Technical Articles &amp; Archival Guides</div>
+    <h1 class="content-title">Media Archiving &amp; yt-dlp Knowledge Hub</h1>
+    <p class="content-lead">
+        Welcome to the YT Downloader technical library. We publish comprehensive, engineer-reviewed guides on media archiving, audio fidelity, container specifications, FFmpeg pipelines, self-hosting architectures, and open web copyright frameworks.
+    </p>
+</section>
+
+<div class="trust-strip">
+    <span class="trust-item"><span class="trust-item__icon">🛠️</span> <strong>Practical Tutorials</strong> Step-by-Step Code</span>
+    <span class="trust-item"><span class="trust-item__icon">🎧</span> <strong>Audio Analysis</strong> Bitrates &amp; Codecs</span>
+    <span class="trust-item"><span class="trust-item__icon">⚖️</span> <strong>Ethical Archiving</strong> Fair Use &amp; CC</span>
+    <span class="trust-item"><span class="trust-item__icon">💻</span> <strong>Self-Hosting</strong> Docker &amp; Flask</span>
+</div>
+
+<div class="prose" style="margin-bottom:var(--space-8);">
+    <p>
+        Whether you are setting up FFmpeg on a local workstation, configuring a private headless download server on a Raspberry Pi, or choosing between lossy MP3 and native AAC audio streams, our guides provide verified, ad-free documentation.
+    </p>
+    <h2>Core Archival &amp; Technical Topics Covered</h2>
+    <div class="grid-2" style="margin-top:1.5rem; margin-bottom:2rem;">
+        <div class="step-card">
+            <h3 class="step-card__title">🎧 Audio Extraction &amp; Codecs</h3>
+            <p class="step-card__text">Understand the differences between lossy MP3 compression, YouTube's native 160kbps Opus DASH streams, and pristine AAC in M4A containers for maximum acoustic fidelity.</p>
+        </div>
+        <div class="step-card">
+            <h3 class="step-card__title">📹 Video Quality &amp; Transcoding</h3>
+            <p class="step-card__text">Learn how FFmpeg multiplexes independent video and audio DASH channels to deliver silky 1080p, 1440p, and 4K Ultra HD video files without generational quality loss.</p>
+        </div>
+        <div class="step-card">
+            <h3 class="step-card__title">💻 Self-Hosting &amp; Private Deployments</h3>
+            <p class="step-card__text">Step-by-step instructions for running your own private Python &amp; Flask media downloader on Linux, Windows, macOS, or lightweight containerized VPS setups.</p>
+        </div>
+        <div class="step-card">
+            <h3 class="step-card__title">⚖️ Legal, Fair-Use &amp; Security</h3>
+            <p class="step-card__text">Explaining the boundary between lawful personal archival and commercial copyright infringement, plus engineering protections like Server-Side Request Forgery (SSRF) filters.</p>
+        </div>
+    </div>
+</div>
+
+<section aria-label="Blog Post Grid">
+    <div class="blog-grid">
+        
+        <article class="blog-card" aria-labelledby="post-title-1">
+            <div class="blog-card__meta">
+                <span class="blog-card__category">Beginners</span>
+                <span class="blog-card__read-time">8 min read</span>
+            </div>
+            <h2 class="blog-card__title" id="post-title-1">
+                <a href="/blog/what-is-yt-dlp" class="blog-card__link">
+                    What Is yt-dlp? Complete Beginner&#39;s Guide to Video Downloading
+                </a>
+            </h2>
+            <p class="blog-card__excerpt">Learn what yt-dlp is, how it differs from youtube-dl, its history, key features, and why it&#39;s the gold standard for command-line video downloading in 2026.</p>
+            <div class="blog-card__footer">
+                <span class="blog-card__date">October 15, 2026</span>
+                <a href="/blog/what-is-yt-dlp" class="blog-card__cta" aria-label="Read What Is yt-dlp? Complete Beginner&#39;s Guide to Video Downloading">
+                    Read Article &rarr;
+                </a>
+            </div>
+        </article>
+        
+        <article class="blog-card" aria-labelledby="post-title-2">
+            <div class="blog-card__meta">
+                <span class="blog-card__category">Setup</span>
+                <span class="blog-card__read-time">10 min read</span>
+            </div>
+            <h2 class="blog-card__title" id="post-title-2">
+                <a href="/blog/install-ffmpeg-windows-mac-linux" class="blog-card__link">
+                    How to Install FFmpeg on Windows, Mac &amp; Linux (2026 Guide)
+                </a>
+            </h2>
+            <p class="blog-card__excerpt">Install FFmpeg for yt-dlp video merging and audio conversion. Complete setup guide for Windows 10/11, macOS Homebrew, and Linux with PATH verification.</p>
+            <div class="blog-card__footer">
+                <span class="blog-card__date">October 14, 2026</span>
+                <a href="/blog/install-ffmpeg-windows-mac-linux" class="blog-card__cta" aria-label="Read How to Install FFmpeg on Windows, Mac &amp; Linux (2026 Guide)">
+                    Read Article &rarr;
+                </a>
+            </div>
+        </article>
+        
+        <article class="blog-card" aria-labelledby="post-title-3">
+            <div class="blog-card__meta">
+                <span class="blog-card__category">Quality</span>
+                <span class="blog-card__read-time">9 min read</span>
+            </div>
+            <h2 class="blog-card__title" id="post-title-3">
+                <a href="/blog/best-video-quality-for-downloads" class="blog-card__link">
+                    1080p vs 720p vs 480p: Which Quality to Download?
+                </a>
+            </h2>
+            <p class="blog-card__excerpt">Compare YouTube video download qualities: 1080p, 720p, 480p, and 4K. Bitrate analysis, codecs (H.264, VP9, AV1), file sizes, and storage recommendations.</p>
+            <div class="blog-card__footer">
+                <span class="blog-card__date">October 13, 2026</span>
+                <a href="/blog/best-video-quality-for-downloads" class="blog-card__cta" aria-label="Read 1080p vs 720p vs 480p: Which Quality to Download?">
+                    Read Article &rarr;
+                </a>
+            </div>
+        </article>
+        
+        <article class="blog-card" aria-labelledby="post-title-4">
+            <div class="blog-card__meta">
+                <span class="blog-card__category">Audio</span>
+                <span class="blog-card__read-time">8 min read</span>
+            </div>
+            <h2 class="blog-card__title" id="post-title-4">
+                <a href="/blog/mp3-vs-m4a-vs-opus" class="blog-card__link">
+                    MP3 vs M4A vs Opus: Which Audio Format Should You Download?
+                </a>
+            </h2>
+            <p class="blog-card__excerpt">Compare MP3, M4A (AAC), and Opus audio formats for YouTube downloads. Learn bitrate equivalence, acoustic fidelity, device compatibility, and file sizes.</p>
+            <div class="blog-card__footer">
+                <span class="blog-card__date">October 12, 2026</span>
+                <a href="/blog/mp3-vs-m4a-vs-opus" class="blog-card__cta" aria-label="Read MP3 vs M4A vs Opus: Which Audio Format Should You Download?">
+                    Read Article &rarr;
+                </a>
+            </div>
+        </article>
+        
+        <article class="blog-card" aria-labelledby="post-title-5">
+            <div class="blog-card__meta">
+                <span class="blog-card__category">Tutorial</span>
+                <span class="blog-card__read-time">7 min read</span>
+            </div>
+            <h2 class="blog-card__title" id="post-title-5">
+                <a href="/blog/download-youtube-playlist-step-by-step" class="blog-card__link">
+                    How to Download a Full YouTube Playlist – Step-by-Step Guide
+                </a>
+            </h2>
+            <p class="blog-card__excerpt">Step-by-step tutorial on downloading entire YouTube playlists using yt-dlp and the YT Downloader web app. Covers batching, format selection, and indexing.</p>
+            <div class="blog-card__footer">
+                <span class="blog-card__date">October 11, 2026</span>
+                <a href="/blog/download-youtube-playlist-step-by-step" class="blog-card__cta" aria-label="Read How to Download a Full YouTube Playlist – Step-by-Step Guide">
+                    Read Article &rarr;
+                </a>
+            </div>
+        </article>
+        
+        <article class="blog-card" aria-labelledby="post-title-6">
+            <div class="blog-card__meta">
+                <span class="blog-card__category">Troubleshooting</span>
+                <span class="blog-card__read-time">12 min read</span>
+            </div>
+            <h2 class="blog-card__title" id="post-title-6">
+                <a href="/blog/yt-dlp-common-errors-and-fixes" class="blog-card__link">
+                    yt-dlp Common Errors &amp; Fixes – Complete Troubleshooting Guide
+                </a>
+            </h2>
+            <p class="blog-card__excerpt">Fix common yt-dlp errors: HTTP 403 Forbidden, Sign in to confirm you are not a bot, format not available, and FFmpeg merge failure. Troubleshooting guide.</p>
+            <div class="blog-card__footer">
+                <span class="blog-card__date">October 10, 2026</span>
+                <a href="/blog/yt-dlp-common-errors-and-fixes" class="blog-card__cta" aria-label="Read yt-dlp Common Errors &amp; Fixes – Complete Troubleshooting Guide">
+                    Read Article &rarr;
+                </a>
+            </div>
+        </article>
+        
+        <article class="blog-card" aria-labelledby="post-title-7">
+            <div class="blog-card__meta">
+                <span class="blog-card__category">Legal</span>
+                <span class="blog-card__read-time">11 min read</span>
+            </div>
+            <h2 class="blog-card__title" id="post-title-7">
+                <a href="/blog/is-it-legal-to-download-youtube-videos" class="blog-card__link">
+                    Is It Legal to Download YouTube Videos? A Fair-Use Overview
+                </a>
+            </h2>
+            <p class="blog-card__excerpt">Is downloading YouTube videos legal? Legal analysis covering copyright law, YouTube ToS, fair use doctrine, personal archiving, and Creative Commons media.</p>
+            <div class="blog-card__footer">
+                <span class="blog-card__date">October 9, 2026</span>
+                <a href="/blog/is-it-legal-to-download-youtube-videos" class="blog-card__cta" aria-label="Read Is It Legal to Download YouTube Videos? A Fair-Use Overview">
+                    Read Article &rarr;
+                </a>
+            </div>
+        </article>
+        
+        <article class="blog-card" aria-labelledby="post-title-8">
+            <div class="blog-card__meta">
+                <span class="blog-card__category">Developer</span>
+                <span class="blog-card__read-time">15 min read</span>
+            </div>
+            <h2 class="blog-card__title" id="post-title-8">
+                <a href="/blog/self-host-flask-yt-dlp-tutorial" class="blog-card__link">
+                    Self-Host a yt-dlp Web UI with Python &amp; Flask
+                </a>
+            </h2>
+            <p class="blog-card__excerpt">Build and self-host a private YouTube downloader web service using Flask, yt-dlp, and SQLite. Complete tutorial with systemd and Docker deployment.</p>
+            <div class="blog-card__footer">
+                <span class="blog-card__date">October 8, 2026</span>
+                <a href="/blog/self-host-flask-yt-dlp-tutorial" class="blog-card__cta" aria-label="Read Self-Host a yt-dlp Web UI with Python &amp; Flask">
+                    Read Article &rarr;
+                </a>
+            </div>
+        </article>
+        
+        <article class="blog-card" aria-labelledby="post-title-9">
+            <div class="blog-card__meta">
+                <span class="blog-card__category">Security</span>
+                <span class="blog-card__read-time">13 min read</span>
+            </div>
+            <h2 class="blog-card__title" id="post-title-9">
+                <a href="/blog/ssrf-protection-in-flask-apps" class="blog-card__link">
+                    SSRF Protection in Flask Media Downloader Apps
+                </a>
+            </h2>
+            <p class="blog-card__excerpt">Learn how to protect Python web applications from Server-Side Request Forgery (SSRF) when accepting user URLs. Practical DNS validation and IP filtering code.</p>
+            <div class="blog-card__footer">
+                <span class="blog-card__date">October 7, 2026</span>
+                <a href="/blog/ssrf-protection-in-flask-apps" class="blog-card__cta" aria-label="Read SSRF Protection in Flask Media Downloader Apps">
+                    Read Article &rarr;
+                </a>
+            </div>
+        </article>
+        
+        <article class="blog-card" aria-labelledby="post-title-10">
+            <div class="blog-card__meta">
+                <span class="blog-card__category">Use Cases</span>
+                <span class="blog-card__read-time">8 min read</span>
+            </div>
+            <h2 class="blog-card__title" id="post-title-10">
+                <a href="/blog/downloading-for-offline-travel-study" class="blog-card__link">
+                    Downloading YouTube Videos for Offline Travel &amp; Study
+                </a>
+            </h2>
+            <p class="blog-card__excerpt">Guide to downloading educational videos and media for offline viewing during flights, commutes, and travel with limited connectivity. Formats and storage tips.</p>
+            <div class="blog-card__footer">
+                <span class="blog-card__date">October 6, 2026</span>
+                <a href="/blog/downloading-for-offline-travel-study" class="blog-card__cta" aria-label="Read Downloading YouTube Videos for Offline Travel &amp; Study">
+                    Read Article &rarr;
+                </a>
+            </div>
+        </article>
+        
+    </div>
+</section>
+
+<section style="margin-top:4rem; text-align:center; padding:3rem; background:linear-gradient(135deg, rgba(30,27,75,0.4), rgba(15,23,42,0.6)); border-radius:1.5rem; border:1px solid rgba(255,255,255,0.06);">
+    <h2 style="margin:0 0 1rem; font-size:1.75rem;">Ready to Start Downloading?</h2>
+    <p style="color:var(--text-secondary); margin-bottom:2rem; max-width:500px; margin-left:auto; margin-right:auto;">
+        Use our free, private, ad-free media archiving tools to save YouTube content for offline use.
+    </p>
+    <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+        <a href="./" class="btn btn--primary" style="text-decoration:none;">Download a Video</a>
+        <a href="./youtube-to-mp3.html" class="btn btn--secondary" style="text-decoration:none;">Convert to MP3</a>
+        <a href="./youtube-playlist-downloader.html" class="btn btn--secondary" style="text-decoration:none;">Download Playlist</a>
+    </div>
+</section>
+
+        </div>
+    </main>
+
+    <!-- Comprehensive Global Footer -->
+    <footer class="site-footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Col 1: Brand & Philosophy -->
+                <div class="footer-brand">
+                    <div class="footer-brand__name">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent-secondary);">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        YT Downloader
+                    </div>
+                    <p class="footer-brand__desc">
+                        A private, ad-free web utility for archiving public educational and Creative Commons media via yt-dlp and FFmpeg. Fast conversion, zero trackers, no account needed.
+                    </p>
+                    <div class="footer-brand__badge">
+                        <span>🔒</span> 24h Auto-Purge &amp; Transient Storage
+                    </div>
+                </div>
+
+                <!-- Col 2: Core Tools -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Core Tools</h4>
+                    <ul class="footer-links">
+                        <li><a href="./" class="footer-link">Home (Overview)</a></li>
+                        <li><a href="./youtube-to-mp3.html" class="footer-link">YouTube to MP3</a></li>
+                        <li><a href="./youtube-video-downloader.html" class="footer-link">Video Downloader (4K)</a></li>
+                        <li><a href="./bulk-youtube-to-mp3.html" class="footer-link">Bulk MP3 Downloader</a></li>
+                        <li><a href="./bulk-youtube-video-downloader.html" class="footer-link">Bulk Video Downloader</a></li>
+                        <li><a href="./youtube-playlist-downloader.html" class="footer-link">Playlist Downloader</a></li>
+                        <li><a href="./youtube-video-info.html" class="footer-link">Video Info &amp; Codecs</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Format Converters -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Formats &amp; Features</h4>
+                    <ul class="footer-links">
+                        <li><a href="./youtube-to-mp4.html" class="footer-link">YouTube to MP4</a></li>
+                        <li><a href="./youtube-to-wav.html" class="footer-link">YouTube to WAV</a></li>
+                        <li><a href="./youtube-to-m4a.html" class="footer-link">YouTube to M4A</a></li>
+                        <li><a href="./youtube-to-flac.html" class="footer-link">YouTube to FLAC</a></li>
+                        <li><a href="./youtube-4k-downloader.html" class="footer-link">4K Video Downloader</a></li>
+                        <li><a href="./ad-free-youtube-downloader.html" class="footer-link">Ad-Free Downloader</a></li>
+                        <li><a href="./safe-youtube-downloader.html" class="footer-link">Safe Downloader Guide</a></li>
+                        <li><a href="./supported-sites.html" class="footer-link">Supported Sites</a></li>
+                        <li><a href="./yt-dlp-web-ui.html" class="footer-link">yt-dlp Web UI</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Guides & Articles -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Guides &amp; Articles</h4>
+                    <ul class="footer-links">
+                        <li><a href="/blog/what-is-yt-dlp" class="footer-link">What is yt-dlp?</a></li>
+                        <li><a href="/blog/install-ffmpeg-windows-mac-linux" class="footer-link">Install FFmpeg (Win/Mac/Linux)</a></li>
+                        <li><a href="/blog/best-video-quality-for-downloads" class="footer-link">4K vs 1080p vs 720p Guide</a></li>
+                        <li><a href="/blog/mp3-vs-m4a-vs-opus" class="footer-link">MP3 vs M4A vs Opus Audio</a></li>
+                        <li><a href="/blog/yt-dlp-common-errors-and-fixes" class="footer-link">Common yt-dlp Errors &amp; Fixes</a></li>
+                        <li><a href="./blog.html" class="footer-link" style="color:var(--accent-secondary); font-weight:600;">Browse All Guides &rarr;</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 5: Trust, Legal & Sitemap -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Trust &amp; Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="./about.html" class="footer-link">About Project</a></li>
+                        <li><a href="./how-it-works.html" class="footer-link">How It Works</a></li>
+                        <li><a href="./fair-use.html" class="footer-link">Fair Use &amp; Policy</a></li>
+                        <li><a href="./faq.html" class="footer-link">FAQ</a></li>
+                        <li><a href="./contact.html" class="footer-link">Contact &amp; Support</a></li>
+                        <li><a href="./privacy.html" class="footer-link">Privacy Policy</a></li>
+                        <li><a href="./terms.html" class="footer-link">Terms of Service</a></li>
+                        <li><a href="./dmca.html" class="footer-link">DMCA Takedown</a></li>
+                        <li><a href="./changelog.html" class="footer-link">Changelog</a></li>
+                        <li><a href="/site-map.html" class="footer-link" style="color:var(--accent-secondary);">HTML Site Map</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom Note with Legal Disclaimers -->
+            <div class="footer-bottom" style="flex-direction:column; gap:8px; text-align:center;">
+                <div>
+                    <strong>Disclaimer:</strong> YT Downloader is an independent utility and is not affiliated with or endorsed by YouTube or Google.
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); max-width:820px; margin:0 auto; line-height:1.5;">
+                    Usage Notice: Only download content you own, that is licensed for reuse (e.g. Creative Commons), or for which you have explicit rights holder permission. Converted files are automatically and permanently purged from server storage after 24 hours.
+                </div>
+                <div style="margin-top:6px; font-size:11px; color:var(--text-muted);">
+                    &copy; 2026 YT Downloader &bull; Built with Python, Flask, <a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener noreferrer" style="color:var(--text-secondary)">yt-dlp</a> &amp; <a href="https://ffmpeg.org" target="_blank" rel="noopener noreferrer" style="color:var(--text-secondary)">FFmpeg</a>.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Client Scripts -->
+    <script src="./static/js/ui-effects.js"></script>
+    
+    <script src="./static/js/app.js"></script>
+    
+</body>
+</html>
