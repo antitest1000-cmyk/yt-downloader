@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="google-site-verification" content="GAFtxEepvYnQvF145-T8hoBJyJY-FzdSeld5MOmTUk0">
+    <title>YouTube Video Downloader – 1080p, 4K UHD & MP4 (yt-dlp)</title>
+    <meta name="description" content="Download YouTube videos in crisp 1080p Full HD, 4K, or 720p MP4. Free, ad-free web downloader with full DASH audio-video merging powered by yt-dlp and FFmpeg.">
+    
+    <link rel="canonical" href="https://yt-downlooader.netlify.app/youtube-video-downloader">
+    
+    
+    <!-- OpenGraph / Social -->
+    <meta property="og:site_name" content="YT Downloader">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="YouTube Video Downloader – 1080p, 4K UHD & MP4 (yt-dlp)">
+    <meta property="og:description" content="Download YouTube videos in crisp 1080p Full HD, 4K, or 720p MP4. Free, ad-free web downloader with full DASH audio-video merging powered by yt-dlp and FFmpeg.">
+    <meta property="og:url" content="https://yt-downlooader.netlify.app/youtube-video-downloader">
+    <meta property="og:image" content="https://yt-downlooader.netlify.app/static/favicon.svg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="YouTube Video Downloader – 1080p, 4K UHD & MP4 (yt-dlp)">
+    <meta name="twitter:description" content="Download YouTube videos in crisp 1080p Full HD, 4K, or 720p MP4. Free, ad-free web downloader with full DASH audio-video merging powered by yt-dlp and FFmpeg.">
+    <meta name="twitter:image" content="https://yt-downlooader.netlify.app/static/favicon.svg">
+
+    <!-- GEO & AEO Search Engine Direct Answer Signals -->
+    <meta name="geo.region" content="US">
+    <meta name="geo.placename" content="Global">
+    <meta name="distribution" content="Global">
+    <meta name="coverage" content="Worldwide">
+    <meta name="rating" content="General">
+    <link rel="alternate" hreflang="x-default" href="https://yt-downlooader.netlify.app/youtube-video-downloader">
+    <link rel="alternate" hreflang="en" href="https://yt-downlooader.netlify.app/youtube-video-downloader">
+    <link rel="icon" type="image/svg+xml" href="./static/favicon.svg">
+    <link rel="apple-touch-icon" href="./static/favicon.svg">
+
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Design System Stylesheets -->
+    <link rel="stylesheet" href="./static/css/style.css">
+    <link rel="stylesheet" href="./static/css/content.css">
+
+    <!-- Structured Data (JSON-LD) -->
+    
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "YouTube Video Downloader",
+      "url": "https://yt-downlooader.netlify.app/youtube-video-downloader",
+      "description": "Download YouTube videos in 1080p, 4K UHD, and MP4 with automated audio-video stream multiplexing.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://yt-downlooader.netlify.app/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "YouTube Video Downloader",
+          "item": "https://yt-downlooader.netlify.app/youtube-video-downloader"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Why do downloaded 1080p or 4K videos have sound when using your tool?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "YouTube splits 1080p and 4K media into separate video and audio streams. Our server downloads both streams simultaneously and multiplexes them with FFmpeg into a complete MP4 file containing both full-resolution video and crystal-clear audio."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What video containers and codecs are supported?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We deliver standard MP4 containers encoded with H.264 (AVC) or AV1 for maximum compatibility across Windows, Mac, iOS, Android, and smart TVs."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I download 60fps high frame rate videos?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. When a video is uploaded in 1080p60 or 4K60, selecting Best Quality preserves the original 60 frames per second playback speed."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+    <script>
+        (function() {
+            var savedTheme = localStorage.getItem('ytdl_theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+</head>
+<body class="theme-light">
+    <!-- Aurora Mesh Background Canvas -->
+    <canvas id="aurora-canvas" aria-hidden="true"></canvas>
+    <!-- Header & Navigation -->
+    <header class="header" role="banner">
+        <div class="header__inner">
+            <div class="header__brand">
+                <a href="./" class="header__brand-link" aria-label="YT Downloader Home">
+                    <span class="brand-logo-text"><span class="brand-logo-badge" style="margin-left:0; margin-right:4px;">YT</span> Downloader</span>
+                </a>
+            </div>
+
+            <!-- Global Nav Links (Desktop) -->
+            <nav class="nav-links" id="main-nav" aria-label="Main Navigation">
+                <a href="./youtube-video-downloader.html" class="nav-link active">Video</a>
+                <a href="./youtube-to-mp3.html" class="nav-link ">MP3 Audio</a>
+                <a href="./youtube-4k-downloader.html" class="nav-link ">4K UHD</a>
+                <a href="./bulk-youtube-to-mp3.html" class="nav-link ">Bulk Audio</a>
+                <a href="./bulk-youtube-video-downloader.html" class="nav-link ">Bulk Video</a>
+                <a href="./blog.html" class="nav-link ">Guides</a>
+                <a href="./self-hosted-youtube-downloader.html" class="nav-link nav-link--highlight ">💻 Self-Host</a>
+            </nav>
+
+            <div class="header__actions">
+                <button type="button" class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Toggle dark/light mode" title="Toggle Dark/Light Mode">
+                    <span id="theme-toggle-icon">🌙</span>
+                </button>
+                <div class="header__status" id="health-status" title="System Status">
+                    <span class="status-dot" id="status-dot"></span>
+                    <span class="status-text" id="status-text">Checking...</span>
+                </div>
+                <!-- Mobile Navigation Toggle Button -->
+                <button type="button" class="header__menu-btn" id="mobile-menu-btn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-nav-drawer">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Drawer -->
+        <nav class="mobile-nav-drawer" id="mobile-nav-drawer" aria-label="Mobile Navigation" hidden>
+            <div class="mobile-nav-links">
+                <a href="./" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">🏠</span>
+                    <span>Home Overview</span>
+                </a>
+                <a href="./youtube-to-mp3.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">🎵</span>
+                    <span>YouTube to MP3</span>
+                </a>
+                <a href="./youtube-video-downloader.html" class="mobile-nav-link active">
+                    <span class="mobile-nav-icon">🎬</span>
+                    <span>YouTube Video Downloader (4K/1080p)</span>
+                </a>
+                <a href="./bulk-youtube-to-mp3.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">⚡</span>
+                    <span>Bulk MP3 Downloader</span>
+                </a>
+                <a href="./bulk-youtube-video-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📦</span>
+                    <span>Bulk Video Downloader</span>
+                </a>
+                <a href="./youtube-playlist-downloader.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📋</span>
+                    <span>Playlist Downloader</span>
+                </a>
+                <a href="./blog.html" class="mobile-nav-link ">
+                    <span class="mobile-nav-icon">📚</span>
+                    <span>Tech Guides &amp; Tutorials</span>
+                </a>
+                <a href="./self-hosted-youtube-downloader.html" class="mobile-nav-link mobile-nav-link--highlight ">
+                    <span class="mobile-nav-icon">💻</span>
+                    <span>Self-Host Guide (Docker/Python)</span>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main" role="main">
+        <div class="container">
+            
+<div class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="./">Home</a>
+    <span class="breadcrumbs__sep">/</span>
+    <span class="breadcrumbs__current">YouTube Video Downloader</span>
+</div>
+
+<!-- Tool Header Hero -->
+<div class="content-article__hero content-article__hero--center" style="margin-bottom:var(--space-4);">
+    <span class="content-badge">🎬 High-Definition Video Downloader</span>
+    <h1 class="content-title" style="margin-bottom:var(--space-2);">YouTube Video Downloader (1080p &amp; 4K MP4)</h1>
+    <p class="content-subtitle" style="margin: 0 auto; font-size: 1.05rem; max-width: 640px;">
+        Save YouTube videos in full 1080p Full HD, 4K UHD, or 720p MP4. Multi-stream DASH audio and video merging powered by <strong>yt-dlp</strong> and <strong>FFmpeg</strong>.
+    </p>
+</div>
+
+<!-- Trust Strip -->
+<div class="trust-strip">
+    <span class="trust-item"><span class="trust-item__icon">🎬</span> <strong>4K UHD &amp; 1080p</strong> DASH Merging</span>
+    <span class="trust-item"><span class="trust-item__icon">⚡</span> <strong>60 FPS Ready</strong> High Frame Rate</span>
+    <span class="trust-item"><span class="trust-item__icon">🛡️</span> <strong>No Ads</strong> Clean Interface</span>
+    <span class="trust-item"><span class="trust-item__icon">🔒</span> <strong>24h Auto-Purge</strong> Private Cache</span>
+</div>
+
+<!-- Usage Notice -->
+<div class="usage-notice">
+    <span class="usage-notice__icon">⚖️</span>
+    <div>
+        <strong>Fair Use Notice:</strong> Only download videos you have produced, that are licensed for reuse under Creative Commons, or that you have permission from the creator to download. DRM-protected content is strictly unsupported.
+    </div>
+</div>
+
+<!-- 4-Tool Mode Navigation Tabs -->
+<nav class="tabs" role="navigation" aria-label="Tool mode">
+    <a href="./" class="tab">
+        <span class="tab__icon" aria-hidden="true">🏠</span>
+        Overview
+    </a>
+    <a href="./youtube-to-mp3.html" class="tab">
+        <span class="tab__icon" aria-hidden="true">🎵</span>
+        Audio / MP3
+    </a>
+    <a href="./youtube-video-downloader.html" class="tab active" aria-current="page">
+        <span class="tab__icon" aria-hidden="true">🎬</span>
+        Video (4K/1080p)
+    </a>
+    <a href="./bulk-youtube-to-mp3.html" class="tab">
+        <span class="tab__icon" aria-hidden="true">⚡</span>
+        Bulk MP3
+    </a>
+    <a href="./bulk-youtube-video-downloader.html" class="tab">
+        <span class="tab__icon" aria-hidden="true">📦</span>
+        Bulk Video
+    </a>
+</nav>
+
+<!-- Single Video Download Panel -->
+<section class="panel active" id="panel-single" role="region" aria-label="Video Download Input">
+    <div class="card">
+        <div class="form-group">
+            <div class="form-label-row">
+                <label for="url-input" class="form-label">
+                    <span class="form-label__icon" aria-hidden="true">🔗</span>
+                    YouTube Video URL
+                </label>
+                <span class="form-label__hint">Supports YouTube videos, Shorts &amp; Playlists</span>
+            </div>
+            <div class="input-row">
+                <div class="input-field-wrap">
+                    <span class="input-field-icon" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                        </svg>
+                    </span>
+                    <input type="url" id="url-input" class="form-input form-input--has-actions"
+                           placeholder="https://www.youtube.com/watch?v=..."
+                           autocomplete="off" spellcheck="false"
+                           aria-describedby="url-feedback">
+                    <button type="button" id="btn-paste-url" class="btn-input-action" title="Paste link from clipboard" aria-label="Paste from clipboard">
+                        <span class="btn-input-action__icon">📋</span>
+                        <span>Paste</span>
+                    </button>
+                </div>
+                <button type="button" id="btn-fetch-meta" class="btn btn--fetch"
+                        title="Fetch video details" aria-label="Fetch video info">
+                    <span class="fetch-icon" aria-hidden="true">✨</span>
+                    <span class="fetch-text">Inspect</span>
+                </button>
+            </div>
+            <div id="url-feedback" class="form-feedback" role="alert" aria-live="polite"></div>
+        </div>
+
+        <!-- Metadata Preview -->
+        <div id="meta-preview" class="meta-preview hidden" aria-live="polite">
+            <div class="meta-preview__thumb" id="meta-thumb"></div>
+            <div class="meta-preview__info">
+                <span class="meta-preview__title" id="meta-title"></span>
+                <span class="meta-preview__detail" id="meta-detail"></span>
+            </div>
+        </div>
+
+        <!-- Playlist Mode Selector -->
+        <div id="playlist-options" class="playlist-options hidden">
+            <div class="playlist-options__header">
+                <span class="playlist-options__badge">📋 Playlist Detected</span>
+                <span id="playlist-options-title" class="playlist-options__title"></span>
+            </div>
+            <div class="pill-group" role="radiogroup" aria-label="Playlist download mode">
+                <button type="button" class="pill active" id="mode-playlist"
+                        role="radio" aria-checked="true" data-mode="playlist">
+                    📋 Entire Playlist
+                </button>
+                <button type="button" class="pill" id="mode-single"
+                        role="radio" aria-checked="false" data-mode="video">
+                    🎬 This Video Only
+                </button>
+            </div>
+        </div>
+
+        <!-- Video Format Selection -->
+        <div class="options-row" style="margin-top:var(--space-4);">
+            <div class="form-group form-group--half">
+                <label for="quality-select" class="form-label">Video Quality Profile</label>
+                <select id="quality-select" class="form-select">
+                    <option value="best" selected>🎬 Best Available (Up to 4K UHD · Auto DASH Merge)</option>
+                    <option value="1080p">📺 1080p Full HD (MP4 · Most Popular)</option>
+                    <option value="720p">📱 720p HD (Fastest Download)</option>
+                    <option value="480p">💾 480p SD (Data Saver)</option>
+                </select>
+            </div>
+            <div class="form-group form-group--half">
+                <label class="form-label">Target Container</label>
+                <div class="pill-group">
+                    <button type="button" class="pill active">🎞️ MP4 (Universal H.264/AAC)</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="callout callout--info" style="margin-top:var(--space-4); margin-bottom:0;">
+            <span class="callout__icon">ℹ️</span>
+            <div class="callout__content" style="font-size:0.85rem;">
+                <strong>High-Definition Notice:</strong> 1080p and 4K streams require our server to download separate video and audio tracks, then multiplex them with FFmpeg. Conversion typically takes 5&ndash;25 seconds.
+            </div>
+        </div>
+
+        <!-- Terms of Service Agreement -->
+        <div class="tos-agree-bar accepted" id="tos-bar-single" style="margin-top:var(--space-4);">
+            <label class="tos-agree-label" for="tos-check-single">
+                <input type="checkbox" id="tos-check-single" class="tos-check" checked>
+                <span class="tos-agree-text">
+                    I agree to the <a href="./terms.html" target="_blank" class="tos-link">Terms of Service</a>. Personal and educational archiving only.
+                </span>
+            </label>
+        </div>
+
+        <button type="button" id="btn-download" class="btn btn--primary btn--full" style="margin-top:var(--space-4);">
+            <span class="btn__text">⬇ Download Video (MP4)</span>
+            <span class="btn__spinner hidden" aria-hidden="true"></span>
+        </button>
+    </div>
+</section>
+
+<!-- Job Queue & History Section -->
+<section class="section" id="jobs-section" aria-labelledby="jobs-heading" style="margin-top:var(--space-8);">
+    <div class="history-header">
+        <h2 class="section__title" id="jobs-heading">
+            <span class="section__icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+            </span>
+            Video Downloads &amp; Queue
+            <span class="badge" id="active-count" title="Active downloads">0</span>
+        </h2>
+        <div class="history-controls">
+            <div class="storage-toggle-wrap" title="Toggle saving downloaded video records in your browser storage">
+                <label class="toggle-switch" for="toggle-history-storage">
+                    <input type="checkbox" id="toggle-history-storage" aria-describedby="storage-info-text">
+                    <span class="toggle-switch__slider"></span>
+                </label>
+                <label for="toggle-history-storage" class="storage-toggle-label">
+                    <span class="storage-toggle-label-text">Save History</span>
+                    <span class="storage-toggle-badge" id="storage-status-badge">Off</span>
+                </label>
+            </div>
+            <button type="button" id="btn-clear-history" class="btn btn--secondary btn--small" title="Clear saved history">
+                <span aria-hidden="true">🗑</span> Clear
+            </button>
+        </div>
+    </div>
+
+    <div id="jobs-list" class="jobs-list" aria-live="polite">
+        <div class="empty-state" id="empty-state">
+            <div class="empty-state__icon-wrap">
+                <div class="empty-state__icon" aria-hidden="true">
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                </div>
+            </div>
+            <h3 class="empty-state__heading" id="empty-state-text">Ready to Download Video</h3>
+            <p class="empty-state__hint" id="empty-state-hint">Paste any YouTube URL above and click <strong>Download Video (MP4)</strong>.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Rich Supporting Content for SEO -->
+<hr style="border:none; border-top:1px solid rgba(255,255,255,0.07); margin:var(--space-12) 0 var(--space-8);">
+
+<article class="prose content-article" style="max-width:100%;">
+    <section>
+        <h2>🎬 Why 1080p and 4K YouTube Video Downloads Require FFmpeg Merging</h2>
+        <p>
+            When downloading YouTube videos in resolutions higher than 720p, most generic download sites fail or provide a video file with <strong>no audio</strong>. This occurs because of how YouTube architected its streaming infrastructure:
+        </p>
+        <p>
+            YouTube uses <strong>DASH (Dynamic Adaptive Streaming over HTTP)</strong>. Under DASH, the 1080p, 1440p, and 4K video files stored on YouTube's servers do not contain an audio track. Instead:
+        </p>
+        <ul>
+            <li>The <strong>video track</strong> is stored as an independent, silent video-only stream (encoded in H.264, VP9, or AV1).</li>
+            <li>The <strong>audio track</strong> is stored as an independent audio-only stream (encoded in Opus or AAC).</li>
+        </ul>
+        <p>
+            When you watch a video in your browser, YouTube's video player downloads both streams simultaneously and synchronizes them in memory. To create a standalone downloadable file, a downloader must download both files and combine them. <strong>YT Downloader uses FFmpeg's stream copy engine</strong> to remux the audio and video into a clean MP4 container without re-encoding, preserving 100% of the original visual quality.
+        </p>
+    </section>
+
+    <section>
+        <h2>📊 Video Quality &amp; Storage Comparison</h2>
+        <div class="table-wrap">
+            <table class="format-table">
+                <thead>
+                    <tr>
+                        <th>Quality</th>
+                        <th>Resolution</th>
+                        <th>Codec</th>
+                        <th>Approx. File Size (10 min)</th>
+                        <th>Recommended Devices</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="highlight-col">4K UHD</td>
+                        <td>3840 &times; 2160</td>
+                        <td>VP9 / AV1</td>
+                        <td>150 &ndash; 300 MB</td>
+                        <td>4K Monitors, OLED TVs, High-end PCs</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">1080p Full HD</td>
+                        <td>1920 &times; 1080</td>
+                        <td>H.264 / AVC</td>
+                        <td>40 &ndash; 90 MB</td>
+                        <td>Laptops, iPads, Standard Monitors</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">720p HD</td>
+                        <td>1280 &times; 720</td>
+                        <td>H.264</td>
+                        <td>20 &ndash; 45 MB</td>
+                        <td>Smartphones, Limited Storage</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-col">480p SD</td>
+                        <td>854 &times; 480</td>
+                        <td>H.264</td>
+                        <td>10 &ndash; 20 MB</td>
+                        <td>Voice lectures, Slow internet connections</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section>
+        <h2>❓ Frequently Asked Questions</h2>
+        <div class="faq-list">
+            <div class="faq-item">
+                <h3 class="faq-question">Why does 4K download as MP4 instead of WebM?</h3>
+                <div class="faq-answer">
+                    <p>
+                        While YouTube encodes 4K streams in VP9/WebM, MP4 is vastly more compatible with Apple devices (QuickTime, iPad, iPhone) and Windows Media Player. Our backend multiplexes the video into standard MP4 for seamless playback on any device.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Can I download YouTube Shorts?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Yes. YouTube Shorts URLs (e.g. <code>youtube.com/shorts/VIDEO_ID</code>) are fully supported. They are downloaded in high-definition vertical 1080&times;1920 resolution.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Are subtitles included in downloaded videos?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Currently, video downloads include full multi-channel stereo audio. For video metadata inspection, use our <a href="./youtube-video-info.html" style="color:var(--accent-secondary);">Video Info Checker</a>.
+                    </p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <h3 class="faq-question">Does this tool support 60 frames per second (60fps) videos?</h3>
+                <div class="faq-answer">
+                    <p>
+                        Yes. When a YouTube creator uploads in high frame rate (such as 1080p60 or 4K60 for gaming, tutorials, or wildlife footage), our extractor retrieves the native 60fps video stream rather than downsampling to 30fps.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>⚡ High Frame Rate &amp; Audio Transcoding Integrity</h2>
+        <p>
+            Unlike basic browser extensions that capture the lower-resolution screen recording buffer, YT Downloader interfaces directly with the source DASH media streams:
+        </p>
+        <ul style="color:var(--text-secondary); line-height:1.7; margin-left:1.5rem; margin-bottom:1.5rem;">
+            <li><strong>Native 60fps Preservation:</strong> Fluid action sequences, game replays, and technical demonstrations retain their native 60 frames per second refresh rate.</li>
+            <li><strong>Bitrate Matching:</strong> We pair the highest available video stream with YouTube's pristine audio track, synchronizing video frames and audio packets precisely via FFmpeg timestamps.</li>
+            <li><strong>No Watermarks or Compression Artifacts:</strong> The output MP4 file is completely unmodified by promotional overlays or visual watermarks.</li>
+        </ul>
+    </section>
+</article>
+
+        </div>
+    </main>
+
+    <!-- Comprehensive Global Footer -->
+    <footer class="site-footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Col 1: Brand & Philosophy -->
+                <div class="footer-brand">
+                    <div class="footer-brand__name">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent-secondary);">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        YT Downloader
+                    </div>
+                    <p class="footer-brand__desc">
+                        A private, ad-free web utility for archiving public educational and Creative Commons media via yt-dlp and FFmpeg. Fast conversion, zero trackers, no account needed.
+                    </p>
+                    <div class="footer-brand__badge">
+                        <span>🔒</span> 24h Auto-Purge &amp; Transient Storage
+                    </div>
+                </div>
+
+                <!-- Col 2: Core Tools -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Core Tools</h4>
+                    <ul class="footer-links">
+                        <li><a href="./" class="footer-link">Home (Overview)</a></li>
+                        <li><a href="./youtube-to-mp3.html" class="footer-link">YouTube to MP3</a></li>
+                        <li><a href="./youtube-video-downloader.html" class="footer-link">Video Downloader (4K)</a></li>
+                        <li><a href="./bulk-youtube-to-mp3.html" class="footer-link">Bulk MP3 Downloader</a></li>
+                        <li><a href="./bulk-youtube-video-downloader.html" class="footer-link">Bulk Video Downloader</a></li>
+                        <li><a href="./youtube-playlist-downloader.html" class="footer-link">Playlist Downloader</a></li>
+                        <li><a href="./youtube-video-info.html" class="footer-link">Video Info &amp; Codecs</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Format Converters -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Formats &amp; Features</h4>
+                    <ul class="footer-links">
+                        <li><a href="./youtube-to-mp4.html" class="footer-link">YouTube to MP4</a></li>
+                        <li><a href="./youtube-to-wav.html" class="footer-link">YouTube to WAV</a></li>
+                        <li><a href="./youtube-to-m4a.html" class="footer-link">YouTube to M4A</a></li>
+                        <li><a href="./youtube-to-flac.html" class="footer-link">YouTube to FLAC</a></li>
+                        <li><a href="./youtube-4k-downloader.html" class="footer-link">4K Video Downloader</a></li>
+                        <li><a href="./ad-free-youtube-downloader.html" class="footer-link">Ad-Free Downloader</a></li>
+                        <li><a href="./safe-youtube-downloader.html" class="footer-link">Safe Downloader Guide</a></li>
+                        <li><a href="./supported-sites.html" class="footer-link">Supported Sites</a></li>
+                        <li><a href="./yt-dlp-web-ui.html" class="footer-link">yt-dlp Web UI</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Guides & Articles -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Guides &amp; Articles</h4>
+                    <ul class="footer-links">
+                        <li><a href="/blog/what-is-yt-dlp" class="footer-link">What is yt-dlp?</a></li>
+                        <li><a href="/blog/install-ffmpeg-windows-mac-linux" class="footer-link">Install FFmpeg (Win/Mac/Linux)</a></li>
+                        <li><a href="/blog/best-video-quality-for-downloads" class="footer-link">4K vs 1080p vs 720p Guide</a></li>
+                        <li><a href="/blog/mp3-vs-m4a-vs-opus" class="footer-link">MP3 vs M4A vs Opus Audio</a></li>
+                        <li><a href="/blog/yt-dlp-common-errors-and-fixes" class="footer-link">Common yt-dlp Errors &amp; Fixes</a></li>
+                        <li><a href="./blog.html" class="footer-link" style="color:var(--accent-secondary); font-weight:600;">Browse All Guides &rarr;</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 5: Trust, Legal & Sitemap -->
+                <div class="footer-col">
+                    <h4 class="footer-col__title">Trust &amp; Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="./about.html" class="footer-link">About Project</a></li>
+                        <li><a href="./how-it-works.html" class="footer-link">How It Works</a></li>
+                        <li><a href="./fair-use.html" class="footer-link">Fair Use &amp; Policy</a></li>
+                        <li><a href="./faq.html" class="footer-link">FAQ</a></li>
+                        <li><a href="./contact.html" class="footer-link">Contact &amp; Support</a></li>
+                        <li><a href="./privacy.html" class="footer-link">Privacy Policy</a></li>
+                        <li><a href="./terms.html" class="footer-link">Terms of Service</a></li>
+                        <li><a href="./dmca.html" class="footer-link">DMCA Takedown</a></li>
+                        <li><a href="./changelog.html" class="footer-link">Changelog</a></li>
+                        <li><a href="/site-map.html" class="footer-link" style="color:var(--accent-secondary);">HTML Site Map</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom Note with Legal Disclaimers -->
+            <div class="footer-bottom" style="flex-direction:column; gap:8px; text-align:center;">
+                <div>
+                    <strong>Disclaimer:</strong> YT Downloader is an independent utility and is not affiliated with or endorsed by YouTube or Google.
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); max-width:820px; margin:0 auto; line-height:1.5;">
+                    Usage Notice: Only download content you own, that is licensed for reuse (e.g. Creative Commons), or for which you have explicit rights holder permission. Converted files are automatically and permanently purged from server storage after 24 hours.
+                </div>
+                <div style="margin-top:6px; font-size:11px; color:var(--text-muted);">
+                    &copy; 2026 YT Downloader &bull; Built with Python, Flask, <a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener noreferrer" style="color:var(--text-secondary)">yt-dlp</a> &amp; <a href="https://ffmpeg.org" target="_blank" rel="noopener noreferrer" style="color:var(--text-secondary)">FFmpeg</a>.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Client Scripts -->
+    <script src="./static/js/ui-effects.js"></script>
+    
+    <script src="./static/js/app.js"></script>
+    
+</body>
+</html>

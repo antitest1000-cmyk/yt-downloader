@@ -1,0 +1,121 @@
+# Netlify Redirects
+/youtube-to-mp3.html /youtube-to-mp3.html 200
+/youtube_to_mp3.html /youtube-to-mp3.html 200
+/youtube%20to%20mp3.html /youtube-to-mp3.html 200
+/youtube%20to%20mp3 /youtube-to-mp3.html 200
+/youtube-to-mp3 /youtube-to-mp3.html 200
+
+/youtube-video-downloader.html /youtube-video-downloader.html 200
+/youtube_video_downloader.html /youtube-video-downloader.html 200
+/video_downloader.html /youtube-video-downloader.html 200
+/youtube%20video%20downloader.html /youtube-video-downloader.html 200
+/youtube-video-downloader /youtube-video-downloader.html 200
+
+/bulk-youtube-to-mp3.html /bulk-youtube-to-mp3.html 200
+/bulk_youtube_to_mp3.html /bulk-youtube-to-mp3.html 200
+/bulk_audio.html /bulk-youtube-to-mp3.html 200
+/bulk%20youtube%20to%20mp3.html /bulk-youtube-to-mp3.html 200
+/bulk-youtube-to-mp3 /bulk-youtube-to-mp3.html 200
+
+/bulk-youtube-video-downloader.html /bulk-youtube-video-downloader.html 200
+/bulk_youtube_video_downloader.html /bulk-youtube-video-downloader.html 200
+/bulk_video.html /bulk-youtube-video-downloader.html 200
+/bulk-youtube-video-downloader /bulk-youtube-video-downloader.html 200
+
+/youtube-playlist-downloader.html /youtube-playlist-downloader.html 200
+/youtube_playlist_downloader.html /youtube-playlist-downloader.html 200
+/playlist_downloader.html /youtube-playlist-downloader.html 200
+/youtube-playlist-downloader /youtube-playlist-downloader.html 200
+
+/youtube-video-info.html /youtube-video-info.html 200
+/youtube_video_info.html /youtube-video-info.html 200
+/video_info.html /youtube-video-info.html 200
+/youtube-video-info /youtube-video-info.html 200
+
+/youtube-to-mp4.html /youtube-to-mp4.html 200
+/youtube_to_mp4.html /youtube-to-mp4.html 200
+/format_mp4.html /youtube-to-mp4.html 200
+/youtube-to-mp4 /youtube-to-mp4.html 200
+
+/youtube-to-wav.html /youtube-to-wav.html 200
+/youtube_to_wav.html /youtube-to-wav.html 200
+/format_wav.html /youtube-to-wav.html 200
+/youtube-to-wav /youtube-to-wav.html 200
+
+/youtube-to-m4a.html /youtube-to-m4a.html 200
+/youtube_to_m4a.html /youtube-to-m4a.html 200
+/format_m4a.html /youtube-to-m4a.html 200
+/youtube-to-m4a /youtube-to-m4a.html 200
+
+/youtube-to-flac.html /youtube-to-flac.html 200
+/youtube_to_flac.html /youtube-to-flac.html 200
+/format_flac.html /youtube-to-flac.html 200
+/youtube-to-flac /youtube-to-flac.html 200
+
+/youtube-4k-downloader.html /youtube-4k-downloader.html 200
+/youtube_4k_downloader.html /youtube-4k-downloader.html 200
+/format_4k.html /youtube-4k-downloader.html 200
+/youtube-4k-downloader /youtube-4k-downloader.html 200
+
+/ad-free-youtube-downloader.html /ad-free-youtube-downloader.html 200
+/ad_free_youtube_downloader.html /ad-free-youtube-downloader.html 200
+/ad_free.html /ad-free-youtube-downloader.html 200
+/ad-free-youtube-downloader /ad-free-youtube-downloader.html 200
+
+/safe-youtube-downloader.html /safe-youtube-downloader.html 200
+/safe_youtube_downloader.html /safe-youtube-downloader.html 200
+/safe_downloader.html /safe-youtube-downloader.html 200
+/safe-youtube-downloader /safe-youtube-downloader.html 200
+
+/self-hosted-youtube-downloader.html /self-hosted-youtube-downloader.html 200
+/self_hosted_youtube_downloader.html /self-hosted-youtube-downloader.html 200
+/self_host.html /self-hosted-youtube-downloader.html 200
+/self-hosted-youtube-downloader /self-hosted-youtube-downloader.html 200
+
+/yt-dlp-web-ui.html /yt-dlp-web-ui.html 200
+/yt_dlp_web_ui.html /yt-dlp-web-ui.html 200
+/ytdlp_web_ui.html /yt-dlp-web-ui.html 200
+/yt-dlp-web-ui /yt-dlp-web-ui.html 200
+
+/supported-sites.html /supported-sites.html 200
+/supported_sites.html /supported-sites.html 200
+/supported-sites /supported-sites.html 200
+
+/how-it-works.html /how-it-works.html 200
+/how_it_works.html /how-it-works.html 200
+/how-it-works /how-it-works.html 200
+
+/faq.html /faq.html 200
+/faq /faq.html 200
+
+/about.html /about.html 200
+/about /about.html 200
+
+/contact.html /contact.html 200
+/contact /contact.html 200
+
+/privacy.html /privacy.html 200
+/privacy /privacy.html 200
+
+/terms.html /terms.html 200
+/terms /terms.html 200
+
+/dmca.html /dmca.html 200
+/dmca /dmca.html 200
+
+/fair-use.html /fair-use.html 200
+/fair_use.html /fair-use.html 200
+/fair-use /fair-use.html 200
+
+/changelog.html /changelog.html 200
+/changelog /changelog.html 200
+
+/site-map.html /site-map.html 200
+/site_map.html /site-map.html 200
+
+/blog.html /blog.html 200
+/blog /blog.html 200
+
+/blog/:slug /blog/:slug.html 200
+
+/api/* https://yt-downloader-backend-n68l.onrender.com/api/:splat 200!
